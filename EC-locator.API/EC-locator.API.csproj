@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>aspnet-API-AD976E79-E620-4C8A-BC26-E76DDF01A6AE</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>API</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,6 +21,11 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EC-locator.Core\EC-locator.Core.csproj" />
+      <ProjectReference Include="..\MessageParser\MessageParser.csproj" />
     </ItemGroup>
 
 </Project>
