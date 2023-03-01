@@ -1,25 +1,56 @@
+using System.Collections;
 using EC_locator.Repositories;
 using EClocator.Core.Interfaces;
 using Parser;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Graph;
 using Microsoft.Identity.Web;
+using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
 
 
 // testing message parser
-// IMessageParser messageParser = new MessageParser();
-// messageParser.testParser();
+// TODO update interfaces
+MessageParser messageParser = new MessageParser();
+TeamsRepository tr = new TeamsRepository();
+
+string[] messages = tr.GetMessages("ert", new DateOnly());
+foreach (string message in messages)
+{
+    messageParser.LocationCount(message);
+}
+
+
+// messageParser.GetLocation("hej");
+Environment.Exit(1);
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // initialize Settings singleton - used for Microsoft Graph Access
 initSettings();
 
-TeamsRepository tr = new TeamsRepository();
+
+/*
+// TESTING OF TEAMS REPO
+
 await tr.ListUsersAsync();
+await TestGettingUsersFromTeamsRepo();
 
-Environment.Exit(1);
+// TODO: Problemer med API
+await tr.ListMessagesAsync();
+*/
 
+async Task TestGettingUsersFromTeamsRepo()
+{
+    ArrayList users = await tr.GetUsersAsync();
+    foreach (Microsoft.Graph.User user in users)
+    {
+        Console.WriteLine($"User: {user.DisplayName ?? "NO NAME"}");
+        Console.WriteLine($"  ID: {user.Id}");
+        Console.WriteLine($"  Email: {user.Mail ?? "NO EMAIL"}"); 
+    }
+}
 
 // Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

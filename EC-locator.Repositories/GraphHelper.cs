@@ -82,11 +82,52 @@ public async static Task MakeGraphCallAsync()
 // </MakeGraphCallSnippet>
 
 
-    public static Task getMessagesAsync()
+    public static Task<IChannelMessagesCollectionPage> getMessagesAsync()
     {
         EnsureGraphForAppOnlyAuth();
-        return null;
+        
+        // Ensure client isn't null
+        _ = _graphClient ??
+            throw new System.NullReferenceException("Graph has not been initialized ");
+
+        string channelID = "19%3a5e10833a67a74fed84927e17db5c8d52%40thread.skype";
+        string teamID = "fe5c4984-c3d0-4a17-b213-4e4c845e07ce&tenantId=b5cf4dd9-702b-4170-a901-60b49142a6c4";
+        
+        var messages = _graphClient.Teams[teamID].Channels[channelID].Messages
+            .Request()
+            .Select(m => new
+            {
+                // Only request specific properties
+                m.Id
+            })
+            .Top(3)
+            .GetAsync();
+        
+        return messages;
     }
+    /*
+    return _graphClient.Users
+        .Request()
+    .Select(u => new
+    {
+        // Only request specific properties
+        u.DisplayName,
+        u.Id,
+        u.Mail
+    })
+    // Get at most 5 results
+    .Top(5)
+        // Sort by display name
+        .OrderBy("DisplayName")
+        .GetAsync();
+        */
 
 }
-
+/*
+.Select(m => new
+    {
+        // Only request specific properties
+        m.Body.Content,
+        m.Id
+    })
+    */
