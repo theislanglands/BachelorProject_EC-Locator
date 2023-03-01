@@ -81,9 +81,11 @@ public async static Task MakeGraphCallAsync()
 }
 // </MakeGraphCallSnippet>
 
+
     public static Task getMessagesAsync()
     {
         EnsureGraphForAppOnlyAuth();
+        return null;
     }
 
 }

@@ -12,11 +12,8 @@ using Microsoft.Identity.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// initialize Settings singleton - used for Microsoft Graph access
-var clientId = builder.Configuration.GetSection("AzureAd")["ClientId"];
-var tenantId = builder.Configuration.GetSection("AzureAd")["TenantId"];
-var clientSecret = builder.Configuration["ClientSecret"];
-Settings.GetInstance().initForAppAuth(clientId, clientSecret, tenantId);
+// initialize Settings singleton - used for Microsoft Graph Access
+initSettings();
 
 TeamsRepository tr = new TeamsRepository();
 await tr.ListUsersAsync();
@@ -54,5 +51,8 @@ app.Run();
 
 void initSettings()
 {
-        
+    var clientId = builder.Configuration.GetSection("AzureAd")["ClientId"];
+    var tenantId = builder.Configuration.GetSection("AzureAd")["TenantId"];
+    var clientSecret = builder.Configuration.GetSection("AzureAd")["ClientSecret"];
+    Settings.GetInstance().initForAppAuth(clientId, clientSecret, tenantId);
 }
