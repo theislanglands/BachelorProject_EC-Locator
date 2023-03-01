@@ -1,3 +1,4 @@
+using EC_locator.Repositories;
 using EClocator.Core.Interfaces;
 using Parser;
 using Microsoft.AspNetCore.Authentication;
@@ -5,13 +6,24 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 
 
-// Console.WriteLine(builder.Configuration["Test_secret"]);
-IMessageParser messageParser = new MessageParser();
-messageParser.testParser();
+// testing message parser
+// IMessageParser messageParser = new MessageParser();
+// messageParser.testParser();
+
+var builder = WebApplication.CreateBuilder(args);
+
+// initialize Settings singleton - used for Microsoft Graph access
+var clientId = builder.Configuration.GetSection("AzureAd")["ClientId"];
+var tenantId = builder.Configuration.GetSection("AzureAd")["TenantId"];
+var clientSecret = builder.Configuration["ClientSecret"];
+Settings.GetInstance().initForAppAuth(clientId, clientSecret, tenantId);
+
+TeamsRepository tr = new TeamsRepository();
+await tr.ListUsersAsync();
+
 Environment.Exit(1);
 
 
-var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
@@ -39,3 +51,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+void initSettings()
+{
+        
+}

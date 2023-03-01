@@ -25,6 +25,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EC-locator.Core\EC-locator.Core.csproj" />
+      <ProjectReference Include="..\EC-locator.Repositories\EC-locator.Repositories.csproj" />
       <ProjectReference Include="..\MessageParser\MessageParser.csproj" />
     </ItemGroup>
 
