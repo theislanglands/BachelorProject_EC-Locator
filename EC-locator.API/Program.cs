@@ -17,7 +17,7 @@ TeamsRepository tr = new TeamsRepository();
 string[] messages = tr.GetMessages("ert", new DateOnly());
 foreach (string message in messages)
 {
-    messageParser.LocationCount(message);
+    messageParser.PrintLocations(message);
 }
 
 

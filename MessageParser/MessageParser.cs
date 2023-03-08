@@ -14,71 +14,58 @@ public class MessageParser : IMessageParser
        _locatorRepository= new LocatorRepository();  
     }
 
-    public void SplitCount(string message)
+    public void PrintLocations(string message)
     {
-        string[] splitterWords = _locatorRepository.GetSplitterKeywords(); 
-        
-        // convert to lower case
-        message = message.ToLower();
-        
-        // split into words
-        string[] words = message.Split(' ');
+        Console.WriteLine(message);
 
-        int splitcount = 0;
-         //  iterate words and identify if contains a splitter
-        foreach (var word in words) 
+        SortedList<int, Location> listLocation = PrintLocation(message);
+        
+        // Printing list
+        foreach (var location in listLocation)
         {
-            foreach (string splitterWord in splitterWords)
-            {
-                if (word == splitterWord)
-                {
-                    Console.WriteLine($"split word {splitterWord}");
-                    splitcount++;
-                }
-            }
+            Console.WriteLine($"Location {location.Value.Place} found at index {location.Key}");
         }
-
-        Console.WriteLine($"{message} - contains {splitcount + 1} locations");
+        
     }
 
-    public void LocationCount(string message)                                    
-    {                                                                         
-        // get array of words
-        //string[,] locationWords = _locatorRepository.GetLocationKeyWords2();
-        Dictionary<string, string> locationWordsDictionary= _locatorRepository.GetLocationKeyWordsDictionary();
-        // convert to lower case                                              
-        message = message.ToLower();
-
-        Console.WriteLine(message);
-        // run through each word to identify one keyword belonging to each
+    public void GetLocations()
+    {
+        // Getting locations and their index
         
+        // Getting any time indicators between indexes
+    }
+
+
+    public SortedList<int, Location> PrintLocation(string message)                                    
+    {
+        // get dictionary mapping keywords to location
+        Dictionary<string, string> locationWordsDictionary= _locatorRepository.GetLocationKeyWordsDictionary();
+        message = message.ToLower();
+        
+        // holding found location and the index located in the message
         Dictionary<string, int> foundLocations = new Dictionary<string, int>();
         
+        // run through each word to identify keyword belonging to each category
         foreach (var locationWord in locationWordsDictionary)
         {
-
             if (message.Contains(locationWord.Key))
             {
-                int indexOfWord = message.IndexOf(locationWord.Key, StringComparison.OrdinalIgnoreCase);
+                int indexOfKeyWord = message.IndexOf(locationWord.Key, StringComparison.OrdinalIgnoreCase);
                 // Console.WriteLine($"Found: {locationWord.Key}   =>   location: {locationWord.Value}  =>  Index: {indexOfWord}");
                 
-                // checking if location is already localized
-                if (foundLocations.ContainsKey(locationWord.Value))
+                // Adding Location if not already found, otherwise update index if higher
+                if (!foundLocations.ContainsKey(locationWord.Value))
+
                 {
-                    // if location is localized, compare index of newly found and update if bigger
-                    if (foundLocations[locationWord.Value] < indexOfWord)
-                    {
-                        foundLocations[locationWord.Value] = indexOfWord;
-                    }
+                    foundLocations.Add(locationWord.Value, indexOfKeyWord);
                 }
-                else
-                {
-                    foundLocations.Add(locationWord.Value, indexOfWord);
+                else if (foundLocations[locationWord.Value] <= indexOfKeyWord){
+                        foundLocations[locationWord.Value] = indexOfKeyWord;
                 }
             }
         }
         
-        // creating a list of locations sorted after index of location in message
+        // creating a list of Locations objects sorted after index of location in message
         SortedList<int, Location> listLocation = new SortedList<int, Location>();
 
         foreach (var loc in foundLocations)
@@ -88,16 +75,11 @@ public class MessageParser : IMessageParser
             listLocation.Add(loc.Value, location);
         }
 
-        foreach (var location in listLocation)
-        {
-            Console.WriteLine($"Location {location.Value.Place} found at index {location.Key}");
-        }
+        return listLocation;
+    }
 
-        /* creating location object
-        Location location = new Location();
-        location.Place = locationWord.Value;
-*/
-
-        //Console.WriteLine($"{message} - contains {locationCount} locations");
+    public void LocateTime()
+    {
+        
     }
 }
