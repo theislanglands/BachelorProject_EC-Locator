@@ -1,4 +1,5 @@
 using EClocator.Core.Interfaces;
+using EClocator.Core.Models;
 
 namespace EC_locator.Repositories;
 
@@ -155,5 +156,18 @@ public class LocatorRepository : ILocatorRepository
 
         return keywordsDic;
         
+    }
+
+    public Dictionary<string, TimeDefinition> GetTimeDefinitionKeywords()
+    {
+        Dictionary<string, TimeDefinition> timeKeywords = new Dictionary<string, TimeDefinition>();
+        
+        timeKeywords.Add("formiddag", new TimeDefinition("formiddag", new TimeOnly(9,0), new TimeOnly(12, 0)));
+        timeKeywords.Add("eftermiddag", new TimeDefinition("eftermiddag", new TimeOnly(12,0), new TimeOnly(16, 0)));
+        timeKeywords.Add("frokost", new TimeDefinition("frokost", new TimeOnly(11,15), new TimeOnly(11, 15)));
+        timeKeywords.Add("middag", new TimeDefinition("middag", new TimeOnly(12,00), new TimeOnly(12, 00)));
+        timeKeywords.Add("aften", new TimeDefinition("aften", new TimeOnly(16,00), new TimeOnly(21, 00)));
+
+        return timeKeywords;
     }
 }

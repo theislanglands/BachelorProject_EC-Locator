@@ -14,12 +14,15 @@ using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
 MessageParser messageParser = new MessageParser();
 TeamsRepository tr = new TeamsRepository();
 
+messageParser.identifyNumbers("prut17fis32:45hej17.00");
+Environment.Exit(1);
+
+
 string[] messages = tr.GetMessages("ert", new DateOnly());
 foreach (string message in messages)
 {
     messageParser.PrintLocations(message);
 }
-
 
 // messageParser.GetLocation("hej");
 Environment.Exit(1);

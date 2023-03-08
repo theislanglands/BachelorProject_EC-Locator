@@ -17,33 +17,66 @@ public class MessageParser : IMessageParser
     public void PrintLocations(string message)
     {
         Console.WriteLine(message);
-
-        SortedList<int, Location> listLocation = PrintLocation(message);
         
-        // Printing list
-        foreach (var location in listLocation)
+        SortedList<int, Location> listOfLocations = IdentifyLocations(message);
+        foreach (var location in listOfLocations)
         {
             Console.WriteLine($"Location {location.Value.Place} found at index {location.Key}");
         }
-        
     }
 
-    public void GetLocations()
+    public void GetLocations(string message)
     {
-        // Getting locations and their index
+        SortedList<int, Location> listOfLocations = IdentifyLocations(message);
         
-        // Getting any time indicators between indexes
+        
+        // run through message and locate time indicators with index
+        // 1. look for numbers
+        // 2. look for keywords
+        // 3. look for før / efter, indtil
+        
+        // connect times and 
     }
 
+    public void identifyNumbers(string message)
+    {
+        int index = 0;
+        string number = "";
+        // index in string, identified number
+        Dictionary<int, int> identifiedNumbers = new Dictionary<int, int>();
+        for (int i = 0; i < message.Length; i++)
+        {
+            if (char.IsDigit(message[i]))
+            {
+                Console.WriteLine($"{message[i]} er et nummer");
+                number += message[i];
+                index = i;
+                while (i < message.Length-1 && (char.IsDigit(message[i + 1]) || message[i + 1].Equals('.') || message[i + 1].Equals(':')))
+                {
+                    i++;
+                    if (message[i].Equals('.') || message[i].Equals(':')) {
+                        continue;
+                    }
+                    number += message[i];
+                }
+            }
 
-    public SortedList<int, Location> PrintLocation(string message)                                    
+            Console.WriteLine($"{number}");
+            number = "";
+        }
+        
+        
+    }
+    
+    
+    
+    private SortedList<int, Location> IdentifyLocations(string message)                                    
     {
         // get dictionary mapping keywords to location
         Dictionary<string, string> locationWordsDictionary= _locatorRepository.GetLocationKeyWordsDictionary();
-        message = message.ToLower();
-        
         // holding found location and the index located in the message
         Dictionary<string, int> foundLocations = new Dictionary<string, int>();
+        message = message.ToLower();    
         
         // run through each word to identify keyword belonging to each category
         foreach (var locationWord in locationWordsDictionary)
@@ -66,16 +99,16 @@ public class MessageParser : IMessageParser
         }
         
         // creating a list of Locations objects sorted after index of location in message
-        SortedList<int, Location> listLocation = new SortedList<int, Location>();
+        SortedList<int, Location> listOfLocations = new SortedList<int, Location>();
 
         foreach (var loc in foundLocations)
         {
             Location location = new Location();
             location.Place = loc.Key;
-            listLocation.Add(loc.Value, location);
+            listOfLocations.Add(loc.Value, location);
         }
 
-        return listLocation;
+        return listOfLocations;
     }
 
     public void LocateTime()
