@@ -18,71 +18,142 @@ public class LocatorRepository : ILocatorRepository
             "smutter",
             "stopper ved",
             "kører",
-        }; 
+        };
         return keywords;
     }
 
     public string[,] GetLocationKeywords()
     {
-         string[,] keywords =
-         {
-             {"syg", "sengedag"},
-             {"syg", "ikke frisk"},
-             {"syg", "vandret"},
-             {"syg", "ikke på toppen"},
-             {"syg", "dynen"},
-             {"syg", "syg"},
-             {"syg", "influenza"},
-             {"syg", "ligger syg"},
-             {"syg", "lagt syg"},
-             {"syg", "feber"},
-             {"syg", "sygdom"},
-             {"syg", "forkølelse"},
-             {"syg", "svimmel"},
-             {"syg", "kvalme"},
-             {"syg", "ondt i hovedet"},
-             {"syg", "på langs"},
-             {"syg", "syge"},
-             {"syg", "helbred"},
-             {"syg", "feberbarn"},
-             {"syg", "lægger mig"},
-             {"syg", "skidt"},
-             {"syg", "under dynen"},
-             
-             {"møde", "møde"},
+        string[,] keywords =
+        {
+            { "syg", "sengedag" },
+            { "syg", "ikke frisk" },
+            { "syg", "vandret" },
+            { "syg", "ikke på toppen" },
+            { "syg", "dynen" },
+            { "syg", "syg" },
+            { "syg", "influenza" },
+            { "syg", "ligger syg" },
+            { "syg", "lagt syg" },
+            { "syg", "feber" },
+            { "syg", "sygdom" },
+            { "syg", "forkølelse" },
+            { "syg", "svimmel" },
+            { "syg", "kvalme" },
+            { "syg", "ondt i hovedet" },
+            { "syg", "på langs" },
+            { "syg", "syge" },
+            { "syg", "helbred" },
+            { "syg", "feberbarn" },
+            { "syg", "lægger mig" },
+            { "syg", "skidt" },
+            { "syg", "under dynen" },
 
-             {"hjemme", "hjemme"},
-             {"hjemme", "hjemmefra"},
-             {"hjemme", "på hjemmefra"},
-             {"hjemme", "tager den hjemmefra"},
-             {"hjemme", "tager jeg den hjemmefra"},
-             {"hjemme", "hjemmekontoret"},
-             {"hjemme", "hjemmeskansen"},
-             {"hjemme", "ikke på kontoret"},
-             {"hjemme", "er inde"},
-             
-             
-             {"konter", "på kontoret"},
-             {"konter", "inde"},
-             {"konter", "ind"},
-             {"konter", "på arbejdet"},
-             {"konter", "ind forbi"},
-             {"konter", "er inde"},
-             {"konter", "er inde ved"},
-             {"konter", "kommer ind"},
-             {"konter", "kommer i firmaet"},
-             
-             {"fri", "holder fri"},
-             {"fri", "fri"},
-             {"fri", "holder"},
-             {"fri", "fridag"},
-             {"fri", "holder weekend"},
-             {"fri", "off"},
-             
-             {"remote", "tager ud til"},
-             {"remote", "er på"},
-             {"remote", "er hos"}
-         }; 
-         return keywords;
+            { "møde", "møde" },
+
+            { "hjemme", "hjemme" },
+            { "hjemme", "hjemmefra" },
+            { "hjemme", "på hjemmefra" },
+            { "hjemme", "tager den hjemmefra" },
+            { "hjemme", "tager jeg den hjemmefra" },
+            { "hjemme", "hjemmekontoret" },
+            { "hjemme", "hjemmeskansen" },
+            { "hjemme", "ikke på kontoret" },
+
+
+            { "konter", "på kontoret" },
+            { "konter", "inde" },
+            { "konter", "ind" },
+            { "konter", "på arbejdet" },
+            { "konter", "ind forbi" },
+            { "konter", "er inde" },
+            { "konter", "er inde ved" },
+            { "konter", "kommer ind" },
+            { "konter", "kommer i firmaet" },
+
+            { "fri", "holder fri" },
+            { "fri", "fri" },
+            { "fri", "holder" },
+            { "fri", "fridag" },
+            { "fri", "holder weekend" },
+            { "fri", "off" },
+
+            { "remote", "tager ud til" },
+            { "remote", "er på" },
+            { "remote", "er hos" }
+        };
+        return keywords;
+    }
+
+    public Dictionary<string, string> GetLocationKeyWordsDictionary()
+    {   
+        string[,] keywords =
+        {
+            { "sengedag", "ill" },
+            {  "ikke frisk" ,"ill" },
+            {  "vandret" ,"ill" },
+            {  "ikke på toppen" ,"ill" },
+            {  "dynen" ,"ill" },
+            {  "syg" ,"ill" },
+            {  "influenza" ,"ill" },
+            {  "ligger syg" ,"ill" },
+            {  "lagt syg" ,"ill" },
+            {  "feber" ,"ill" },
+            {  "sygdom" ,"ill" },
+            {  "forkølelse" ,"ill" },
+            {  "svimmel" ,"ill" },
+            {  "kvalme" ,"ill" },
+            {  "ondt i hovedet" ,"ill" },
+            {  "på langs" ,"ill" },
+            {  "syge" ,"ill" },
+            {  "helbred" ,"ill" },
+            {  "feberbarn" ,"ill" },
+            {  "lægger mig" ,"ill" },
+            {  "skidt" ,"ill" },
+            {  "under dynen" ,"ill" },
+
+            { "møde", "meeting" },
+
+            { "hjemme", "home" },
+            { "hjemmefra", "home" },
+            { "på hjemmefra", "home" },
+            { "tager den hjemmefra", "home" },
+            { "tager jeg den hjemmefra", "home" },
+            { "hjemmekontoret", "home" },
+            { "hjemmeskansen", "home" },
+            { "ikke på kontoret", "home" },
+
+            { "på kontoret", "office" },
+            { "inde", "office" },
+            //{ "ind", "office" },
+            { "på arbejdet", "office" },
+            { "ind forbi", "office" },
+            { "er inde", "office" },
+            { "er inde ved", "office" },
+            { "kommer ind", "office" },
+            { "kommer jeg ind", "office" },
+            { "kommer i firmaet", "office" },
+
+            { "holder fri", "day-off" },
+            { "fri", "day-off" },
+            { "holder", "day-off" },
+            { "fridag", "day-off" },
+            { "holder weekend", "day-off" },
+            { "off", "day-off" },
+
+            { "tager ud til", "remote" },
+            //{ "er på", "remote" },
+            { "er hos", "remote" },
+            { "ved", "remote" }
+        };
+        Dictionary<string, string> keywordsDic = new Dictionary<string, string>();
+        for (int i = 0; i < keywords.GetLength(0); i++)
+        {
+            //Console.WriteLine($"key {keywords[i,0]} value {keywords[i,1]}");
+            keywordsDic.Add(keywords[i,0], keywords[i,1]);
+        }
+
+        return keywordsDic;
+        
     }
 }

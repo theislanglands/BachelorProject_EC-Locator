@@ -1,6 +1,7 @@
 ﻿
 using EClocator.Core.Interfaces;
 using EC_locator.Repositories;
+using EClocator.Core.Models;
 
 namespace Parser;
 
@@ -42,24 +43,27 @@ public class MessageParser : IMessageParser
 
     public void LocationCount(string message)                                    
     {                                                                         
-        string[,] locationWords = _locatorRepository.GetLocationKeywords();    
-                                                                          
+        // get array of words
+        //string[,] locationWords = _locatorRepository.GetLocationKeyWords2();
+        Dictionary<string, string> locationWordsDictionary= _locatorRepository.GetLocationKeyWordsDictionary();
         // convert to lower case                                              
-        message = message.ToLower();                                          
-                                                                          
-        // split into words                                                   
-        string[] words = message.Split(' ');                                  
-                                                                          
-        int locationCount = 0;                                                   
+        message = message.ToLower();
+        int locationCount = 0;
 
-        // run throug each category to identify one keyword beloning to each
-        string category = "";
-        foreach (var locationWord in locationWords)
+        Console.WriteLine(message);
+        // run through each word to identify one keyword belonging to each
+        foreach (var locationWord in locationWordsDictionary)
         {
-            if (locationWord == category) continue;
-            
-        }                                                                     
-                                                                          
-        Console.WriteLine($"{message} - contains {locationCount} locations");
-    }                                                                         
+            //Console.WriteLine($"{locationWord.Key} keyword betyder {locationWord.Value}");
+            if (message.Contains(locationWord.Key))
+            {
+                int indexOfWord = message.IndexOf(locationWord.Key, StringComparison.OrdinalIgnoreCase);
+                Console.WriteLine($"Found: {locationWord.Key}   =>   location: {locationWord.Value}  =>  Index: {indexOfWord}");
+                Location location = new Location();
+                location.Place = locationWord.Value;
+            }
+        }
+
+        //Console.WriteLine($"{message} - contains {locationCount} locations");
+    }
 }

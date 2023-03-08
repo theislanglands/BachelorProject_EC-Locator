@@ -6,7 +6,6 @@ using EClocator.Core.Interfaces;
 
 public class TeamsRepository : ITeamsRepository
 {
-   
     public async Task ListUsersAsync()
     {
         try
@@ -65,7 +64,7 @@ public class TeamsRepository : ITeamsRepository
 
     public string[] GetMessages(string employeeID, DateOnly date)
     {
-        string[] keywords =
+        string[] messages =
         {
             "Jeg bliver hjemme indtil jeg kan aflevere min cykel til service klokken 10, og så kommer jeg ind.", 
             "Jeg smutter til tandlæge her klokken 12. Arbejder muligvis hjemmefra efter.", 
@@ -77,7 +76,7 @@ public class TeamsRepository : ITeamsRepository
             "Jeg er på hjemmefra i dag.",
             "Jeg er på kontoret inden frokost. Er på hjemmefra"
         }; 
-        return keywords;
+        return messages;
         
         Console.WriteLine("in GetMeaasages");
 

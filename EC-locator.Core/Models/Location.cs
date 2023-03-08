@@ -12,4 +12,8 @@ public class Location
         End = end;
         Place = place ?? throw new ArgumentNullException(nameof(place));
     }
+
+    public Location()
+    {
+    }
 }
