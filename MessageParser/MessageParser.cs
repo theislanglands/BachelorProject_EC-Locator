@@ -61,7 +61,19 @@ public class MessageParser : IMessageParser
                 }
             }
 
+            TimeOnly time;
             Console.WriteLine($"{number}");
+            // convert to timeONly opbject
+            if (number.Length == 4)
+            {
+                string hour = number.Substring(0, 2);
+                string minutes = number.Substring(2, 2);
+                Console.WriteLine($"time {hour} minut {minutes}");
+                
+                //time = new TimeOnly(Int32.Parse(message.Substring(0, 2));
+                
+            }
+
             number = "";
         }
         
