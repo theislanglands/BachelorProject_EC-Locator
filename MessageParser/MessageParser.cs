@@ -21,7 +21,13 @@ public class MessageParser : IMessageParser
         SortedList<int, Location> listOfLocations = IdentifyLocations(message);
         foreach (var location in listOfLocations)
         {
-            Console.WriteLine($"Location {location.Value.Place} found at index {location.Key}");
+            Console.WriteLine($"Location: {location.Value.Place}, at index {location.Key}");
+        }
+
+        var times = IdentifyNumericTime(message);
+        foreach (var timeOnly in times)
+        {
+            Console.WriteLine($"Time:{timeOnly.Value.ToString()}, at index {timeOnly.Key}");
         }
     }
 
@@ -38,19 +44,18 @@ public class MessageParser : IMessageParser
         // connect times and 
     }
 
-    public void identifyNumbers(string message)
+    public Dictionary<int, TimeOnly> IdentifyNumericTime(string message)
     {
-        int index = 0;
+        int foundAtIndex = 0;
         string number = "";
-        // index in string, identified number
-        Dictionary<int, int> identifiedNumbers = new Dictionary<int, int>();
+        //                       index in string, identified time
+        var identifiedTimeOnIndex = new Dictionary<int, TimeOnly>();
         for (int i = 0; i < message.Length; i++)
         {
             if (char.IsDigit(message[i]))
             {
-                Console.WriteLine($"{message[i]} er et nummer");
                 number += message[i];
-                index = i;
+                foundAtIndex = i;
                 while (i < message.Length-1 && (char.IsDigit(message[i + 1]) || message[i + 1].Equals('.') || message[i + 1].Equals(':')))
                 {
                     i++;
@@ -61,27 +66,42 @@ public class MessageParser : IMessageParser
                 }
             }
 
-            TimeOnly time;
-            Console.WriteLine($"{number}");
-            // convert to timeONly opbject
-            if (number.Length == 4)
+            if (!number.Equals(""))
             {
-                string hour = number.Substring(0, 2);
-                string minutes = number.Substring(2, 2);
-                Console.WriteLine($"time {hour} minut {minutes}");
-                
-                //time = new TimeOnly(Int32.Parse(message.Substring(0, 2));
-                
+                identifiedTimeOnIndex.Add(foundAtIndex, ConvertToTimeOnly(number));
+                // Console.WriteLine(ConvertToTimeOnly(number).ToString());
+                number = "";
             }
-
-            number = "";
         }
-        
-        
+
+        return identifiedTimeOnIndex;
     }
     
-    
-    
+    private TimeOnly ConvertToTimeOnly(string number)
+    {
+        string hour;
+        string minutes;
+        if (number.Length == 4)
+        {
+            hour = number.Substring(0, 2);
+            minutes = number.Substring(2, 2);
+        }
+                
+        else if (number.Length == 3)
+        {
+            hour = number.Substring(0, 1);
+            minutes = number.Substring(1, 2);
+        }
+
+        else
+        {
+            hour = number;
+            minutes = "00";
+        }
+
+        return new TimeOnly(int.Parse(hour), int.Parse(minutes));
+    }
+
     private SortedList<int, Location> IdentifyLocations(string message)                                    
     {
         // get dictionary mapping keywords to location
