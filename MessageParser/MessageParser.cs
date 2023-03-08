@@ -48,21 +48,55 @@ public class MessageParser : IMessageParser
         Dictionary<string, string> locationWordsDictionary= _locatorRepository.GetLocationKeyWordsDictionary();
         // convert to lower case                                              
         message = message.ToLower();
-        int locationCount = 0;
 
         Console.WriteLine(message);
         // run through each word to identify one keyword belonging to each
+        
+        Dictionary<string, int> foundLocations = new Dictionary<string, int>();
+        
         foreach (var locationWord in locationWordsDictionary)
         {
-            //Console.WriteLine($"{locationWord.Key} keyword betyder {locationWord.Value}");
+
             if (message.Contains(locationWord.Key))
             {
                 int indexOfWord = message.IndexOf(locationWord.Key, StringComparison.OrdinalIgnoreCase);
-                Console.WriteLine($"Found: {locationWord.Key}   =>   location: {locationWord.Value}  =>  Index: {indexOfWord}");
-                Location location = new Location();
-                location.Place = locationWord.Value;
+                // Console.WriteLine($"Found: {locationWord.Key}   =>   location: {locationWord.Value}  =>  Index: {indexOfWord}");
+                
+                // checking if location is already localized
+                if (foundLocations.ContainsKey(locationWord.Value))
+                {
+                    // if location is localized, compare index of newly found and update if bigger
+                    if (foundLocations[locationWord.Value] < indexOfWord)
+                    {
+                        foundLocations[locationWord.Value] = indexOfWord;
+                    }
+                }
+                else
+                {
+                    foundLocations.Add(locationWord.Value, indexOfWord);
+                }
             }
         }
+        
+        // creating a list of locations sorted after index of location in message
+        SortedList<int, Location> listLocation = new SortedList<int, Location>();
+
+        foreach (var loc in foundLocations)
+        {
+            Location location = new Location();
+            location.Place = loc.Key;
+            listLocation.Add(loc.Value, location);
+        }
+
+        foreach (var location in listLocation)
+        {
+            Console.WriteLine($"Location {location.Value.Place} found at index {location.Key}");
+        }
+
+        /* creating location object
+        Location location = new Location();
+        location.Place = locationWord.Value;
+*/
 
         //Console.WriteLine($"{message} - contains {locationCount} locations");
     }
