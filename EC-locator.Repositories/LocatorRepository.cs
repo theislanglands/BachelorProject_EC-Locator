@@ -170,4 +170,17 @@ public class LocatorRepository : ILocatorRepository
 
         return timeKeywords;
     }
+    
+    public Dictionary<string, TimeOnly> GetTimeKeywords()
+    {
+        var timeKeywords = new Dictionary<string, TimeOnly>();
+        
+        timeKeywords.Add("formiddag", new TimeOnly(9,0));
+        timeKeywords.Add("eftermiddag", new TimeOnly(12,0));
+        timeKeywords.Add("frokost", new TimeOnly(11, 15));
+        timeKeywords.Add("middag", new TimeOnly(12,00));
+        timeKeywords.Add("aften", new TimeOnly(16,00));
+
+        return timeKeywords;
+    }
 }

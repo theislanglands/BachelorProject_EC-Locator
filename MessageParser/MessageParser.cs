@@ -27,7 +27,13 @@ public class MessageParser : IMessageParser
         var times = IdentifyNumericTime(message);
         foreach (var timeOnly in times)
         {
-            Console.WriteLine($"Time:{timeOnly.Value.ToString()}, at index {timeOnly.Key}");
+            Console.WriteLine($"Time:{timeOnly.Value}, at index {timeOnly.Key}");
+        }
+        
+        times = IdentifyKeywordsTime(message);
+        foreach (var timeOnly in times)
+        {
+            Console.WriteLine($"Time:{timeOnly.Value}, at index {timeOnly.Key}");
         }
     }
 
@@ -44,7 +50,25 @@ public class MessageParser : IMessageParser
         // connect times and 
     }
 
-    public Dictionary<int, TimeOnly> IdentifyNumericTime(string message)
+    public Dictionary<int, TimeOnly> IdentifyKeywordsTime(string message)
+    {
+        var timeKeywords = _locatorRepository.GetTimeKeywords();
+        var identifiedTimeOnIndex = new Dictionary<int, TimeOnly>();
+
+        foreach (var timeKeyword in timeKeywords)
+        {
+            if (message.Contains(timeKeyword.Key))
+            {
+                var foundAtIndex = message.IndexOf(timeKeyword.Key, StringComparison.OrdinalIgnoreCase);
+                Console.WriteLine($"Found {timeKeyword.Key} at index {foundAtIndex} meaning {timeKeyword.Value}");
+                identifiedTimeOnIndex.Add(foundAtIndex, timeKeyword.Value);
+            }
+        }
+        
+        return identifiedTimeOnIndex;
+    }
+
+    private Dictionary<int, TimeOnly> IdentifyNumericTime(string message)
     {
         int foundAtIndex = 0;
         string number = "";
