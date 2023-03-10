@@ -1,40 +1,70 @@
 ﻿
+using System.Collections;
 using EClocator.Core.Interfaces;
 using EC_locator.Repositories;
 using EClocator.Core.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Parser;
 
 public class MessageParser : IMessageParser
 {
     private static LocatorRepository _locatorRepository;
+    private TimeDefinition _timeDefinition;
+    private TimeOnly _workStartDefault = new TimeOnly(9,0);
+    private TimeOnly _workEndDefault = new TimeOnly(16,0);
+
     
     public MessageParser()
     {
-       _locatorRepository= new LocatorRepository();  
+       _locatorRepository= new LocatorRepository();
+       _timeDefinition = new TimeDefinition("formiddag", new TimeOnly(9), new TimeOnly(12));
     }
 
     public void PrintLocations(string message)
     {
         Console.WriteLine(message);
-        
-        SortedList<int, Location> listOfLocations = IdentifyLocations(message);
-        foreach (var location in listOfLocations)
+        var locationsFound = new List<Location>();
+        var locations = IdentifyLocations(message);
+        var times = IdentifyTimes(message);
+
+        foreach (var location in locations)
         {
             Console.WriteLine($"Location: {location.Value.Place}, at index {location.Key}");
         }
-
-        var times = IdentifyNumericTime(message);
+        
         foreach (var timeOnly in times)
         {
             Console.WriteLine($"Time:{timeOnly.Value}, at index {timeOnly.Key}");
         }
         
-        times = IdentifyKeywordsTime(message);
-        foreach (var timeOnly in times)
+        // Adding times to locations
+        
+        // if no times information = all day location, or error
+        if (times.IsNullOrEmpty())
         {
-            Console.WriteLine($"Time:{timeOnly.Value}, at index {timeOnly.Key}");
+            if (locations.Count == 1)
+            {
+                locations.Values[0].Start = _workStartDefault;
+                locations.Values[0].End = _workEndDefault;
+                
+            }
+
+            Console.WriteLine("no times information");
         }
+        
+        
+        
+        // checking if containing times information otherwise all day
+        /*
+        // checking if default loacation = if first index is time
+        if (times.Keys[0] < locations.Keys[0])
+        {
+            Console.WriteLine("Her er en tid først = indsæt default Office");
+        }
+        */
+        
+        
     }
 
     public void GetLocations(string message)
@@ -47,20 +77,22 @@ public class MessageParser : IMessageParser
         // 2. look for keywords
         // 3. look for før / efter, indtil
         
-        // connect times and 
+        // -- scan fra en location og ud - se om den er efterfulgt af en tid!
+        // hvis den er - sæt som starttid på location.
+        
+        // connect times and locations
     }
 
-    public Dictionary<int, TimeOnly> IdentifyKeywordsTime(string message)
+    private SortedList<int, TimeOnly> IdentifyKeywordsTime(string message)
     {
         var timeKeywords = _locatorRepository.GetTimeKeywords();
-        var identifiedTimeOnIndex = new Dictionary<int, TimeOnly>();
+        var identifiedTimeOnIndex = new SortedList<int, TimeOnly>();
 
         foreach (var timeKeyword in timeKeywords)
         {
             if (message.Contains(timeKeyword.Key))
             {
                 var foundAtIndex = message.IndexOf(timeKeyword.Key, StringComparison.OrdinalIgnoreCase);
-                Console.WriteLine($"Found {timeKeyword.Key} at index {foundAtIndex} meaning {timeKeyword.Value}");
                 identifiedTimeOnIndex.Add(foundAtIndex, timeKeyword.Value);
             }
         }
@@ -68,12 +100,12 @@ public class MessageParser : IMessageParser
         return identifiedTimeOnIndex;
     }
 
-    private Dictionary<int, TimeOnly> IdentifyNumericTime(string message)
+    private SortedList<int, TimeOnly> IdentifyNumericTime(string message)
     {
         int foundAtIndex = 0;
         string number = "";
         //                       index in string, identified time
-        var identifiedTimeOnIndex = new Dictionary<int, TimeOnly>();
+        var identifiedTimeOnIndex = new SortedList<int, TimeOnly>();
         for (int i = 0; i < message.Length; i++)
         {
             if (char.IsDigit(message[i]))
@@ -100,7 +132,19 @@ public class MessageParser : IMessageParser
 
         return identifiedTimeOnIndex;
     }
-    
+
+    private SortedList<int, TimeOnly> IdentifyTimes(string message)
+    {
+        var identifiedTimes = IdentifyNumericTime(message);
+        //var identifiedKeywordTimes = IdentifyKeywordsTime(message);
+        foreach (var item in IdentifyKeywordsTime(message))
+        {
+            identifiedTimes.Add(item.Key, item.Value);
+        }
+            
+        return identifiedTimes;
+    }
+
     private TimeOnly ConvertToTimeOnly(string number)
     {
         string hour;

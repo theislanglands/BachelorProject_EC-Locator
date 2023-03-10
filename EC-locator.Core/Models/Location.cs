@@ -1,12 +1,14 @@
+using System.Text;
+
 namespace EClocator.Core.Models;
 
 public class Location
 {
-    public DateTime Start { get; set; }
-    public DateTime End { get; set; }
+    public TimeOnly Start { get; set; }
+    public TimeOnly End { get; set; }
     public string Place { get; set; }
 
-    public Location(DateTime start, DateTime end, string place)
+    public Location(TimeOnly start, TimeOnly end, string place)
     {
         Start = start;
         End = end;
@@ -15,5 +17,13 @@ public class Location
 
     public Location()
     {
+    }
+
+    public override string ToString()
+    {
+        StringBuilder presentation = new StringBuilder();
+        presentation.AppendLine($"Location {Place}");
+        presentation.AppendLine($"Start time: {Start}, End time {End} ");
+        return presentation.ToString();
     }
 }
