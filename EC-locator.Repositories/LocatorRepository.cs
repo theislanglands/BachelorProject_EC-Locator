@@ -112,6 +112,7 @@ public class LocatorRepository : ILocatorRepository
             {  "lægger mig" ,"ill" },
             {  "skidt" ,"ill" },
             {  "under dynen" ,"ill" },
+            {  "toilet" ,"ill" },
 
             { "møde", "meeting" },
 
@@ -123,15 +124,17 @@ public class LocatorRepository : ILocatorRepository
             { "hjemmekontoret", "home" },
             { "hjemmeskansen", "home" },
             { "ikke på kontoret", "home" },
-
+            { "kommer ind", "office" },
+            { "kommer på kontoret", "home" },
+            
+            { "retur", "office"},
+            {"er tilbage", "office"},
             { "på kontoret", "office" },
             { "inde", "office" },
-            //{ "ind", "office" },
             { "på arbejdet", "office" },
             { "ind forbi", "office" },
             { "er inde", "office" },
             { "er inde ved", "office" },
-            { "kommer ind", "office" },
             { "kommer jeg ind", "office" },
             { "kommer i firmaet", "office" },
 

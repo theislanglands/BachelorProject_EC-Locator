@@ -18,12 +18,17 @@ public class Location
     public Location()
     {
     }
+    
+    public Location(string place)
+    {
+        Place = place ?? throw new ArgumentNullException(nameof(place));
+    }
 
     public override string ToString()
     {
         StringBuilder presentation = new StringBuilder();
-        presentation.AppendLine($"Location {Place}");
-        presentation.AppendLine($"Start time: {Start}, End time {End} ");
+        presentation.Append($"Location: {Place}, ");
+        presentation.Append($"Start time: {Start}, End time: {End} ");
         return presentation.ToString();
     }
 }

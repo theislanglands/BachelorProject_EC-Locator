@@ -3,7 +3,9 @@ using System.Collections;
 using EClocator.Core.Interfaces;
 using EC_locator.Repositories;
 using EClocator.Core.Models;
+using Microsoft.Graph;
 using Microsoft.IdentityModel.Tokens;
+using Location = EClocator.Core.Models.Location;
 
 namespace Parser;
 
@@ -13,7 +15,11 @@ public class MessageParser : IMessageParser
     private TimeDefinition _timeDefinition;
     private TimeOnly _workStartDefault = new TimeOnly(9,0);
     private TimeOnly _workEndDefault = new TimeOnly(16,0);
-
+    
+    SortedList<int, Location> locations;
+    SortedList<int, TimeOnly> times;
+    List<Location> locationsFound;
+    private Location _defaultLocation = new Location("office");
     
     public MessageParser()
     {
@@ -23,11 +29,12 @@ public class MessageParser : IMessageParser
 
     public void PrintLocations(string message)
     {
-        Console.WriteLine(message);
-        var locationsFound = new List<Location>();
-        var locations = IdentifyLocations(message);
-        var times = IdentifyTimes(message);
-
+        Console.WriteLine($"\n{message}");
+        locationsFound = new List<Location>();
+        locations = IdentifyLocations(message);
+        times = IdentifyTimes(message);
+        
+        /*
         foreach (var location in locations)
         {
             Console.WriteLine($"Location: {location.Value.Place}, at index {location.Key}");
@@ -37,50 +44,99 @@ public class MessageParser : IMessageParser
         {
             Console.WriteLine($"Time:{timeOnly.Value}, at index {timeOnly.Key}");
         }
+        */
         
         // Adding times to locations
+        ConnectTimesAndLocations(message);
+        foreach (var location in locationsFound)
+        {
+            Console.WriteLine(location);
+        }
+    }
+
+    private void ConnectTimesAndLocations(string message)
+    {
+        // checking if contains "ill" then return Location ill and all day
+        foreach (var location in locations)
+        {
+            if (location.Value.Place.Equals("ill"))
+            {
+                Console.WriteLine("Jeg er syg og hjemme");
+                locationsFound.Add(new Location(_workStartDefault, _workEndDefault, "ill"));
+                return;
+            }
+        }
         
         // if no times information = all day location, or error
         if (times.IsNullOrEmpty())
         {
+            // One location and no time = all day - using defaults
             if (locations.Count == 1)
             {
+                Console.WriteLine("no time and one location");
                 locations.Values[0].Start = _workStartDefault;
                 locations.Values[0].End = _workEndDefault;
-                
+                locationsFound.Add(locations.Values[0]);
+                return;
             }
 
-            Console.WriteLine("no times information");
+            if (locations.Count > 1)
+            {
+                Console.WriteLine("no time indication and more than one location found - unable to define");
+                locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
+                return;
+            }
         }
         
-        
-        
-        // checking if containing times information otherwise all day
-        /*
-        // checking if default loacation = if first index is time
-        if (times.Keys[0] < locations.Keys[0])
+        // check if the first statement is a timekey -> then insert office as location
+        if (locations.Keys[0] > times.Keys[0])
         {
-            Console.WriteLine("Her er en tid først = indsæt default Office");
+            Console.WriteLine("starts with Times keys without location - adding default");
+            // inserting default location at index 0
+            locations.Add(0, _defaultLocation);
         }
-        */
         
-        
-    }
+        // adding times to locations
+        if (locations.Count - 1 > times.Count)
+        {
+            Console.WriteLine("--Special case--)");
+            Console.WriteLine("number of locations i 2 more than times - unable to identify - prioritize locations");
+            return;
+        }
 
-    public void GetLocations(string message)
+        for (int i = 0; i < locations.Count; i++)
+        {
+            if (i == 0)
+            {
+                locations.Values[i].Start = _workStartDefault;
+            }
+            else
+            {
+                locations.Values[i].Start = times.Values[i - 1];;
+            }
+
+            if (i == locations.Count - 1)
+            {
+                locations.Values[i].End = _workEndDefault;
+            }
+            else
+            {
+                locations.Values[i].End = times.Values[i];
+            }
+
+            locationsFound.Add(locations.Values[i]);
+        }
+    }
+    
+    public List<Location> GetLocations(string message)
     {
-        SortedList<int, Location> listOfLocations = IdentifyLocations(message);
+        locationsFound = new List<Location>();
         
-        
-        // run through message and locate time indicators with index
-        // 1. look for numbers
-        // 2. look for keywords
-        // 3. look for før / efter, indtil
-        
-        // -- scan fra en location og ud - se om den er efterfulgt af en tid!
-        // hvis den er - sæt som starttid på location.
-        
-        // connect times and locations
+        locations = IdentifyLocations(message);
+        times = IdentifyTimes(message);
+        ConnectTimesAndLocations(message);
+
+        return locationsFound;
     }
 
     private SortedList<int, TimeOnly> IdentifyKeywordsTime(string message)

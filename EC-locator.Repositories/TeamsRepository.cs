@@ -64,22 +64,69 @@ public class TeamsRepository : ITeamsRepository
 
     public string[] GetMessages(string employeeID, DateOnly date)
     {
-        string[] messages =
+        if (employeeID.Equals("sample1"))
         {
-            "Jeg bliver hjemme indtil jeg kan aflevere min cykel til service klokken 10, og så kommer jeg ind.", 
-            "Jeg smutter til tandlæge her klokken 12. Arbejder muligvis hjemmefra efter.", 
-            "Jeg tager lige en time mere fra hjemmekontoret. Er inde ca. kl 10",
-            "Er til møde ved Alumeco indtil 11.30 i morgen og arbejder hjemme fra derefter.",
-            "Jeg er slet ikke på toppen, så jeg bliver hjemme i dag",
-            "Kommer ind på kontoret omkring kl. 11",
-            "Jeg starter lige hjemme og er på kontoret til frokost",
-            "Jeg er på hjemmefra i dag.",
-            "Jeg er på kontoret inden frokost. Er på hjemmefra"
-        }; 
-        return messages;
-        
-        Console.WriteLine("in GetMeaasages");
+            string[] messages =
+            {
+                "Jeg bliver hjemme indtil jeg kan aflevere min cykel til service klokken 10, og så kommer jeg ind.",
+                "Jeg smutter til tandlæge her klokken 12. Arbejder muligvis hjemmefra efter.",
+                "Jeg tager lige en time mere fra hjemmekontoret. Er inde ca. kl 10",
+                "Er til møde ved Alumeco indtil 11.30 i morgen og arbejder hjemme fra derefter.",
+                "Jeg er slet ikke på toppen, så jeg bliver hjemme i dag",
+                "Kommer ind på kontoret omkring kl. 11",
+                "Jeg starter lige hjemme og er på kontoret til frokost",
+                "Jeg er på hjemmefra i dag.",
+                "Jeg er på kontoret inden frokost. Er på hjemmefra"
+            };
+            return messages;
+        }
 
+        if (employeeID.Equals("sample2"))
+        {
+            string[] messages =
+            {
+                "Kommer på kontoret omkring kl. 11",
+                "Godmorgen. Jeg er på hjemmekontoret idag",
+                "Stadig ikke på toppen, men arbejder det jeg kan",
+                "Morn - det bliver endnu en dag på hjemmekontoret - dels pga. bentøjet og dels for at få ro til at forberede Popermo til næste uge'",
+                "Godmorgen, jeg starter ud hjemme og kommer ind omkring kl 10",
+                "Jeg er på hjemmefra i dag"
+            };
+            return messages;
+        }
+        
+        if (employeeID.Equals("sample3"))
+        {
+            string[] messages =
+            {
+                "tager en dag under dynen",
+                "Godmorgen. Jeg er på hjemmekontoret idag",
+                "Morn - det bliver endnu en dag på hjemmekontoret - dels pga. bentøjet og dels for at få ro til at forberede Popermo til næste uge'",
+                "Er hjemme med syge piger, så er lidt on/off hele dagen",
+                "Thomas, Gorm og jeg tager ned til Nørgaard Mikkelsen til møde, forventer at være retur 10.30",
+                "Starter til møde hos NM. Er tilbage lidt over 10.",
+                "Morn - jeg starter hos lægen og kører på Popermo efterfølgende",
+                "Jeg har krammet toilettet hele natten, så jeg er hjemme, og sover forhåbentligt",
+                "Er ikke på toppen - Er on/off i dag",
+            };
+            return messages;
+        }
+        
+        if (employeeID.Equals("outliers"))
+        {
+            string[] messages =
+            {
+                "I morgen arbejder jeg hjemmefra og stopper 11.30",
+                "Skal lige hente Noah og køre ham ud til de gamle. Han har lidt ondt i maven. Kommer på konnes igen efter.",
+                "Jeg starter ud hjemme 9.30 og er på kontoret til frokost",
+                "Jeg tager lige en time eller to hjemmefra, her til morgen ",
+                "Jeg er på kontoret cirka 09.30",
+                "Lynet skal lige have en gang service, så er først på pinden 9.15-9.30"
+            };
+            return messages;
+        }
+        
+        return null;
     }
     
     
