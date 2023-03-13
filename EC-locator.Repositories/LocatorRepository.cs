@@ -1,5 +1,5 @@
-using EClocator.Core.Interfaces;
-using EClocator.Core.Models;
+using EC_locator.Core.Interfaces;
+using EC_locator.Core.Models;
 
 namespace EC_locator.Repositories;
 
@@ -124,9 +124,9 @@ public class LocatorRepository : ILocatorRepository
             { "hjemmekontoret", "home" },
             { "hjemmeskansen", "home" },
             { "ikke på kontoret", "home" },
-            { "kommer ind", "office" },
             { "kommer på kontoret", "home" },
             
+            { "kommer ind", "office" },
             { "retur", "office"},
             {"er tilbage", "office"},
             { "på kontoret", "office" },
@@ -146,14 +146,13 @@ public class LocatorRepository : ILocatorRepository
             { "off", "day-off" },
 
             { "tager ud til", "remote" },
-            //{ "er på", "remote" },
+            { "tager ned til", "remote" },
             { "er hos", "remote" },
             { "ved", "remote" }
         };
         Dictionary<string, string> keywordsDic = new Dictionary<string, string>();
         for (int i = 0; i < keywords.GetLength(0); i++)
         {
-            //Console.WriteLine($"key {keywords[i,0]} value {keywords[i,1]}");
             keywordsDic.Add(keywords[i,0], keywords[i,1]);
         }
 

@@ -1,4 +1,4 @@
-namespace EClocator.Core
+namespace EC_locator.Core
 {
     
 }

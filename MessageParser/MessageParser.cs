@@ -1,142 +1,173 @@
-﻿
-using System.Collections;
-using EClocator.Core.Interfaces;
+﻿using EC_locator.Core.Interfaces;
 using EC_locator.Repositories;
-using EClocator.Core.Models;
-using Microsoft.Graph;
+using EC_locator.Core.Models;
 using Microsoft.IdentityModel.Tokens;
-using Location = EClocator.Core.Models.Location;
 
 namespace Parser;
 
 public class MessageParser : IMessageParser
 {
-    private static LocatorRepository _locatorRepository;
-    private TimeDefinition _timeDefinition;
-    private TimeOnly _workStartDefault = new TimeOnly(9,0);
-    private TimeOnly _workEndDefault = new TimeOnly(16,0);
+    private static LocatorRepository? _locatorRepository;
+    private bool _verbose = false;
     
-    SortedList<int, Location> locations;
-    SortedList<int, TimeOnly> times;
-    List<Location> locationsFound;
-    private Location _defaultLocation = new Location("office");
+    // holding default values
+    private readonly TimeOnly _workStartDefault = new TimeOnly(9,0);
+    private readonly TimeOnly _workEndDefault = new TimeOnly(16,0);
+    private readonly Location _defaultLocation = new Location("office");
+    
+    // holding identified tags and their index found in message
+    private SortedList<int, Location>? _locations;
+    private SortedList<int, TimeOnly>? _times;
+    
+    // interpreted locations found in message
+    private List<Location> _locationsFound;
     
     public MessageParser()
     {
        _locatorRepository= new LocatorRepository();
-       _timeDefinition = new TimeDefinition("formiddag", new TimeOnly(9), new TimeOnly(12));
     }
-
-    public void PrintLocations(string message)
+    
+    private void ConnectTimesAndLocations()
     {
-        Console.WriteLine($"\n{message}");
-        locationsFound = new List<Location>();
-        locations = IdentifyLocations(message);
-        times = IdentifyTimes(message);
-        
-        /*
-        foreach (var location in locations)
-        {
-            Console.WriteLine($"Location: {location.Value.Place}, at index {location.Key}");
-        }
-        
-        foreach (var timeOnly in times)
-        {
-            Console.WriteLine($"Time:{timeOnly.Value}, at index {timeOnly.Key}");
-        }
-        */
-        
-        // Adding times to locations
-        ConnectTimesAndLocations(message);
-        foreach (var location in locationsFound)
-        {
-            Console.WriteLine(location);
-        }
-    }
-
-    private void ConnectTimesAndLocations(string message)
-    {
-        // checking if contains "ill" then return Location ill and all day
-        foreach (var location in locations)
+        // checking if location contains "ill" then return Location ill and all day
+        foreach (var location in _locations)
         {
             if (location.Value.Place.Equals("ill"))
             {
                 Console.WriteLine("Jeg er syg og hjemme");
-                locationsFound.Add(new Location(_workStartDefault, _workEndDefault, "ill"));
+                _locationsFound.Add(new Location(_workStartDefault, _workEndDefault, "ill"));
                 return;
             }
         }
         
-        // if no times information = all day location, or error
-        if (times.IsNullOrEmpty())
+        // is time indication present = all day location, or error
+        if (_times.IsNullOrEmpty())
         {
-            // One location and no time = all day - using defaults
-            if (locations.Count == 1)
+            // If location count is 1 One location and no time = all day - using defaults
+            if (_locations.Count == 1)
             {
                 Console.WriteLine("no time and one location");
-                locations.Values[0].Start = _workStartDefault;
-                locations.Values[0].End = _workEndDefault;
-                locationsFound.Add(locations.Values[0]);
+                _locations.Values[0].Start = _workStartDefault;
+                _locations.Values[0].End = _workEndDefault;
+                _locationsFound.Add(_locations.Values[0]);
                 return;
             }
-
-            if (locations.Count > 1)
+            
+            if (_locations.Count > 1)
             {
                 Console.WriteLine("no time indication and more than one location found - unable to define");
-                locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
+                _locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
                 return;
             }
         }
         
-        // check if the first statement is a timekey -> then insert office as location
-        if (locations.Keys[0] > times.Keys[0])
+        // is the first index recorded a time tag -> then insert office as location at 0
+        if (_locations.Keys[0] > _times.Keys[0])
         {
             Console.WriteLine("starts with Times keys without location - adding default");
             // inserting default location at index 0
-            locations.Add(0, _defaultLocation);
+            _locations.Add(0, _defaultLocation);
         }
         
-        // adding times to locations
-        if (locations.Count - 1 > times.Count)
+        // is there one location and one time recorded => insert home at 0
+        if (_locations.Count == 1 && _times.Count == 1)
         {
-            Console.WriteLine("--Special case--)");
-            Console.WriteLine("number of locations i 2 more than times - unable to identify - prioritize locations");
-            return;
+            {
+                Console.WriteLine("one location and one time");
+                _locations.Add(0, new Location("home"));
+            }
         }
+        
+        // checking if number of locations tags 2 higher than number of times tags?
+        if (_locations.Count - 1 > _times.Count)
+        {
+            Console.WriteLine("number of location tags i 2 more than timestags");
+            // check if a location is a meeting
+            int locationToRemove = -1;
+            foreach (var location in _locations)
+            {
+                if (location.Value.Place.Equals("meeting"))
+                {
+                    for (int i = 0; i < _times.Count; i++)  
+                    {   
+                        // identifying to consecutive locations
+                        if (_locations.Keys[i] < _times.Keys[i] && _locations.Keys[i + 1] < _times.Keys[i])
+                        {
+                            // either location i or i+1 is a meeting - remove the one that's not.
+                            for (int j = i; j < i + 2; j++)
+                            {
+                                if (!_locations.Values[j].Place.Equals("meeting"))
+                                {
+                                    // removing the location
+                                    locationToRemove = j;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
-        for (int i = 0; i < locations.Count; i++)
+            if (locationToRemove == -1)
+            {
+                if (_verbose) {Console.WriteLine("not able to remove unnessesacry location found - unable to define");}
+                
+                _locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
+                return;
+            }
+
+            _locations.Remove(_locations.Keys[locationToRemove]);
+            Console.WriteLine("moving location not a meeting");
+        }
+        
+        // adding times to locations - Algorithm
+        for (int i = 0; i < _locations.Count; i++)
         {
             if (i == 0)
             {
-                locations.Values[i].Start = _workStartDefault;
+                _locations.Values[i].Start = _workStartDefault;
             }
             else
             {
-                locations.Values[i].Start = times.Values[i - 1];;
+                _locations.Values[i].Start = _times.Values[i - 1];
             }
 
-            if (i == locations.Count - 1)
+            if (i == _locations.Count - 1)
             {
-                locations.Values[i].End = _workEndDefault;
+                _locations.Values[i].End = _workEndDefault;
             }
             else
             {
-                locations.Values[i].End = times.Values[i];
+                _locations.Values[i].End = _times.Values[i];
             }
 
-            locationsFound.Add(locations.Values[i]);
+            _locationsFound.Add(_locations.Values[i]);
         }
     }
     
     public List<Location> GetLocations(string message)
     {
-        locationsFound = new List<Location>();
+        _locationsFound = new List<Location>();
         
-        locations = IdentifyLocations(message);
-        times = IdentifyTimes(message);
-        ConnectTimesAndLocations(message);
+        _locations = IdentifyLocations(message);
+        if (_verbose)
+        {
+            foreach (var location in _locations)
+            {
+                Console.WriteLine($"location found {location.Value.Place} at index {location.Key}");
+            }
+        }
 
-        return locationsFound;
+        _times = IdentifyTimes(message);
+        if (_verbose)
+        {
+            foreach (var time in _times)
+            {
+                Console.WriteLine($"time found {time.Value} at index {time.Key}");
+            }
+        }
+        ConnectTimesAndLocations();
+
+        return _locationsFound;
     }
 
     private SortedList<int, TimeOnly> IdentifyKeywordsTime(string message)
@@ -181,7 +212,6 @@ public class MessageParser : IMessageParser
             if (!number.Equals(""))
             {
                 identifiedTimeOnIndex.Add(foundAtIndex, ConvertToTimeOnly(number));
-                // Console.WriteLine(ConvertToTimeOnly(number).ToString());
                 number = "";
             }
         }
@@ -192,7 +222,6 @@ public class MessageParser : IMessageParser
     private SortedList<int, TimeOnly> IdentifyTimes(string message)
     {
         var identifiedTimes = IdentifyNumericTime(message);
-        //var identifiedKeywordTimes = IdentifyKeywordsTime(message);
         foreach (var item in IdentifyKeywordsTime(message))
         {
             identifiedTimes.Add(item.Key, item.Value);
@@ -205,6 +234,12 @@ public class MessageParser : IMessageParser
     {
         string hour;
         string minutes;
+
+        if (number.Length > 4)
+        {
+            Console.WriteLine("unable to define time more than 4 characters");
+        }
+
         if (number.Length == 4)
         {
             hour = number.Substring(0, 2);
@@ -267,8 +302,4 @@ public class MessageParser : IMessageParser
         return listOfLocations;
     }
 
-    public void LocateTime()
-    {
-        
-    }
 }

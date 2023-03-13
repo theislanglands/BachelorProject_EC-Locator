@@ -1,4 +1,4 @@
-namespace EClocator.Core.Models;
+namespace EC_locator.Core.Models;
 
 public class TimeDefinition
 {

@@ -1,4 +1,4 @@
-using EClocator.Core.Interfaces;
+using EC_locator.Core.Interfaces;
 
 namespace EC_locator.Repositories;
 

@@ -2,7 +2,7 @@
 
 namespace EC_locator.Repositories;
 
-using EClocator.Core.Interfaces;
+using EC_locator.Core.Interfaces;
 
 public class TeamsRepository : ITeamsRepository
 {
@@ -108,6 +108,8 @@ public class TeamsRepository : ITeamsRepository
                 "Morn - jeg starter hos lægen og kører på Popermo efterfølgende",
                 "Jeg har krammet toilettet hele natten, så jeg er hjemme, og sover forhåbentligt",
                 "Er ikke på toppen - Er on/off i dag",
+                "Godmorgen. Jeg starter hjemme, men forventer at være på kontoret kl 10. Vi ses ✌",
+                "Er inde 9:15"
             };
             return messages;
         }

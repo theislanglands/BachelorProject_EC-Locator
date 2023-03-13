@@ -1,6 +1,6 @@
 using System.Collections;
 using EC_locator.Repositories;
-using EClocator.Core.Interfaces;
+using EC_locator.Core.Interfaces;
 using Parser;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

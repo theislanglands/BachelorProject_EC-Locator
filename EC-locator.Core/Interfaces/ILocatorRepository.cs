@@ -1,4 +1,4 @@
-namespace EClocator.Core.Interfaces;
+namespace EC_locator.Core.Interfaces;
 
 public interface ILocatorRepository
 {

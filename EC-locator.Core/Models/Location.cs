@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace EClocator.Core.Models;
+namespace EC_locator.Core.Models;
 
 public class Location
 {
