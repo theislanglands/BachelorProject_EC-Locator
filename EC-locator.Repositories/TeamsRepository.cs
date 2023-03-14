@@ -66,6 +66,7 @@ public class TeamsRepository : ITeamsRepository
     {
         if (employeeID.Equals("sample1"))
         {
+            // all correct
             string[] messages =
             {
                 "Jeg bliver hjemme indtil jeg kan aflevere min cykel til service klokken 10, og så kommer jeg ind.",
@@ -76,13 +77,14 @@ public class TeamsRepository : ITeamsRepository
                 "Kommer ind på kontoret omkring kl. 11",
                 "Jeg starter lige hjemme og er på kontoret til frokost",
                 "Jeg er på hjemmefra i dag.",
-                "Jeg er på kontoret inden frokost. Er på hjemmefra"
+                
             };
             return messages;
         }
 
         if (employeeID.Equals("sample2"))
         {
+            // all correct
             string[] messages =
             {
                 "Kommer på kontoret omkring kl. 11",
@@ -97,6 +99,7 @@ public class TeamsRepository : ITeamsRepository
         
         if (employeeID.Equals("sample3"))
         {
+            // all correct
             string[] messages =
             {
                 "tager en dag under dynen",
@@ -118,12 +121,21 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
+                "Jeg er på kontoret inden frokost. Er på hjemmefra",
                 "I morgen arbejder jeg hjemmefra og stopper 11.30",
-                "Skal lige hente Noah og køre ham ud til de gamle. Han har lidt ondt i maven. Kommer på konnes igen efter.",
                 "Jeg starter ud hjemme 9.30 og er på kontoret til frokost",
                 "Jeg tager lige en time eller to hjemmefra, her til morgen ",
                 "Jeg er på kontoret cirka 09.30",
                 "Lynet skal lige have en gang service, så er først på pinden 9.15-9.30"
+            };
+            return messages;
+        }
+        
+        if (employeeID.Equals("un-precise"))
+        {
+            string[] messages =
+            {
+                "Skal lige hente Noah og køre ham ud til de gamle. Han har lidt ondt i maven. Kommer på konnes igen efter.",
             };
             return messages;
         }

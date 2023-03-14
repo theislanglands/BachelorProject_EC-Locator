@@ -137,6 +137,7 @@ public class LocatorRepository : ILocatorRepository
             { "er inde ved", "office" },
             { "kommer jeg ind", "office" },
             { "kommer i firmaet", "office" },
+            { "konnes", "office" },
 
             { "holder fri", "day-off" },
             { "fri", "day-off" },

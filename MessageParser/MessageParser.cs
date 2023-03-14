@@ -8,7 +8,7 @@ namespace Parser;
 public class MessageParser : IMessageParser
 {
     private static LocatorRepository? _locatorRepository;
-    private bool _verbose = false;
+    private bool _verbose = true;
     
     // holding default values
     private readonly TimeOnly _workStartDefault = new TimeOnly(9,0);
@@ -29,12 +29,26 @@ public class MessageParser : IMessageParser
     
     private void ConnectTimesAndLocations()
     {
+        // checking if no locations are found
+        if (_locations.Count == 0)
+        {
+            if (_verbose)
+            {
+                Console.WriteLine("unable to decide - no locations identified");
+            }
+            _locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
+            return;
+        }
+
         // checking if location contains "ill" then return Location ill and all day
         foreach (var location in _locations)
         {
             if (location.Value.Place.Equals("ill"))
             {
-                Console.WriteLine("Jeg er syg og hjemme");
+                if (_verbose)
+                {
+                    Console.WriteLine("Ill detected - add all day default");
+                }
                 _locationsFound.Add(new Location(_workStartDefault, _workEndDefault, "ill"));
                 return;
             }
@@ -46,7 +60,10 @@ public class MessageParser : IMessageParser
             // If location count is 1 One location and no time = all day - using defaults
             if (_locations.Count == 1)
             {
-                Console.WriteLine("no time and one location");
+                if (_verbose)
+                {
+                    Console.WriteLine("no time and one location - adding all day default");
+                }
                 _locations.Values[0].Start = _workStartDefault;
                 _locations.Values[0].End = _workEndDefault;
                 _locationsFound.Add(_locations.Values[0]);
@@ -55,7 +72,10 @@ public class MessageParser : IMessageParser
             
             if (_locations.Count > 1)
             {
-                Console.WriteLine("no time indication and more than one location found - unable to define");
+                if (_verbose)
+                {
+                    Console.WriteLine("no time indication and more than one location found - unable to define");
+                }
                 _locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
                 return;
             }
@@ -64,7 +84,10 @@ public class MessageParser : IMessageParser
         // is the first index recorded a time tag -> then insert office as location at 0
         if (_locations.Keys[0] > _times.Keys[0])
         {
-            Console.WriteLine("starts with Times keys without location - adding default");
+            if (_verbose)
+            {
+                Console.WriteLine("starts with Times keys without location - adding default location");
+            }
             // inserting default location at index 0
             _locations.Add(0, _defaultLocation);
         }
@@ -73,7 +96,10 @@ public class MessageParser : IMessageParser
         if (_locations.Count == 1 && _times.Count == 1)
         {
             {
-                Console.WriteLine("one location and one time");
+                if (_verbose)
+                {
+                    Console.WriteLine("one location and one time - adding home at beginning");
+                }
                 _locations.Add(0, new Location("home"));
             }
         }
@@ -81,7 +107,10 @@ public class MessageParser : IMessageParser
         // checking if number of locations tags 2 higher than number of times tags?
         if (_locations.Count - 1 > _times.Count)
         {
-            Console.WriteLine("number of location tags i 2 more than timestags");
+            if (_verbose)
+            {
+                Console.WriteLine("number of location tags i 2 more than times-tags");
+            }
             // check if a location is a meeting
             int locationToRemove = -1;
             foreach (var location in _locations)
@@ -109,17 +138,28 @@ public class MessageParser : IMessageParser
 
             if (locationToRemove == -1)
             {
-                if (_verbose) {Console.WriteLine("not able to remove unnessesacry location found - unable to define");}
+                if (_verbose)
+                {
+                    Console.WriteLine("not able to remove unnessesacry location found - unable to define");
+                }
                 
                 _locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
                 return;
             }
 
+            if (_verbose)
+            {
+                Console.WriteLine("moving location not a meeting");
+            }
             _locations.Remove(_locations.Keys[locationToRemove]);
-            Console.WriteLine("moving location not a meeting");
         }
         
         // adding times to locations - Algorithm
+        if (_verbose)
+        {
+            Console.WriteLine("running times algorithm");
+        }
+
         for (int i = 0; i < _locations.Count; i++)
         {
             if (i == 0)
