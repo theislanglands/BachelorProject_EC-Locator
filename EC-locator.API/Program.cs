@@ -17,7 +17,7 @@ TeamsRepository tr = new TeamsRepository();
 //messageParser.IdentifyNumericTime("prut17fis11:45hej17.00jf9wer600f12");
 // Environment.Exit(1);
 
-string[] messages = tr.GetMessages("startAndStopKeywords", new DateOnly());
+string[] messages = tr.GetMessages("stopKeywords", new DateOnly());
 
 foreach (string message in messages)
 {

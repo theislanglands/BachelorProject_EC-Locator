@@ -14,7 +14,7 @@ public class MessageParser : IMessageParser
     private readonly Location _defaultLocation = new Location("office");
     
     private static LocatorRepository? _locatorRepository;
-    private readonly bool _verbose = false;
+    private readonly bool _verbose = true;
  
     // holding identified tags and their index found in message
     private SortedList<int, Location>? _locations;
@@ -140,16 +140,25 @@ public class MessageParser : IMessageParser
             // inserting default location (office) at index 0
             _locations.Add(0, _defaultLocation);
         }
-        
+
         // is there one location and one time recorded => insert home at 0
         if (_locations.Count == 1 && _times.Count == 1)
         {
+            if (_verbose)
             {
-                if (_verbose)
+                Console.WriteLine("one location and one time");
+            }
+            
+            if (!_locations.Values[0].Place.Equals("home"))
+            {
                 {
-                    Console.WriteLine("one location and one time - adding home at beginning");
+                    if (_verbose)
+                    {
+                        Console.WriteLine(" - adding home at beginning");
+                    }
+
+                    _locations.Add(0, new Location("home"));
                 }
-                _locations.Add(0, new Location("home"));
             }
         }
         
@@ -223,13 +232,12 @@ public class MessageParser : IMessageParser
                 {
                     _locations.Values[i].Start = _workStartDefault;
                 }
+                
                 // check if first location has a start keyword
-
-                if (hasStartIndicator())
+                if (HasStartIndicator())
                 {
                     _locations.Values[i].Start = _times.Values[0];
                     _locations.Values[i].End = _times.Values[1];
-                    //Console.WriteLine(_locations[_locations.Keys[0]]);
                 }
             }
             else
@@ -237,77 +245,84 @@ public class MessageParser : IMessageParser
                 _locations.Values[i].Start = _locationsFound[^1].End;
             }
 
-   
-            
-            bool hasStartIndicator()
-            {
-                foreach (var startIndicator in _locatorRepository.GetStartIndicatorKeywords())
-                {
-                    int indexOfStartIndicator = message[.._times.Keys[0]].IndexOf(startIndicator);
-                    // Console.WriteLine("index er " + indexOfStartIndicator);
-  //TODO - refactor if to conatins, if all is working
-                    if (indexOfStartIndicator != -1)
-                    {
-                        // tjek at der mellem den indec for start og times.Keys-0 ikke findes en lokation - hvis det første man møder er en lokation
-                        if (_locations.Count.Equals(_times.Count))
-                        {
-                            return true;
-                        }
-
-                        return false;
-
-                        /*
-                        // for (int j = _times.Keys[0]-1; j > indexOfStartIndicator; j--)
-                        for (int j = indexOfStartIndicator+1; j < message.Length; j++)
-
-                        {
-                            if (_times.Keys.Contains(j))
-                            {
-                                if (_verbose)
-                                {
-                                    Console.WriteLine(
-                                        $"start indicator \"{startIndicator}\" found before time - {_times.Values[0]} - setting start time of first location");
-                                }
-                                return true;
-                            }
-
-                            if (_locations.Keys.Contains(j))
-                            {
-                                if (_verbose)
-                                {
-                                    Console.WriteLine(
-                                        $"start indicator \"{startIndicator}\" found before time - {_times.Values[0]} - ignores because followed by location");
-                                }
-                                return false;
-                            }
-                        }
-                        */
-                    }
-                }
-
-                return false;
-            }
-
-            
-            // SETTING ENDS
-            
+            // SETTING END TIMES
             if (_locations.Values[i].End == null)
             {
                 if (i == _locations.Count - 1)
                 {
-                    _locations.Values[i].End = _workEndDefault;
+                    if (HasStopIndicator())
+                    {
+                        _locations.Values[i].End = _times.Values[^1];
+
+                    }
+                    else
+                    {
+                        _locations.Values[i].End = _workEndDefault;
+
+                    }
                 }
                 else
                 {
                     _locations.Values[i].End = _times.Values[i];
                 }
-
             }
             _locationsFound.Add(_locations.Values[i]);
-
         }
     }
 
+    private bool HasStopIndicator()
+    {
+        foreach (var stopIndicator in _locatorRepository.GetStopIndicatorKeywords())
+        {
+            if (message[.._times.Keys[^1]].Contains(stopIndicator))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool HasStartIndicator()
+    {
+        foreach (var startIndicator in _locatorRepository.GetStartIndicatorKeywords())
+        {
+            if (message[.._times.Keys[0]].Contains(startIndicator))
+            {
+                return (_locations.Count.Equals(_times.Count));
+            }
+        }
+
+        return false;
+
+        /*
+                // tjek at der mellem den indec for start og times.Keys-0 ikke findes en lokation - hvis det første man møder er en lokation
+                int indexOfStartIndicator = message[.._times.Keys[0]].IndexOf(startIndicator);
+    
+                for (int j = indexOfStartIndicator+1; j < message.Length; j++)
+    
+                {
+                    if (_times.Keys.Contains(j))
+                    {
+                        if (_verbose)
+                        {
+                            Console.WriteLine(
+                                $"start indicator \"{startIndicator}\" found before time - {_times.Values[0]} - setting start time of first location");
+                        }
+                        return true;
+                    }
+    
+                    if (_locations.Keys.Contains(j))
+                    {
+                        if (_verbose)
+                        {
+                            Console.WriteLine(
+                                $"start indicator \"{startIndicator}\" found before time - {_times.Values[0]} - ignores because followed by location");
+                        }
+                        return false;
+                    }
+                }
+                */
+    }
 
 
     private SortedList<int, TimeOnly> IdentifyKeywordsTime(string message)

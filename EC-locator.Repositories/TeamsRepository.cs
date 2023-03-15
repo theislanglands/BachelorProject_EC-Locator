@@ -186,7 +186,7 @@ public class TeamsRepository : ITeamsRepository
                 "Otto er desværre blevet syg, så jeg holder hjemmefronten indtil backup ankommer. Er på kontoret inden 11",
                 "Arbejder hjemmefra i morgen. Er et smut forbi tandlægen 12.30",
                 "Jeg holder for i dag",
-                "Kommer ikke på kontoret i denne uge",
+                "Kommer ikke på kontoret i denne uge", // ikke negering
                 "Jeg er forresten stadig på hjemmefra - er måske på kontoret en af de kommende dage",
             };
             return messages;
