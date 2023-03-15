@@ -5,87 +5,6 @@ namespace EC_locator.Repositories;
 
 public class LocatorRepository : ILocatorRepository
 {
-    public string[] GetSplitterKeywords()
-    {
-        string[] keywords =
-        {
-            "fra kl",
-            "indtil",
-            "forventer",
-            "i morgen",
-            "kommer",
-            "derefter",
-            "er væk",
-            "smutter",
-            "stopper ved",
-            "kører",
-        };
-        return keywords;
-    }
-
-    public string[,] GetLocationKeywords()
-    {
-        string[,] keywords =
-        {
-            { "syg", "sengedag" },
-            { "syg", "ikke frisk" },
-            { "syg", "vandret" },
-            { "syg", "ikke på toppen" },
-            { "syg", "dynen" },
-            { "syg", "syg" },
-            { "syg", "influenza" },
-            { "syg", "ligger syg" },
-            { "syg", "lagt syg" },
-            { "syg", "feber" },
-            { "syg", "sygdom" },
-            { "syg", "forkølelse" },
-            { "syg", "svimmel" },
-            { "syg", "kvalme" },
-            { "syg", "ondt i hovedet" },
-            { "syg", "på langs" },
-            { "syg", "syge" },
-            { "syg", "helbred" },
-            { "syg", "feberbarn" },
-            { "syg", "lægger mig" },
-            { "syg", "skidt" },
-            { "syg", "under dynen" },
-
-            { "møde", "møde" },
-
-            { "hjemme", "hjemme" },
-            { "hjemme", "hjemmefra" },
-            { "hjemme", "på hjemmefra" },
-            { "hjemme", "tager den hjemmefra" },
-            { "hjemme", "tager jeg den hjemmefra" },
-            { "hjemme", "hjemmekontoret" },
-            { "hjemme", "hjemmeskansen" },
-            { "hjemme", "ikke på kontoret" },
-
-
-            { "konter", "på kontoret" },
-            { "konter", "inde" },
-            { "konter", "ind" },
-            { "konter", "på arbejdet" },
-            { "konter", "ind forbi" },
-            { "konter", "er inde" },
-            { "konter", "er inde ved" },
-            { "konter", "kommer ind" },
-            { "konter", "kommer i firmaet" },
-
-            { "fri", "holder fri" },
-            { "fri", "fri" },
-            { "fri", "holder" },
-            { "fri", "fridag" },
-            { "fri", "holder weekend" },
-            { "fri", "off" },
-
-            { "remote", "tager ud til" },
-            { "remote", "er på" },
-            { "remote", "er hos" }
-        };
-        return keywords;
-    }
-
     public Dictionary<string, string> GetLocationKeyWordsDictionary()
     {   
         string[,] keywords =
@@ -115,7 +34,8 @@ public class LocatorRepository : ILocatorRepository
             {  "toilet" ,"ill" },
 
             { "møde", "meeting" },
-
+            
+            { "hjem", "home" },
             { "hjemme", "home" },
             { "hjemmefra", "home" },
             { "på hjemmefra", "home" },
@@ -137,11 +57,11 @@ public class LocatorRepository : ILocatorRepository
             { "er inde ved", "office" },
             { "kommer jeg ind", "office" },
             { "kommer i firmaet", "office" },
-            { "konnes", "office" },
+            { "konnes", "office" }, 
 
             { "holder fri", "day-off" },
             { "fri", "day-off" },
-            { "holder", "day-off" },
+            { "holder fridag", "day-off" },
             { "fridag", "day-off" },
             { "holder weekend", "day-off" },
             { "off", "day-off" },
@@ -158,7 +78,6 @@ public class LocatorRepository : ILocatorRepository
         }
 
         return keywordsDic;
-        
     }
 
     public Dictionary<string, TimeDefinition> GetTimeDefinitionKeywords()
@@ -185,5 +104,40 @@ public class LocatorRepository : ILocatorRepository
         timeKeywords.Add("aften", new TimeOnly(16,00));
 
         return timeKeywords;
+    }
+    
+    public Dictionary<string, double> GetMinuteIndicators()
+    {
+        var timeKeywords = new Dictionary<string, double>();
+        
+        timeKeywords.Add("kvart over", 15);
+        timeKeywords.Add("kvart i", -15);
+        timeKeywords.Add("halv", -30);
+        
+        // "forsinket" - add minutes to current time
+        
+        return timeKeywords;
+    }
+    
+    
+    
+    
+    // NOT USED
+    public string[] GetSplitterKeywords()
+    {
+        string[] keywords =
+        {
+            "fra kl",
+            "indtil",
+            "forventer",
+            "i morgen",
+            "kommer",
+            "derefter",
+            "er væk",
+            "smutter",
+            "stopper ved",
+            "kører",
+        };
+        return keywords;
     }
 }

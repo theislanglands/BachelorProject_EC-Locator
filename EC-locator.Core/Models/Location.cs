@@ -4,8 +4,8 @@ namespace EC_locator.Core.Models;
 
 public class Location
 {
-    public TimeOnly Start { get; set; }
-    public TimeOnly End { get; set; }
+    public TimeOnly? Start { get; set; }
+    public TimeOnly? End { get; set; }
     public string Place { get; set; }
 
     public Location(TimeOnly start, TimeOnly end, string place)

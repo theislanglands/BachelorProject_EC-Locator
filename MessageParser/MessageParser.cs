@@ -7,14 +7,14 @@ namespace Parser;
 
 public class MessageParser : IMessageParser
 {
-    private static LocatorRepository? _locatorRepository;
-    private bool _verbose = true;
-    
     // holding default values
     private readonly TimeOnly _workStartDefault = new TimeOnly(9,0);
     private readonly TimeOnly _workEndDefault = new TimeOnly(16,0);
     private readonly Location _defaultLocation = new Location("office");
     
+    private static LocatorRepository? _locatorRepository;
+    private readonly bool _verbose = true;
+ 
     // holding identified tags and their index found in message
     private SortedList<int, Location>? _locations;
     private SortedList<int, TimeOnly>? _times;
@@ -25,6 +25,32 @@ public class MessageParser : IMessageParser
     public MessageParser()
     {
        _locatorRepository= new LocatorRepository();
+    }
+    
+    public List<Location> GetLocations(string message)
+    {
+        _locationsFound = new List<Location>();
+        
+        _locations = IdentifyLocations(message);
+        if (_verbose)
+        {
+            foreach (var location in _locations)
+            {
+                Console.WriteLine($"location found {location.Value.Place} at index {location.Key}");
+            }
+        }
+
+        _times = IdentifyTimes(message);
+        if (_verbose)
+        {
+            foreach (var time in _times)
+            {
+                Console.WriteLine($"time found {time.Value} at index {time.Key}");
+            }
+        }
+        ConnectTimesAndLocations();
+
+        return _locationsFound;
     }
     
     private void ConnectTimesAndLocations()
@@ -86,9 +112,27 @@ public class MessageParser : IMessageParser
         {
             if (_verbose)
             {
-                Console.WriteLine("starts with Times keys without location - adding default location");
+                Console.WriteLine("starts with Times keys without location");
             }
-            // inserting default location at index 0
+
+            if (_locations.Values[0].Place.Equals("office"))
+            {
+                if (_verbose)
+                {
+                    Console.WriteLine("- setting start time to first location and end to default");
+                }
+
+                _locations.Values[0].Start = _times.Values[0];
+                _locations.Values[0].End = _workEndDefault;
+                _locationsFound.Add(_locations.Values[0]);
+                return;
+            }
+            
+            if (_verbose)
+            {
+                Console.WriteLine("- - adding default location");
+            }
+            // inserting default location (office) at index 0
             _locations.Add(0, _defaultLocation);
         }
         
@@ -140,7 +184,7 @@ public class MessageParser : IMessageParser
             {
                 if (_verbose)
                 {
-                    Console.WriteLine("not able to remove unnessesacry location found - unable to define");
+                    Console.WriteLine("not able to remove unnecessary location found - unable to define");
                 }
                 
                 _locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
@@ -154,6 +198,11 @@ public class MessageParser : IMessageParser
             _locations.Remove(_locations.Keys[locationToRemove]);
         }
         
+        AddTimesToLocations();
+    }
+
+    private void AddTimesToLocations()
+    {
         // adding times to locations - Algorithm
         if (_verbose)
         {
@@ -164,7 +213,7 @@ public class MessageParser : IMessageParser
         {
             if (i == 0)
             {
-                _locations.Values[i].Start = _workStartDefault;
+                _locations.Values[i].Start ??= _workStartDefault;
             }
             else
             {
@@ -183,32 +232,8 @@ public class MessageParser : IMessageParser
             _locationsFound.Add(_locations.Values[i]);
         }
     }
-    
-    public List<Location> GetLocations(string message)
-    {
-        _locationsFound = new List<Location>();
-        
-        _locations = IdentifyLocations(message);
-        if (_verbose)
-        {
-            foreach (var location in _locations)
-            {
-                Console.WriteLine($"location found {location.Value.Place} at index {location.Key}");
-            }
-        }
 
-        _times = IdentifyTimes(message);
-        if (_verbose)
-        {
-            foreach (var time in _times)
-            {
-                Console.WriteLine($"time found {time.Value} at index {time.Key}");
-            }
-        }
-        ConnectTimesAndLocations();
 
-        return _locationsFound;
-    }
 
     private SortedList<int, TimeOnly> IdentifyKeywordsTime(string message)
     {
@@ -229,10 +254,12 @@ public class MessageParser : IMessageParser
 
     private SortedList<int, TimeOnly> IdentifyNumericTime(string message)
     {
+        // index in string, identified time
+        var identifiedTimeOnIndex = new SortedList<int, TimeOnly>();
+     
         int foundAtIndex = 0;
         string number = "";
-        //                       index in string, identified time
-        var identifiedTimeOnIndex = new SortedList<int, TimeOnly>();
+        
         for (int i = 0; i < message.Length; i++)
         {
             if (char.IsDigit(message[i]))
@@ -248,14 +275,41 @@ public class MessageParser : IMessageParser
                     number += message[i];
                 }
             }
-
+            
             if (!number.Equals(""))
             {
-                identifiedTimeOnIndex.Add(foundAtIndex, ConvertToTimeOnly(number));
+                TimeOnly foundTime = ParseToTimeOnly(number);
+                
+                // check for minute indicators
+                var minuteIndicators = _locatorRepository.GetMinuteIndicators();
+        
+                // see if message contains a minute indicator
+                foreach (var minuteIndicator in minuteIndicators)
+                {
+                    // see if a message contains a minute indicator between start and found index
+
+                    if (message[..foundAtIndex].Contains(minuteIndicator.Key))
+                    {
+                        if (_verbose)
+                        {
+                            Console.Write($"minute indicator \"{minuteIndicator.Key}\" found before time - {foundTime} - correcting time with {minuteIndicator.Value} minutes");
+                        }
+                        foundTime = foundTime.AddMinutes(minuteIndicator.Value);
+                        
+                        if (_verbose)
+                        {
+                            Console.WriteLine($" - corrected time: {foundTime}");
+                        }
+                    }
+                }
+                
+                identifiedTimeOnIndex.Add(foundAtIndex, foundTime);
                 number = "";
             }
         }
-
+        
+        
+        
         return identifiedTimeOnIndex;
     }
 
@@ -270,7 +324,7 @@ public class MessageParser : IMessageParser
         return identifiedTimes;
     }
 
-    private TimeOnly ConvertToTimeOnly(string number)
+    private static TimeOnly ParseToTimeOnly(string number)
     {
         string hour;
         string minutes;
@@ -319,7 +373,6 @@ public class MessageParser : IMessageParser
                 
                 // Adding Location if not already found, otherwise update index if higher
                 if (!foundLocations.ContainsKey(locationWord.Value))
-
                 {
                     foundLocations.Add(locationWord.Value, indexOfKeyWord);
                 }
@@ -341,5 +394,4 @@ public class MessageParser : IMessageParser
 
         return listOfLocations;
     }
-
 }
