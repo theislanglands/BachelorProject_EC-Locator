@@ -119,7 +119,24 @@ public class LocatorRepository : ILocatorRepository
         return timeKeywords;
     }
     
+    public List<string> GetStartIndicatorKeywords()
+    {
+        var timeKeywords = new List<string>();
+        
+        timeKeywords.Add("starter");
+
+        return timeKeywords;
+    }
     
+    public List<string> GetStopIndicatorKeywords()
+    {
+        var timeKeywords = new List<string>();
+        
+        timeKeywords.Add("stopper");
+        timeKeywords.Add("holder");
+        
+        return timeKeywords;
+    }
     
     
     // NOT USED

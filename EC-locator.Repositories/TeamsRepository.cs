@@ -65,57 +65,64 @@ public class TeamsRepository : ITeamsRepository
     {
         if (employeeID.Equals("sample1"))
         {
-            // all correct
+            // hjemmefra
+            string[] messages =
+            {
+                "Jeg er på hjemmefra i dag",
+                "Godmorgen. Jeg er på hjemmekontoret idag",
+                "Morn - det bliver endnu en dag på hjemmekontoret - dels pga. bentøjet og dels for at få ro til at forberede Popermo til næste uge'",
+                "Jeg er på hjemmefra i dag.",
+            };
+            return messages;
+        }
+        
+        if (employeeID.Equals("sample2"))
+        {
+            // hjemmefra og kontor
             string[] messages =
             {
                 "Jeg bliver hjemme indtil jeg kan aflevere min cykel til service klokken 10, og så kommer jeg ind.",
                 "Jeg smutter til tandlæge her klokken 12. Arbejder muligvis hjemmefra efter.",
                 "Jeg tager lige en time mere fra hjemmekontoret. Er inde ca. kl 10",
-                "Er til møde ved Alumeco indtil 11.30 i morgen og arbejder hjemme fra derefter.",
-                "Jeg er slet ikke på toppen, så jeg bliver hjemme i dag",
                 "Kommer ind på kontoret omkring kl. 11",
-                "Jeg starter lige hjemme og er på kontoret til frokost",
-                "Jeg er på hjemmefra i dag.",
+                "Godmorgen, jeg starter ud hjemme og kommer ind omkring kl 10",
+                "Kommer på kontoret omkring kl. 11",
+                "Godmorgen. Jeg starter hjemme, men forventer at være på kontoret kl 10. Vi ses ✌",
+                "Er inde 9:15",
+                "Jeg er på kontoret cirka 09.30",
+
                 
             };
             return messages;
         }
 
-        if (employeeID.Equals("sample2"))
+        if (employeeID.Equals("sample3"))
         {
-            // all correct
+            // Diverse - Meeting, Undefined
             string[] messages =
             {
-                "Kommer på kontoret omkring kl. 11",
-                "Godmorgen. Jeg er på hjemmekontoret idag",
-                "Stadig ikke på toppen, men arbejder det jeg kan",
-                "Morn - det bliver endnu en dag på hjemmekontoret - dels pga. bentøjet og dels for at få ro til at forberede Popermo til næste uge'",
-                "Godmorgen, jeg starter ud hjemme og kommer ind omkring kl 10",
-                "Jeg er på hjemmefra i dag"
+                "Thomas, Gorm og jeg tager ned til Nørgaard Mikkelsen til møde, forventer at være retur 10.30",
+                "Starter til møde hos NM. Er tilbage lidt over 10.",
+                "Morn - jeg starter hos lægen og kører på Popermo efterfølgende",
+                "Er til møde ved Alumeco indtil 11.30 i morgen og arbejder hjemme fra derefter.",
+                "Jeg tager hjem og arbejder efter zoo mødet  Hovedet driller lidt i dag. ",
+
             };
             return messages;
         }
         
-        if (employeeID.Equals("sample3"))
+        if (employeeID.Equals("sample4"))
         {
-            // all correct
+            // syg
             string[] messages =
             {
                 "tager en dag under dynen",
-                "Godmorgen. Jeg er på hjemmekontoret idag",
-                "Morn - det bliver endnu en dag på hjemmekontoret - dels pga. bentøjet og dels for at få ro til at forberede Popermo til næste uge'",
                 "Er hjemme med syge piger, så er lidt on/off hele dagen",
-                "Thomas, Gorm og jeg tager ned til Nørgaard Mikkelsen til møde, forventer at være retur 10.30",
-                "Starter til møde hos NM. Er tilbage lidt over 10.",
-                "Morn - jeg starter hos lægen og kører på Popermo efterfølgende",
                 "Jeg har krammet toilettet hele natten, så jeg er hjemme, og sover forhåbentligt",
                 "Er ikke på toppen - Er on/off i dag",
-                "Godmorgen. Jeg starter hjemme, men forventer at være på kontoret kl 10. Vi ses ✌",
-                "Er inde 9:15",
-                "Jeg er på kontoret cirka 09.30",
+                "Stadig ikke på toppen, men arbejder det jeg kan",
                 "Er helt smadret - bliver under dynen, og ser om jeg kan arbejde senere",
-                "Jeg tager hjem og arbejder efter zoo mødet  Hovedet driller lidt i dag. ",
-
+                "Jeg er slet ikke på toppen, så jeg bliver hjemme i dag",
             };
             return messages;
         }
@@ -129,7 +136,7 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
-        if (employeeID.Equals("contains minute indicators"))
+        if (employeeID.Equals("minute indicators"))
         {
             string[] messages =
             {
@@ -138,6 +145,37 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
+        if (employeeID.Equals("wip"))
+        {
+            string[] messages =
+            {
+               
+            };
+            return messages;
+        }
+        
+        
+        if (employeeID.Equals("startKeywords"))
+        {
+            string[] messages =
+            {
+                "Jeg starter lige hjemme og er på kontoret til frokost",
+                "Jeg starter ud hjemme 9.30 og er på kontoret til frokost",
+            };
+            return messages;
+        }
+        
+        if (employeeID.Equals("stopKeywords"))
+        {
+            string[] messages =
+            {
+                "I morgen arbejder jeg hjemmefra og stopper 11.30",
+            };
+            return messages;
+        }
+        
+        
+        // SE PÅ DEM HER!
         if (employeeID.Equals("outliers"))
         {
             string[] messages =
@@ -150,16 +188,6 @@ public class TeamsRepository : ITeamsRepository
                 "Jeg holder for i dag",
                 "Kommer ikke på kontoret i denne uge",
                 "Jeg er forresten stadig på hjemmefra - er måske på kontoret en af de kommende dage",
-            };
-            return messages;
-        }
-        
-        if (employeeID.Equals("startAndStopKeywords"))
-        {
-            string[] messages =
-            {
-                "I morgen arbejder jeg hjemmefra og stopper 11.30",
-                "Jeg starter ud hjemme 9.30 og er på kontoret til frokost",
             };
             return messages;
         }
