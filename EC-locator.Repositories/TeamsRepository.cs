@@ -111,7 +111,7 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
-        if (employeeID.Equals("sample4"))
+        if (employeeID.Equals("ill"))
         {
             // syg
             string[] messages =
@@ -149,7 +149,8 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
-               
+                "hjemme kontor off",
+
             };
             return messages;
         }

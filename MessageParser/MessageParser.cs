@@ -60,60 +60,58 @@ public class MessageParser : IMessageParser
     
     private void ConnectTimesAndLocations()
     {
-        // checking if no locations are found
+        
+        // checking if no locations are found  - DONE
         if (_locations.Count == 0)
         {
             if (_verbose)
             {
-                Console.WriteLine("unable to decide - no locations identified");
+                Console.WriteLine("unable to decide - no locations identified - adding undefined at 0");
             }
-            _locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
-            return;
+            
+            _locations.Add(0, new Location("undefined"));
+
         }
 
-        // checking if location contains "ill" then return Location ill and all day
+        // checking if location contains "ill" then return Location ill and all day - DONE
         foreach (var location in _locations)
         {
             if (location.Value.Place.Equals("ill"))
             {
                 if (_verbose)
                 {
-                    Console.WriteLine("Ill detected - add all day default");
+                    Console.WriteLine("Ill detected - deleting all other location");
                 }
-                _locationsFound.Add(new Location(_workStartDefault, _workEndDefault, "ill"));
-                return;
+                
+                _locations.Clear();
+                _locations.Add(0, new Location(_workStartDefault, _workEndDefault, "ill"));
+                break;
+                //_locationsFound.Add(new Location(_workStartDefault, _workEndDefault, "ill"));
+                // return;
             }
         }
         
-        // is time indication present = all day location, or error
+        // is no time indication present and more than 1 location
         if (_times.IsNullOrEmpty())
         {
-            // If location count is 1 One location and no time = all day - using defaults
-            if (_locations.Count == 1)
-            {
-                if (_verbose)
-                {
-                    Console.WriteLine("no time and one location - adding all day default");
-                }
-                _locations.Values[0].Start = _workStartDefault;
-                _locations.Values[0].End = _workEndDefault;
-                _locationsFound.Add(_locations.Values[0]);
-                return;
-            }
-            
             if (_locations.Count > 1)
             {
                 if (_verbose)
                 {
                     Console.WriteLine("no time indication and more than one location found - unable to define");
                 }
-                _locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
-                return;
+                
+                _locations.Clear();
+                _locations.Add(0, new Location("undefined"));
+                
+                //_locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
+                // return;
             }
         }
         
         // is the first index recorded a time tag -> then insert office as location at 0
-        if (_locations.Keys[0] > _times.Keys[0])
+        
+        if (_times.Count > 0 && _locations.Keys[0] > _times.Keys[0])
         {
             if (_verbose)
             {
@@ -126,19 +124,25 @@ public class MessageParser : IMessageParser
                 {
                     Console.WriteLine("- setting start time to first location and end to default");
                 }
-
+                
+                // insert home before 
+                _locations.Add(0, new Location("home"));
+                /*
                 _locations.Values[0].Start = _times.Values[0];
                 _locations.Values[0].End = _workEndDefault;
                 _locationsFound.Add(_locations.Values[0]);
                 return;
+                */
             }
-            
-            if (_verbose)
+            else
             {
-                Console.WriteLine("- - adding default location");
+                if (_verbose)
+                {
+                    Console.WriteLine("- - adding default location");
+                }
+                // inserting default location (office) at index 0
+                _locations.Add(0, _defaultLocation);
             }
-            // inserting default location (office) at index 0
-            _locations.Add(0, _defaultLocation);
         }
 
         // is there one location and one time recorded => insert home at 0
@@ -201,8 +205,10 @@ public class MessageParser : IMessageParser
                     Console.WriteLine("not able to remove unnecessary location found - unable to define");
                 }
                 
-                _locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
-                return;
+                _locations.Clear();
+                _locations.Add(0, new Location("undefined"));
+                //_locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
+                //return;
             }
 
             if (_verbose)
@@ -274,7 +280,7 @@ public class MessageParser : IMessageParser
     {
         foreach (var stopIndicator in _locatorRepository.GetStopIndicatorKeywords())
         {
-            if (message[.._times.Keys[^1]].Contains(stopIndicator))
+            if (_times.Count > 0 && message[.._times.Keys[^1]].Contains(stopIndicator))
             {
                 return true;
             }
@@ -286,7 +292,7 @@ public class MessageParser : IMessageParser
     {
         foreach (var startIndicator in _locatorRepository.GetStartIndicatorKeywords())
         {
-            if (message[.._times.Keys[0]].Contains(startIndicator))
+            if (_times.Count > 0 && message[.._times.Keys[0]].Contains(startIndicator))
             {
                 return (_locations.Count.Equals(_times.Count));
             }
