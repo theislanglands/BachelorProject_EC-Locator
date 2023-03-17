@@ -14,7 +14,7 @@ public class MessageParser : IMessageParser
     private readonly Location _defaultLocation = new Location("office");
     
     private static LocatorRepository? _locatorRepository;
-    private readonly bool _verbose = true;
+    private readonly bool _verbose = false;
  
     // holding identified tags and their index found in message
     private SortedList<int, Location>? _locations;
@@ -56,6 +56,7 @@ public class MessageParser : IMessageParser
         
         //ModifyTimesAndLocations();
         TestDecisionTree();
+        AddTimesToLocations();
         return _locationsFound;
     }
 
@@ -63,7 +64,7 @@ public class MessageParser : IMessageParser
     {
         DecisionTree dt = new DecisionTree();
         dt.Perform(_locations, _times);
-        System.Environment.Exit(1);
+        //System.Environment.Exit(1);
     }
 
     private void ModifyTimesAndLocations()
