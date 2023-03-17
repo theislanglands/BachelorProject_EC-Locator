@@ -53,12 +53,20 @@ public class MessageParser : IMessageParser
                 Console.WriteLine($"time found {time.Value} at index {time.Key}");
             }
         }
-        ConnectTimesAndLocations();
-
+        
+        //ModifyTimesAndLocations();
+        TestDecisionTree();
         return _locationsFound;
     }
-    
-    private void ConnectTimesAndLocations()
+
+    private void TestDecisionTree()
+    {
+        DecisionTree dt = new DecisionTree();
+        dt.Evaluate(_locations, _times);
+        System.Environment.Exit(1);
+    }
+
+    private void ModifyTimesAndLocations()
     {
         
         // checking if no locations are found  - DONE
@@ -70,7 +78,6 @@ public class MessageParser : IMessageParser
             }
             
             _locations.Add(0, new Location("undefined"));
-
         }
 
         // checking if location contains "ill" then return Location ill and all day - DONE

@@ -1,4 +1,5 @@
 using EC_locator.Core.Models;
+using Parser.Decisions;
 
 namespace Parser;
 
@@ -29,6 +30,26 @@ public class DecisionTree : Decision
 
     public override void Evaluate(SortedList<int, Location> _locations, SortedList<int, TimeOnly> _times)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("in decision tree");
+        
+        // Decision 0
+        var trunk = new DecisionQuery
+        {
+            Title = "Is Location Found",
+            Test = (_locations, _times) =>
+            {
+                if (_locations.Count == 0)
+                {
+                    return false;
+                }
+
+                return true;
+            },
+            
+            Positive = new FinalResult(),
+            Negative = new FinalResult()
+        };
+        
+        trunk.Evaluate(_locations, _times);
     }
 }
