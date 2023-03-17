@@ -149,7 +149,7 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
-                "prtu fis",
+                "jeg er syg i dag",
 
             };
             return messages;

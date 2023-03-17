@@ -1,9 +1,18 @@
 using EC_locator.Core.Models;
+using Parser.Decisions;
 
 namespace Parser;
 
-public abstract class Action
+public class Action : Node
 
 {
-    public abstract void Perform(SortedList<int, Location> _locations, SortedList<int, TimeOnly> _times);
+    public string Title { get; set; }
+    public Node GoTo { get; set; }
+    public Func<SortedList<int, Location>, SortedList<int, TimeOnly>, bool> PerformAction { get; set; }
+    public override void Perform(SortedList<int, Location> _locations, SortedList<int, TimeOnly> _times)
+    {
+        Console.WriteLine($"\t- Action: {this.Title}");
+        this.PerformAction(_locations, _times);
+        GoTo.Perform(_locations, _times);
+    }
 }

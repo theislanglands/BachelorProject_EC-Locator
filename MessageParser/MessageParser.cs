@@ -62,7 +62,7 @@ public class MessageParser : IMessageParser
     private void TestDecisionTree()
     {
         DecisionTree dt = new DecisionTree();
-        dt.Evaluate(_locations, _times);
+        dt.Perform(_locations, _times);
         System.Environment.Exit(1);
     }
 
