@@ -14,7 +14,7 @@ public class MessageParser : IMessageParser
     private readonly Location _defaultLocation = new Location("office");
     
     private static LocatorRepository? _locatorRepository;
-    private readonly bool _verbose = false;
+    private readonly bool _verbose = true;
  
     // holding identified tags and their index found in message
     private SortedList<int, Location>? _locations;
@@ -271,7 +271,6 @@ public class MessageParser : IMessageParser
                     else
                     {
                         _locations.Values[i].End = _workEndDefault;
-
                     }
                 }
                 else

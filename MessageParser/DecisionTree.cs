@@ -16,6 +16,7 @@ public class DecisionTree : Node
             Title = "Inserting Undefined at location 0",
             PerformAction = (_locations, _times) =>
             {
+                _locations.Clear();
                 _locations.Add(0, new Location("undefined"));
                 return true;
             },
@@ -42,9 +43,8 @@ public class DecisionTree : Node
                             {
                                 if (!_locations.Values[j].Place.Equals("meeting"))
                                 {
-                                    _locations.Remove(_locations.Keys[locationToRemove]);
+                                    _locations.Remove(_locations.Keys[j]);
                                     return true;
-                                    //locationToRemove = j;
                                 }
                             }
                         }

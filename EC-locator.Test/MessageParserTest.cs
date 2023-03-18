@@ -9,17 +9,78 @@ public class MessageParserTest
     MessageParser mp;
 
     private Dictionary<string, Location[]> messageSamples;
-    // message, location[]
 
     [SetUp]
     public void Setup()
     {
         mp = new MessageParser();
-        messageSamples = new Dictionary<string, Location[]>();
+        messageSamples = new Dictionary<string, Location[]>(); 
         AddHomeMessageSamples();
         AddHomeAndOfficeMessageSamples();
         AddIllMessageSamples(); 
         AddStartAndStopMessageSamples();
+        AddMeetingAndRemoteMessageSamples();
+    }
+
+    private void AddMeetingAndRemoteMessageSamples()
+    {
+        messageSamples.Add(
+            "Thomas, Gorm og jeg tager ned til Nørgaard Mikkelsen til møde, forventer at være retur 10.30",
+            new Location[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(10, 30),
+                    "meeting"),
+                new Location(
+                    new TimeOnly(10, 30),
+                    new TimeOnly(16, 0),
+                    "office")
+            });
+        messageSamples.Add(
+            "Starter til møde hos NM. Er tilbage lidt over 10.",
+            new Location[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(10, 0),
+                    "meeting"),
+                new Location(
+                    new TimeOnly(10, 0),
+                    new TimeOnly(16, 0),
+                    "office")
+            });
+        messageSamples.Add(
+            "Morn - jeg starter hos lægen og kører på Popermo efterfølgende",
+            new Location[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "remote"),
+            });
+        messageSamples.Add(
+            "Er til møde ved Alumeco indtil 11.30 i morgen og arbejder hjemme fra derefter.",
+            new Location[]
+            {
+                new Location(
+                    new TimeOnly(9,0),
+                    new TimeOnly(11, 30),
+                    "meeting"),
+                new Location(
+                    new TimeOnly(11,30),
+                    new TimeOnly(16, 0),
+                    "home"),
+            });
+        messageSamples.Add(
+            "Jeg tager hjem og arbejder efter zoo mødet  Hovedet driller lidt i dag. ",
+            new Location[]
+            {
+                new Location(
+                    new TimeOnly(9,0),
+                    new TimeOnly(16, 0),
+                    "undefined"),
+            });
     }
 
     private void AddHomeAndOfficeMessageSamples()

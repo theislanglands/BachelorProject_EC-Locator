@@ -103,7 +103,6 @@ public class TeamsRepository : ITeamsRepository
                 "Morn - jeg starter hos lægen og kører på Popermo efterfølgende",
                 "Er til møde ved Alumeco indtil 11.30 i morgen og arbejder hjemme fra derefter.",
                 "Jeg tager hjem og arbejder efter zoo mødet  Hovedet driller lidt i dag. ",
-
             };
             return messages;
         }
