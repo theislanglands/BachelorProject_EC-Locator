@@ -16,9 +16,7 @@ public class DecisionTree : Node
             Title = "Inserting Undefined at location 0",
             PerformAction = (_locations, _times) =>
             {
-                Console.WriteLine("in action");
                 _locations.Add(0, new Location("undefined"));
-                Console.WriteLine(_locations[0]);
                 return true;
             },
             
@@ -108,8 +106,6 @@ public class DecisionTree : Node
             Negative = insertUndefined
         };
         
-        
-        
         // Decision 7
         var isLocationCountTwoHigherThanTime = new DecisionQuery
         {
@@ -125,7 +121,7 @@ public class DecisionTree : Node
             },
  
             Positive = isMeetingPresent,
-            Negative = new FinalResult() // this is correct
+            Negative = new FinalResult()
         };
         
         // Action 5
@@ -205,9 +201,6 @@ public class DecisionTree : Node
             GoTo = oneLocationOneTime,
         };
         
-        
-        
-        
         // Decision 4
         var isFirstLocationOffice = new DecisionQuery
         {
@@ -246,10 +239,6 @@ public class DecisionTree : Node
             Positive = isFirstLocationOffice,
             Negative = oneLocationOneTime
         };
-     
-        
-        
-       
         
         // Decision 2
         var noTimesAndMultipleLocations = new DecisionQuery
@@ -309,9 +298,7 @@ public class DecisionTree : Node
             Positive = insertIll,
             Negative = noTimesAndMultipleLocations
         };
-        
-        
-        
+
         // Decision 0
         var trunk = new DecisionQuery
         {

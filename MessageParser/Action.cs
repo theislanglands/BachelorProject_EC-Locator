@@ -1,5 +1,4 @@
 using EC_locator.Core.Models;
-using Parser.Decisions;
 
 namespace Parser;
 

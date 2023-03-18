@@ -55,16 +55,15 @@ public class MessageParser : IMessageParser
         }
         
         //ModifyTimesAndLocations();
-        TestDecisionTree();
+        ModifyTimesAndLocastionDecisionTree();
         AddTimesToLocations();
         return _locationsFound;
     }
 
-    private void TestDecisionTree()
+    private void ModifyTimesAndLocastionDecisionTree()
     {
         DecisionTree dt = new DecisionTree();
         dt.Perform(_locations, _times);
-        //System.Environment.Exit(1);
     }
 
     private void ModifyTimesAndLocations()

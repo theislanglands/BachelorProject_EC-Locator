@@ -65,12 +65,12 @@ public class TeamsRepository : ITeamsRepository
     {
         if (employeeID.Equals("sample1"))
         {
-            // hjemmefra
+            // hjemmefra - tilføjet til test
             string[] messages =
             {
                 "Jeg er på hjemmefra i dag",
                 "Godmorgen. Jeg er på hjemmekontoret idag",
-                "Morn - det bliver endnu en dag på hjemmekontoret - dels pga. bentøjet og dels for at få ro til at forberede Popermo til næste uge'",
+                "Morn - det bliver endnu en dag på hjemmekontoret - dels pga. bentøjet og dels for at få ro til at forberede Popermo til næste uge",
                 "Jeg er på hjemmefra i dag.",
             };
             return messages;
@@ -78,7 +78,7 @@ public class TeamsRepository : ITeamsRepository
         
         if (employeeID.Equals("sample2"))
         {
-            // hjemmefra og kontor
+            // hjemmefra og kontor - tilføjet til test!
             string[] messages =
             {
                 "Jeg bliver hjemme indtil jeg kan aflevere min cykel til service klokken 10, og så kommer jeg ind.",
@@ -90,8 +90,6 @@ public class TeamsRepository : ITeamsRepository
                 "Godmorgen. Jeg starter hjemme, men forventer at være på kontoret kl 10. Vi ses ✌",
                 "Er inde 9:15",
                 "Jeg er på kontoret cirka 09.30",
-
-                
             };
             return messages;
         }
@@ -113,7 +111,7 @@ public class TeamsRepository : ITeamsRepository
         
         if (employeeID.Equals("ill"))
         {
-            // syg
+            // syg - Tilføjet til unit test
             string[] messages =
             {
                 "tager en dag under dynen",
