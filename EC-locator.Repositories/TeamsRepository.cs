@@ -86,7 +86,6 @@ public class TeamsRepository : ITeamsRepository
                 "Jeg tager lige en time mere fra hjemmekontoret. Er inde ca. kl 10",
                 "Kommer ind på kontoret omkring kl. 11",
                 "Godmorgen, jeg starter ud hjemme og kommer ind omkring kl 10",
-                "Kommer på kontoret omkring kl. 11",
                 "Godmorgen. Jeg starter hjemme, men forventer at være på kontoret kl 10. Vi ses ✌",
                 "Er inde 9:15",
                 "Jeg er på kontoret cirka 09.30",
@@ -127,6 +126,7 @@ public class TeamsRepository : ITeamsRepository
         
         if (employeeID.Equals("is_first_location_office"))
         {
+            // tilføjet til tes
             string[] messages =
             {
                 "0930 på kontoret"
@@ -136,6 +136,7 @@ public class TeamsRepository : ITeamsRepository
         
         if (employeeID.Equals("minute indicators"))
         {
+            // tilføjet til test
             string[] messages =
             {
                 "Vejret gjorde lige det helt lidt mere bøvlet her til morgen. Jeg er inde omkring kvart over 9...",
@@ -156,6 +157,7 @@ public class TeamsRepository : ITeamsRepository
         
         if (employeeID.Equals("startKeywords"))
         {
+            // tilføjet til test
             string[] messages =
             {
                 "Jeg starter lige hjemme og er på kontoret til frokost",
@@ -166,6 +168,7 @@ public class TeamsRepository : ITeamsRepository
         
         if (employeeID.Equals("stopKeywords"))
         {
+            // tilføjet til test
             string[] messages =
             {
                 "I morgen arbejder jeg hjemmefra og stopper 11.30",
