@@ -8,8 +8,6 @@ public class DecisionTree : Node
 {
     public override void Perform(SortedList<int, Location> _locations, SortedList<int, TimeOnly> _times)
     {
-        Console.WriteLine("in decision tree");
-        
         // Action 1
         var insertUndefined = new Action
         {

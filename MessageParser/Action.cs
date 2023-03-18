@@ -10,7 +10,11 @@ public class Action : Node
     public Func<SortedList<int, Location>, SortedList<int, TimeOnly>, bool> PerformAction { get; set; }
     public override void Perform(SortedList<int, Location> _locations, SortedList<int, TimeOnly> _times)
     {
-        Console.WriteLine($"\t- Action: {this.Title}");
+        if (Verbose)
+        {
+            Console.WriteLine($"\t- Action: {this.Title}");
+        }
+
         this.PerformAction(_locations, _times);
         GoTo.Perform(_locations, _times);
     }

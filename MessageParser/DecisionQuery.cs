@@ -14,7 +14,10 @@ public class DecisionQuery : Node
         bool result = this.Test(_locations, _times);
         string resultAsString = result ? "yes" : "no";
 
-        Console.WriteLine($"\t- Decision: {this.Title}? {resultAsString}");
+        if (Verbose)
+        {
+            Console.WriteLine($"\t- Decision: {this.Title}? {resultAsString}");
+        }
 
         if (result) this.Positive.Perform(_locations, _times);
         else this.Negative.Perform(_locations, _times);
