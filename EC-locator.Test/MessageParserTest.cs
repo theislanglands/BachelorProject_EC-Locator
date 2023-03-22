@@ -1,11 +1,15 @@
-using EC_locator.Core.Models;
+using Microsoft.Graph;
 using Parser;
+using Location = EC_locator.Core.Models.Location;
 
 namespace EC_locator.Test;
 
 [TestFixture]
 public class MessageParserTest
 {
+    // TODO: create mock - only possible to mock interfaces!
+    // Settings _settings = Mock<Settings>;
+    
     MessageParser mp;
 
     private Dictionary<string, Location[]> messageSamples;
@@ -13,7 +17,13 @@ public class MessageParserTest
     [SetUp]
     public void Setup()
     {
+        //_settings.WorkStartDefault = new TimeOnly(16, 0);
+        //_settings.WorkEndDefault = new TimeOnly(16, 0);
+        //_settings.DefaultLocation = new Location("office");
+        
         mp = new MessageParser();
+        
+        
         messageSamples = new Dictionary<string, Location[]>(); 
         AddHomeMessageSamples();
         AddHomeAndOfficeMessageSamples();

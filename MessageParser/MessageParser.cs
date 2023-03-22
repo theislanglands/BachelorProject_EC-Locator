@@ -1,4 +1,5 @@
-﻿using EC_locator.Core.Interfaces;
+﻿using EC_locator.Core;
+using EC_locator.Core.Interfaces;
 using EC_locator.Repositories;
 using Microsoft.Graph;
 using Microsoft.IdentityModel.Tokens;
@@ -8,13 +9,15 @@ namespace Parser;
 
 public class MessageParser : IMessageParser
 {
+    private Settings _settings;
+    
     // holding default values
-    private readonly TimeOnly _workStartDefault = new TimeOnly(9,0);
-    private readonly TimeOnly _workEndDefault = new TimeOnly(16,0);
-    private readonly Location _defaultLocation = new Location("office");
+    private TimeOnly _workStartDefault;
+    private TimeOnly _workEndDefault;
+    private readonly Location _defaultLocation;
     
     private static LocatorRepository? _locatorRepository;
-    private readonly bool _verbose = true;
+    private readonly bool _verbose;
  
     // holding identified tags and their index found in message
     private SortedList<int, Location>? _locations;
@@ -28,6 +31,11 @@ public class MessageParser : IMessageParser
     public MessageParser()
     {
        _locatorRepository= new LocatorRepository();
+       _settings = Settings.GetInstance();
+       _workStartDefault = _settings.WorkStartDefault;
+       _workEndDefault = _settings.WorkEndDefault;
+       _defaultLocation = _settings.DefaultLocation;
+       _verbose = _settings.Verbose;
     }
     
     public List<Location> GetLocations(string message)
@@ -55,12 +63,12 @@ public class MessageParser : IMessageParser
         }
         
         //ModifyTimesAndLocations();
-        ModifyTimesAndLocastionDecisionTree();
+        ModifyTimesAndLocationDecisionTree();
         AddTimesToLocations();
         return _locationsFound;
     }
 
-    private void ModifyTimesAndLocastionDecisionTree()
+    private void ModifyTimesAndLocationDecisionTree()
     {
         DecisionTree dt = new DecisionTree();
         dt.Perform(_locations, _times);

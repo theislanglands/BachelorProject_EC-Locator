@@ -1,16 +1,31 @@
+using EC_locator.Core.Interfaces;
+using EC_locator.Core.Models;
+
 namespace EC_locator.Core
 {
     
-}
+
 
 // singleton holding Azure settings
 public sealed class Settings
 {
+    // AZURE ACCESS
     public string? ClientId { get; set; }
     public string? ClientSecret { get; set; }
     public string? TenantId { get; set; }
     
-    public bool? Verbose { get; set; }
+    // MESSAGE ACCESS
+    public string? TeamId { get; set; }
+    public string? ChannelID { get; set; }
+
+    // PRINT IN TERMINAL
+    public bool Verbose { get; set; }
+    
+    // Default Values for location and times
+    public TimeOnly WorkStartDefault { get; set; }
+    public TimeOnly WorkEndDefault { get; set; }
+    public Location DefaultLocation { get; set; }
+    
     
     // Singleton instance
     private static Settings _instance;
@@ -24,11 +39,6 @@ public sealed class Settings
         
         return _instance;
     }
+}
 
-    public void initForAppAuth(string ClientId, string ClientSecret, string TenantId)
-    {
-        this.ClientId = ClientId;
-        this.ClientSecret = ClientSecret;
-        this.TenantId = TenantId;
-    }
 }

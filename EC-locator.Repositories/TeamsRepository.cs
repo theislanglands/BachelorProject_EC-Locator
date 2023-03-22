@@ -6,6 +6,13 @@ using EC_locator.Core.Interfaces;
 
 public class TeamsRepository : ITeamsRepository
 {
+    private GraphHelper graphHelper;
+
+    public TeamsRepository()
+    {
+        graphHelper = new GraphHelper();
+    }
+
     public async Task ListUsersAsync()
     {
         try
@@ -39,20 +46,19 @@ public class TeamsRepository : ITeamsRepository
         try
         {
             var messagePage = await GraphHelper.getMessagesAsync();
-
+    
             // Output message details
             foreach (var message in messagePage.CurrentPage)
             {
-                Console.WriteLine($"User: {message.Body.Content ?? "NO CONTENT"}");
+                //Console.WriteLine($"User: {message.Body.Content ?? "NO CONTENT"}");
                 Console.WriteLine($"  ID: {message.Id}");
             }
-
-            // If NextPageRequest is not null, there are more users
-            // available on the server
-            // Access the next page like:
-            // userPage.NextPageRequest.GetAsync();
+            
+            // If NextPageRequest is not null, there are more messages available on the server
+            
+            
+            messagePage.NextPageRequest.GetAsync();
             var moreAvailable = messagePage.NextPageRequest != null;
-
             Console.WriteLine($"\nMore messages available? {moreAvailable}");
         }
         catch (Exception ex)
@@ -65,7 +71,6 @@ public class TeamsRepository : ITeamsRepository
     {
         if (employeeID.Equals("sample1"))
         {
-            // hjemmefra - tilføjet til test
             string[] messages =
             {
                 "Jeg er på hjemmefra i dag",
