@@ -10,6 +10,8 @@ public sealed class Settings
     public string? ClientSecret { get; set; }
     public string? TenantId { get; set; }
     
+    public bool? Verbose { get; set; }
+    
     // Singleton instance
     private static Settings _instance;
     

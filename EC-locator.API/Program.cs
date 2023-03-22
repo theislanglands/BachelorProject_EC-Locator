@@ -13,40 +13,47 @@ using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
 // TODO update interfaces
 MessageParser messageParser = new MessageParser();
 TeamsRepository tr = new TeamsRepository();
+Settings _settings = Settings.GetInstance();
 
 
-string[] messages = tr.GetMessages("sample3", new DateOnly());
+// TestMessageParser();
 
-foreach (string message in messages)
+void TestMessageParser()
 {
-    Console.WriteLine($"\n{message}");
-    
-    var locations = messageParser.GetLocations(message);
-    
-    foreach (var location in locations)
-    {
-        Console.WriteLine(location);
-    }
-}
+    string[] messages = tr.GetMessages("sample3", new DateOnly());
 
-Environment.Exit(1);
+    foreach (string message in messages)
+    {
+        Console.WriteLine($"\n{message}");
+
+        var locations = messageParser.GetLocations(message);
+
+        foreach (var location in locations)
+        {
+            Console.WriteLine(location);
+        }
+    }
+
+    Environment.Exit(1);
+}
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-// initialize Settings singleton - used for Microsoft Graph Access
+// initialize Settings singleton for global access to enviroment variables
 initSettings();
-
-
-/*
+Console.WriteLine($"verbose settings: {_settings.Verbose}");
 // TESTING OF TEAMS REPO
 
-await tr.ListUsersAsync();
+// await tr.ListUsersAsync();
 await TestGettingUsersFromTeamsRepo();
+
+Environment.Exit(1);
+
 
 // TODO: Problemer med API
 await tr.ListMessagesAsync();
-*/
+
 
 async Task TestGettingUsersFromTeamsRepo()
 {
@@ -68,8 +75,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -89,8 +94,8 @@ app.Run();
 
 void initSettings()
 {
-    var clientId = builder.Configuration.GetSection("AzureAd")["ClientId"];
-    var tenantId = builder.Configuration.GetSection("AzureAd")["TenantId"];
-    var clientSecret = builder.Configuration.GetSection("AzureAd")["ClientSecret"];
-    Settings.GetInstance().initForAppAuth(clientId, clientSecret, tenantId);
+    Settings.GetInstance().ClientId = builder.Configuration.GetSection("AzureAd")["ClientId"];
+    Settings.GetInstance().TenantId = builder.Configuration.GetSection("AzureAd")["TenantId"];
+    Settings.GetInstance().ClientSecret = builder.Configuration.GetSection("AzureAd")["ClientSecret"];
+    Settings.GetInstance().Verbose = true;
 }
