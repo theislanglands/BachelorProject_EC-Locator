@@ -378,6 +378,9 @@ public class MessageParserTest
     {
         var locations = mp.GetLocations(message.Key);
 
+        Assert.That(locations.Count, Is.EqualTo(message.Value.Length), 
+            "number of locations found not correct");
+        
         for (int i = 0; i < message.Value.Length; i++)
         {
             Assert.That(locations[i].Place, Is.EqualTo(message.Value[i].Place),
@@ -387,5 +390,6 @@ public class MessageParserTest
             Assert.That(locations[i].End, Is.EqualTo(message.Value[i].End),
                 $"wrong end time identified in message: {message.Key}");
         }
+        
     }
 }

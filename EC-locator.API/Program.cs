@@ -14,8 +14,6 @@ using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
 MessageParser messageParser = new MessageParser();
 TeamsRepository tr = new TeamsRepository();
 
-//messageParser.IdentifyNumericTime("prut17fis11:45hej17.00jf9wer600f12");
-// Environment.Exit(1);
 
 string[] messages = tr.GetMessages("sample3", new DateOnly());
 
