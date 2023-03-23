@@ -48,7 +48,7 @@ class GraphHelper
         EnsureGraphForAppOnlyAuth();
         _ = _graphClient ??
             throw new System.NullReferenceException("Graph has not been initialized ");
-
+        
         return _graphClient.Users
             .Request()
             .Select(u => new

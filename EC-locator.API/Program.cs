@@ -18,16 +18,38 @@ using Location = EC_locator.Core.Models.Location;
 
 // initialize Settings singleton for global access to environment variables
 var builder = WebApplication.CreateBuilder(args);
-
-// Initializing global settings
 Settings _settings = Settings.GetInstance();
 initSettings();
+// Add services to the container.
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
+
+// Initializing global settings
 
 
 MessageParser messageParser = new MessageParser();
 TeamsRepository tr = new TeamsRepository();
 
-TestMessageParser();
+// await TestGettingUsersFromTeamsRepo();
+// TestMessageParser();
+
 
 void TestMessageParser()
 {
@@ -53,13 +75,11 @@ void TestMessageParser()
 
 // TESTING OF TEAMS REPO
 
-//await TestGettingUsersFromTeamsRepo();
-
 
 async Task TestGettingUsersFromTeamsRepo()
 {
-    ArrayList users = await tr.GetUsersAsync();
-    foreach (Microsoft.Graph.User user in users)
+    List<User> users = await tr.GetUsersAsync();
+    foreach (User user in users)
     {
         Console.WriteLine($"User: {user.DisplayName ?? "NO NAME"}");
         Console.WriteLine($"  ID: {user.Id}");
@@ -68,37 +88,12 @@ async Task TestGettingUsersFromTeamsRepo()
     Environment.Exit(1);
 }
 
-// Add services to the container.
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 // TODO: Problemer med API
-await tr.ListMessagesAsync();
-System.Environment.Exit(1);
+// await tr.ListMessagesAsync();
 
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
 
 
 

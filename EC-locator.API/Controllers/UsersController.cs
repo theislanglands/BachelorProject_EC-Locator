@@ -1,0 +1,35 @@
+using System.Text;
+using EC_locator.Core.Interfaces;
+using EC_locator.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph;
+using Microsoft.Identity.Web.Resource;
+using System.Text.Json;
+using EC_locator.Core.Models;
+
+namespace API.Controllers;
+
+[ApiController]
+[Route("/[controller]")]
+
+// [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+
+public class UsersController : ControllerBase
+{
+    // TODO: use ITeamsrepository interface instead 
+    private TeamsRepository _teamsRepository = new TeamsRepository();
+    
+    [HttpGet()]
+    public async Task<string> GetUsers()
+    {
+        var employees = new List<Employee>();
+        var users = await _teamsRepository.GetUsersAsync();
+        foreach (var user in users)
+        {
+            employees.Add(new Employee(user.DisplayName, user.Id) );
+        }
+
+        return JsonSerializer.Serialize(employees);
+    }
+}
