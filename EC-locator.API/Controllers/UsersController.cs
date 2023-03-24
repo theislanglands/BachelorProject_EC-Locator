@@ -13,16 +13,15 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("/[controller]")]
-[EnableCors("MyPolicy")]
-// [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+[EnableCors]
 
 public class UsersController : ControllerBase
 {
     // TODO: use ITeamsrepository interface instead 
     private TeamsRepository _teamsRepository = new TeamsRepository();
     
-    [EnableCors]
-    [HttpGet()]
+
+    [HttpGet]
     public async Task<string> GetUsers()
     {
         var employees = new List<Employee>();

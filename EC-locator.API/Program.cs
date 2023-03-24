@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
-using EC_locator.Core.Models;
 using Location = EC_locator.Core.Models.Location;
 
 
