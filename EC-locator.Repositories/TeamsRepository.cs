@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using EC_locator.Core;
 using Microsoft.Graph;
 
 namespace EC_locator.Repositories;
@@ -8,6 +9,7 @@ using EC_locator.Core.Interfaces;
 public class TeamsRepository : ITeamsRepository
 {
     private GraphHelper graphHelper;
+    Settings _settings = Settings.GetInstance();
 
     public TeamsRepository()
     {
@@ -27,26 +29,27 @@ public class TeamsRepository : ITeamsRepository
         {
             var userPage = await GraphHelper.GetUsersAsync();
 
-            // Output each users's details
+            // adding fetched users to list
             foreach (var user in userPage.CurrentPage)
             {
                 users.Add(user);
-                // Console.WriteLine($"User: {user.DisplayName ?? "NO NAME"}");
-                // Console.WriteLine($"  ID: {user.Id}");
-                // Console.WriteLine($"  Email: {user.Mail ?? "NO EMAIL"}");
             }
 
-            // If NextPageRequest is not null, there are more users
-            // available on the server
-            // Access the next page like:
-            // userPage.NextPageRequest.GetAsync();
+            // If NextPageRequest is not null, there are more user available on the server
+            // Access the next page: userPage.NextPageRequest.GetAsync();
             var moreAvailable = userPage.NextPageRequest != null;
+            if (_settings.Verbose)
+            {
+                Console.WriteLine($"\nMore users available? {moreAvailable}");
+            }
 
-            Console.WriteLine($"\nMore users available? {moreAvailable}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error getting users: {ex.Message}");
+            if (_settings.Verbose)
+            {
+                Console.WriteLine($"Error getting users: {ex.Message}");
+            }
         }
 
         return users;

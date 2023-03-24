@@ -20,7 +20,6 @@ public class UsersController : ControllerBase
     // TODO: use ITeamsrepository interface instead 
     private TeamsRepository _teamsRepository = new TeamsRepository();
     
-
     [HttpGet]
     public async Task<string> GetUsers()
     {

@@ -53,6 +53,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.Run();
 
+// TODO use interfaces
 MessageParser messageParser = new MessageParser();
 TeamsRepository tr = new TeamsRepository();
 
