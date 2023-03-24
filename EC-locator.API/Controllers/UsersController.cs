@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph;
 using Microsoft.Identity.Web.Resource;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using EC_locator.Core.Models;
 using Microsoft.AspNetCore.Cors;
 
@@ -17,6 +18,7 @@ namespace API.Controllers;
 
 public class UsersController : ControllerBase
 {
+    
     // TODO: use ITeamsrepository interface instead 
     private TeamsRepository _teamsRepository = new TeamsRepository();
     
@@ -29,7 +31,14 @@ public class UsersController : ControllerBase
         {
             employees.Add(new Employee(user.DisplayName, user.Id) );
         }
-
-        return JsonSerializer.Serialize(employees);
+        
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+        
+        return JsonSerializer.Serialize(employees, options);
     }
 }

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using EC_locator.Core;
 using EC_locator.Core.Models;
 using EC_locator.Repositories;
@@ -48,8 +49,24 @@ public class LocationController
         }
         
         foundLocation = FindLocation(locations, currentTime);
+        
+        // TODO: format JSON with, place, message and time identified
+        // TODO: connect to frontend
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+        
+        LocationReturn locationReturn = new LocationReturn
+        {
+            Location = foundLocation.Place,
+            LocationEndTime = foundLocation.End.Value.ToString(),
+            TeamMessage = latestMessage
+        };
 
-        return foundLocation.Place;
+        return JsonSerializer.Serialize(locationReturn, options);
     }
 
     private Location FindLocation(List<Location> locations, TimeOnly time)
@@ -94,6 +111,14 @@ public class LocationController
     private string SelectRandomMessage(string[] messages)
     {
         int randomIndex = new Random().Next(0, messages.Length);
-        return "Random message: " + messages[randomIndex];
+        return messages[randomIndex];
+    }
+
+    class LocationReturn
+    {
+        public string Location { get; set; }
+        public string LocationEndTime { get; set; }
+        public string TeamMessage { get; set; }
+        public string CalenderInfo { get; set; }
     }
 }
