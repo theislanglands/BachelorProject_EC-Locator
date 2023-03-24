@@ -61,7 +61,7 @@ public class LocationController
         
         LocationReturn locationReturn = new LocationReturn
         {
-            Location = foundLocation.Place,
+            Place = foundLocation.Place,
             LocationEndTime = foundLocation.End.Value.ToString(),
             TeamMessage = latestMessage
         };
@@ -116,7 +116,7 @@ public class LocationController
 
     class LocationReturn
     {
-        public string Location { get; set; }
+        public string Place { get; set; }
         public string LocationEndTime { get; set; }
         public string TeamMessage { get; set; }
         public string CalenderInfo { get; set; }
