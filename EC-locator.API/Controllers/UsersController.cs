@@ -7,12 +7,13 @@ using Microsoft.Graph;
 using Microsoft.Identity.Web.Resource;
 using System.Text.Json;
 using EC_locator.Core.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers;
 
 [ApiController]
 [Route("/[controller]")]
-
+[EnableCors("MyPolicy")]
 // [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 
 public class UsersController : ControllerBase
@@ -20,6 +21,7 @@ public class UsersController : ControllerBase
     // TODO: use ITeamsrepository interface instead 
     private TeamsRepository _teamsRepository = new TeamsRepository();
     
+    [EnableCors]
     [HttpGet()]
     public async Task<string> GetUsers()
     {

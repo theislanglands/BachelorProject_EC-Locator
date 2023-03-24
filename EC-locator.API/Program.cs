@@ -12,17 +12,28 @@ using EC_locator.Core.Models;
 using Location = EC_locator.Core.Models.Location;
 
 
-// testing message parser
 // TODO update interfaces
 
-
-// initialize Settings singleton for global access to environment variables
 var builder = WebApplication.CreateBuilder(args);
-Settings _settings = Settings.GetInstance();
+
+// set global environment variables
 initSettings();
+
 // Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "CorsPolicy",
+        policy =>
+        {
+            policy.WithOrigins(
+                    "http://localhost:5174")
+                .WithMethods("GET", "POST", "OPTIONS");
+        });
+});
+
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -30,6 +41,8 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseCors("CorsPolicy");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -41,16 +54,16 @@ app.UseAuthorization();
 app.MapControllers();
 app.Run();
 
-// Initializing global settings
-
-
 MessageParser messageParser = new MessageParser();
 TeamsRepository tr = new TeamsRepository();
 
+// UNCOMMENT FOR TEST
 // await TestGettingUsersFromTeamsRepo();
 // TestMessageParser();
+// TODO: Problemer med API
+// await tr.ListMessagesAsync();
 
-
+// TESTING MESSAGE PARSER
 void TestMessageParser()
 {
     string[] messages = tr.GetMessages("sample3", new DateOnly());
@@ -70,12 +83,7 @@ void TestMessageParser()
     Environment.Exit(1);
 }
 
-
-
-
 // TESTING OF TEAMS REPO
-
-
 async Task TestGettingUsersFromTeamsRepo()
 {
     List<User> users = await tr.GetUsersAsync();
@@ -87,15 +95,6 @@ async Task TestGettingUsersFromTeamsRepo()
     }
     Environment.Exit(1);
 }
-
-
-
-// TODO: Problemer med API
-// await tr.ListMessagesAsync();
-
-
-
-
 
 void initSettings()
 {

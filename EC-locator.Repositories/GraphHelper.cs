@@ -55,8 +55,7 @@ class GraphHelper
             {
                 // Only request specific properties
                 u.DisplayName,
-                u.Id,
-                u.Mail
+                u.Id
             })
             // Get at most 5 results
             .Top(5)
