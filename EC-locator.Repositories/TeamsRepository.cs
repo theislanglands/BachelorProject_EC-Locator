@@ -15,13 +15,7 @@ public class TeamsRepository : ITeamsRepository
     {
         graphHelper = new GraphHelper();
     }
-
-    public User[] GetUsers()
-    {
-        
-        return null;
-    }
-
+    
     public async Task<List<User>> GetUsersAsync()
     {
         List<User> users = new();

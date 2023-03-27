@@ -50,8 +50,6 @@ public class LocationController
         
         foundLocation = FindLocation(locations, currentTime);
         
-        // TODO: format JSON with, place, message and time identified
-        // TODO: connect to frontend
         var options = new JsonSerializerOptions
         {
             WriteIndented = true,

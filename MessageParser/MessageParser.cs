@@ -20,8 +20,8 @@ public class MessageParser : IMessageParser
     private readonly bool _verbose;
  
     // holding identified tags and their index found in message
-    private SortedList<int, Location>? _locations;
-    private SortedList<int, TimeOnly>? _times;
+    private SortedList<int, Location>? _locationTags;
+    private SortedList<int, TimeOnly>? _timeTags;
     
     // interpreted locations found in message
     private List<Location> _locationsFound;
@@ -41,26 +41,11 @@ public class MessageParser : IMessageParser
     public List<Location> GetLocations(string message)
     {
         this.message = message;
-        
         _locationsFound = new List<Location>();
         
-        _locations = IdentifyLocations(message);
-        if (_verbose)
-        {
-            foreach (var location in _locations)
-            {
-                Console.WriteLine($"location found {location.Value.Place} at index {location.Key}");
-            }
-        }
-
-        _times = IdentifyTimes(message);
-        if (_verbose)
-        {
-            foreach (var time in _times)
-            {
-                Console.WriteLine($"time found {time.Value} at index {time.Key}");
-            }
-        }
+        // Identifying location and times tags in message
+        _locationTags = IdentifyLocations(message);
+        _timeTags = IdentifyTimes(message);
         
         //ModifyTimesAndLocations();
         ModifyTimesAndLocationDecisionTree();
@@ -71,25 +56,25 @@ public class MessageParser : IMessageParser
     private void ModifyTimesAndLocationDecisionTree()
     {
         DecisionTree dt = new DecisionTree();
-        dt.Perform(_locations, _times);
+        dt.Perform(_locationTags, _timeTags);
     }
 
     private void ModifyTimesAndLocations()
     {
         
         // checking if no locations are found  - DONE
-        if (_locations.Count == 0)
+        if (_locationTags.Count == 0)
         {
             if (_verbose)
             {
                 Console.WriteLine("unable to decide - no locations identified - adding undefined at 0");
             }
             
-            _locations.Add(0, new Location("undefined"));
+            _locationTags.Add(0, new Location("undefined"));
         }
 
         // checking if location contains "ill" then return Location ill and all day - DONE
-        foreach (var location in _locations)
+        foreach (var location in _locationTags)
         {
             if (location.Value.Place.Equals("ill"))
             {
@@ -98,8 +83,8 @@ public class MessageParser : IMessageParser
                     Console.WriteLine("Ill detected - deleting all other location");
                 }
                 
-                _locations.Clear();
-                _locations.Add(0, new Location(_workStartDefault, _workEndDefault, "ill"));
+                _locationTags.Clear();
+                _locationTags.Add(0, new Location(_workStartDefault, _workEndDefault, "ill"));
                 break;
                 //_locationsFound.Add(new Location(_workStartDefault, _workEndDefault, "ill"));
                 // return;
@@ -107,17 +92,17 @@ public class MessageParser : IMessageParser
         }
         
         // is no time indication present and more than 1 location
-        if (_times.IsNullOrEmpty())
+        if (_timeTags.IsNullOrEmpty())
         {
-            if (_locations.Count > 1)
+            if (_locationTags.Count > 1)
             {
                 if (_verbose)
                 {
                     Console.WriteLine("no time indication and more than one location found - unable to define");
                 }
                 
-                _locations.Clear();
-                _locations.Add(0, new Location("undefined"));
+                _locationTags.Clear();
+                _locationTags.Add(0, new Location("undefined"));
                 
                 //_locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
                 // return;
@@ -126,14 +111,14 @@ public class MessageParser : IMessageParser
         
         // is the first index recorded a time tag -> then insert office as location at 0
         
-        if (_times.Count > 0 && _locations.Keys[0] > _times.Keys[0])
+        if (_timeTags.Count > 0 && _locationTags.Keys[0] > _timeTags.Keys[0])
         {
             if (_verbose)
             {
                 Console.WriteLine("starts with Times keys without location");
             }
 
-            if (_locations.Values[0].Place.Equals("office"))
+            if (_locationTags.Values[0].Place.Equals("office"))
             {
                 if (_verbose)
                 {
@@ -141,7 +126,7 @@ public class MessageParser : IMessageParser
                 }
                 
                 // insert home before 
-                _locations.Add(0, new Location("home"));
+                _locationTags.Add(0, new Location("home"));
                 /*
                 _locations.Values[0].Start = _times.Values[0];
                 _locations.Values[0].End = _workEndDefault;
@@ -156,19 +141,19 @@ public class MessageParser : IMessageParser
                     Console.WriteLine("- - adding default location");
                 }
                 // inserting default location (office) at index 0
-                _locations.Add(0, _defaultLocation);
+                _locationTags.Add(0, _defaultLocation);
             }
         }
 
         // is there one location and one time recorded => insert home at 0
-        if (_locations.Count == 1 && _times.Count == 1)
+        if (_locationTags.Count == 1 && _timeTags.Count == 1)
         {
             if (_verbose)
             {
                 Console.WriteLine("one location and one time");
             }
             
-            if (!_locations.Values[0].Place.Equals("home"))
+            if (!_locationTags.Values[0].Place.Equals("home"))
             {
                 {
                     if (_verbose)
@@ -176,13 +161,13 @@ public class MessageParser : IMessageParser
                         Console.WriteLine(" - adding home at beginning");
                     }
 
-                    _locations.Add(0, new Location("home"));
+                    _locationTags.Add(0, new Location("home"));
                 }
             }
         }
         
         // checking if number of locations tags 2 higher than number of times tags?
-        if (_locations.Count - 1 > _times.Count)
+        if (_locationTags.Count - 1 > _timeTags.Count)
         {
             if (_verbose)
             {
@@ -190,19 +175,19 @@ public class MessageParser : IMessageParser
             }
             // check if a location is a meeting
             int locationToRemove = -1;
-            foreach (var location in _locations)
+            foreach (var location in _locationTags)
             {
                 if (location.Value.Place.Equals("meeting"))
                 {
-                    for (int i = 0; i < _times.Count; i++)  
+                    for (int i = 0; i < _timeTags.Count; i++)  
                     {   
                         // identifying to consecutive locations
-                        if (_locations.Keys[i] < _times.Keys[i] && _locations.Keys[i + 1] < _times.Keys[i])
+                        if (_locationTags.Keys[i] < _timeTags.Keys[i] && _locationTags.Keys[i + 1] < _timeTags.Keys[i])
                         {
                             // either location i or i+1 is a meeting - remove the one that's not.
                             for (int j = i; j < i + 2; j++)
                             {
-                                if (!_locations.Values[j].Place.Equals("meeting"))
+                                if (!_locationTags.Values[j].Place.Equals("meeting"))
                                 {
                                     // removing the location
                                     locationToRemove = j;
@@ -220,8 +205,8 @@ public class MessageParser : IMessageParser
                     Console.WriteLine("not able to remove unnecessary location found - unable to define");
                 }
                 
-                _locations.Clear();
-                _locations.Add(0, new Location("undefined"));
+                _locationTags.Clear();
+                _locationTags.Add(0, new Location("undefined"));
                 //_locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
                 //return;
             }
@@ -230,10 +215,8 @@ public class MessageParser : IMessageParser
             {
                 Console.WriteLine("moving location not a meeting");
             }
-            _locations.Remove(_locations.Keys[locationToRemove]);
+            _locationTags.Remove(_locationTags.Keys[locationToRemove]);
         }
-        
-        AddTimesToLocations();
     }
 
     private void AddTimesToLocations()
@@ -244,49 +227,49 @@ public class MessageParser : IMessageParser
             Console.WriteLine("running times algorithm");
         }
 
-        for (int i = 0; i < _locations.Count; i++)
+        for (int i = 0; i < _locationTags.Count; i++)
         {
             if (i == 0)
             {
                 // if first location haven't allready a start time assigned => assign default
-                if (_locations.Values[i].Start == null)
+                if (_locationTags.Values[i].Start == null)
                 {
-                    _locations.Values[i].Start = _workStartDefault;
+                    _locationTags.Values[i].Start = _workStartDefault;
                 }
                 
                 // check if first location has a start keyword
                 if (HasStartIndicator())
                 {
-                    _locations.Values[i].Start = _times.Values[0];
-                    _locations.Values[i].End = _times.Values[1];
+                    _locationTags.Values[i].Start = _timeTags.Values[0];
+                    _locationTags.Values[i].End = _timeTags.Values[1];
                 }
             }
             else
             {
-                _locations.Values[i].Start = _locationsFound[^1].End;
+                _locationTags.Values[i].Start = _locationsFound[^1].End;
             }
 
             // SETTING END TIMES
-            if (_locations.Values[i].End == null)
+            if (_locationTags.Values[i].End == null)
             {
-                if (i == _locations.Count - 1)
+                if (i == _locationTags.Count - 1)
                 {
                     if (HasStopIndicator())
                     {
-                        _locations.Values[i].End = _times.Values[^1];
+                        _locationTags.Values[i].End = _timeTags.Values[^1];
 
                     }
                     else
                     {
-                        _locations.Values[i].End = _workEndDefault;
+                        _locationTags.Values[i].End = _workEndDefault;
                     }
                 }
                 else
                 {
-                    _locations.Values[i].End = _times.Values[i];
+                    _locationTags.Values[i].End = _timeTags.Values[i];
                 }
             }
-            _locationsFound.Add(_locations.Values[i]);
+            _locationsFound.Add(_locationTags.Values[i]);
         }
     }
 
@@ -294,7 +277,7 @@ public class MessageParser : IMessageParser
     {
         foreach (var stopIndicator in _locatorRepository.GetStopIndicatorKeywords())
         {
-            if (_times.Count > 0 && message[.._times.Keys[^1]].Contains(stopIndicator))
+            if (_timeTags.Count > 0 && message[.._timeTags.Keys[^1]].Contains(stopIndicator))
             {
                 return true;
             }
@@ -306,42 +289,13 @@ public class MessageParser : IMessageParser
     {
         foreach (var startIndicator in _locatorRepository.GetStartIndicatorKeywords())
         {
-            if (_times.Count > 0 && message[.._times.Keys[0]].Contains(startIndicator))
+            if (_timeTags.Count > 0 && message[.._timeTags.Keys[0]].Contains(startIndicator))
             {
-                return (_locations.Count.Equals(_times.Count));
+                return (_locationTags.Count.Equals(_timeTags.Count));
             }
         }
 
         return false;
-
-        /*
-                // tjek at der mellem den indec for start og times.Keys-0 ikke findes en lokation - hvis det første man møder er en lokation
-                int indexOfStartIndicator = message[.._times.Keys[0]].IndexOf(startIndicator);
-    
-                for (int j = indexOfStartIndicator+1; j < message.Length; j++)
-    
-                {
-                    if (_times.Keys.Contains(j))
-                    {
-                        if (_verbose)
-                        {
-                            Console.WriteLine(
-                                $"start indicator \"{startIndicator}\" found before time - {_times.Values[0]} - setting start time of first location");
-                        }
-                        return true;
-                    }
-    
-                    if (_locations.Keys.Contains(j))
-                    {
-                        if (_verbose)
-                        {
-                            Console.WriteLine(
-                                $"start indicator \"{startIndicator}\" found before time - {_times.Values[0]} - ignores because followed by location");
-                        }
-                        return false;
-                    }
-                }
-                */
     }
 
 
@@ -428,6 +382,13 @@ public class MessageParser : IMessageParser
         {
             identifiedTimes.Add(item.Key, item.Value);
         }
+        if (_verbose)
+        {
+            foreach (var time in identifiedTimes)
+            {
+                Console.WriteLine($"time found {time.Value} at index {time.Key}");
+            }
+        }
             
         return identifiedTimes;
     }
@@ -499,7 +460,15 @@ public class MessageParser : IMessageParser
             location.Place = loc.Key;
             listOfLocations.Add(loc.Value, location);
         }
-
+        
+        if (_verbose)
+        {
+            foreach (var location in listOfLocations)
+            {
+                Console.WriteLine($"location found {location.Value.Place} at index {location.Key}");
+            }
+        }
+        
         return listOfLocations;
     }
 }
