@@ -15,7 +15,6 @@ namespace API.Controllers;
 [ApiController]
 [Route("/[controller]")]
 [EnableCors]
-
 public class UsersController : ControllerBase
 {
     

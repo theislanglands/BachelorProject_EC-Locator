@@ -4,7 +4,7 @@ namespace Parser.Decisions;
 
 public class FinalResult : Node
 {
-    public override void Perform(SortedList<int, Location> _locations, SortedList<int, TimeOnly> _times)
+    public override void Perform(SortedList<int, Location> locations, SortedList<int, TimeOnly> times)
     {
     
     }

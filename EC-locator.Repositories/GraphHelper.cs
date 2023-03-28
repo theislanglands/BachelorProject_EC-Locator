@@ -58,7 +58,7 @@ class GraphHelper
                 u.Id
             })
             // Get at most 5 results
-            .Top(5)
+            //.Top(5)
             // Sort by display name
             .OrderBy("DisplayName")
             .GetAsync();

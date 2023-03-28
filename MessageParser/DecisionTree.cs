@@ -6,16 +6,16 @@ namespace Parser;
 
 public class DecisionTree : Node
 {
-    public override void Perform(SortedList<int, Location> _locations, SortedList<int, TimeOnly> _times)
+    public override void Perform(SortedList<int, Location> locations, SortedList<int, TimeOnly> times)
     {
         // Action 1
         var insertUndefined = new Action
         {
             Title = "Inserting Undefined at location 0",
-            PerformAction = (_locations, _times) =>
+            PerformAction = (locations, times) =>
             {
-                _locations.Clear();
-                _locations.Add(0, new Location("undefined"));
+                locations.Clear();
+                locations.Add(0, new Location("undefined"));
                 return true;
             },
             
@@ -26,22 +26,22 @@ public class DecisionTree : Node
         var deleteLocationNotMeeting = new Action
         {
             Title = "Deleting location not a meeting",
-            PerformAction = (_locations, _times) =>
+            PerformAction = (locations, times) =>
             {
                 int locationToRemove = -1;
-                foreach (var location in _locations)
+                foreach (var location in locations)
                 {
                     // identifying to consecutive locations
-                    for (int i = 0; i < _times.Count; i++)
+                    for (int i = 0; i < times.Count; i++)
                     {
-                        if (_locations.Keys[i] < _times.Keys[i] && _locations.Keys[i + 1] < _times.Keys[i])
+                        if (locations.Keys[i] < times.Keys[i] && locations.Keys[i + 1] < times.Keys[i])
                         {
                             // check if one af the locations is a meeting and remove the one that's not.
                             for (int j = i; j < i + 2; j++)
                             {
-                                if (!_locations.Values[j].Place.Equals("meeting"))
+                                if (!locations.Values[j].Place.Equals("meeting"))
                                 {
-                                    _locations.Remove(_locations.Keys[j]);
+                                    locations.Remove(locations.Keys[j]);
                                     return true;
                                 }
                             }
@@ -73,21 +73,21 @@ public class DecisionTree : Node
         var isMeetingPresent = new DecisionQuery
         {
             Title = "Is meeting present as one of the additional locations",
-            Test = (_locations, _times) =>
+            Test = (locations, times) =>
             {
-                foreach (var location in _locations)
+                foreach (var location in locations)
                 {
                     if (location.Value.Place.Equals("meeting"))
                     {
-                        for (int i = 0; i < _times.Count; i++)
+                        for (int i = 0; i < times.Count; i++)
                         {
                             // identifying to consecutive locations
-                            if (_locations.Keys[i] < _times.Keys[i] && _locations.Keys[i + 1] < _times.Keys[i])
+                            if (locations.Keys[i] < times.Keys[i] && locations.Keys[i + 1] < times.Keys[i])
                             {
                                 // either location i or i+1 is a meeting - remove the one that's not.
                                 for (int j = i; j < i + 2; j++)
                                 {
-                                    if (!_locations.Values[j].Place.Equals("meeting"))
+                                    if (!locations.Values[j].Place.Equals("meeting"))
                                     {
                                         return true;
                                     }
@@ -108,9 +108,9 @@ public class DecisionTree : Node
         var isLocationCountTwoHigherThanTime = new DecisionQuery
         {
             Title = "Is location count two higher than time count",
-            Test = (_locations, _times) =>
+            Test = (locations, times) =>
             {
-                if (_locations.Count - 1 > _times.Count)
+                if (locations.Count - 1 > times.Count)
                 {
                     return true;
                 }
@@ -126,9 +126,9 @@ public class DecisionTree : Node
         var insertHomeA5= new Action
         {
             Title = "Inserting home at location 0",
-            PerformAction = (_locations, _times) =>
+            PerformAction = (locations, times) =>
             {
-                _locations.Add(0, new Location("home"));
+                locations.Add(0, new Location("home"));
                 return true;
             },
             
@@ -140,9 +140,9 @@ public class DecisionTree : Node
         var isFirstLocationNotHome = new DecisionQuery
         {
             Title = "Is first location different from home",
-            Test = (_locations, _times) =>
+            Test = (locations, times) =>
             {
-                if (!_locations.Values[0].Place.Equals("home"))
+                if (!locations.Values[0].Place.Equals("home"))
                 {
                     return true;
                 }
@@ -158,10 +158,10 @@ public class DecisionTree : Node
         var oneLocationOneTime = new DecisionQuery
         {
             Title = "Is there one location and one time",
-            Test = (_locations, _times) =>
+            Test = (locations, times) =>
             {
                 // is no time indication present and more than 1 location
-                if (_locations.Count == 1 && _times.Count == 1)
+                if (locations.Count == 1 && times.Count == 1)
                 {
                     return true;
                 }
@@ -177,9 +177,9 @@ public class DecisionTree : Node
         var insertHome = new Action
         {
             Title = "Inserting home at location 0",
-            PerformAction = (_locations, _times) =>
+            PerformAction = (locations, times) =>
             {
-                _locations.Add(0, new Location("home"));
+                locations.Add(0, new Location("home"));
                 return true;
             },
             
@@ -190,9 +190,9 @@ public class DecisionTree : Node
         var insertOffice = new Action
         {
             Title = "Inserting office at location 0",
-            PerformAction = (_locations, _times) =>
+            PerformAction = (locations, times) =>
             {
-                _locations.Add(0, new Location("office"));
+                locations.Add(0, new Location("office"));
                 return true;
             },
             
@@ -203,10 +203,10 @@ public class DecisionTree : Node
         var isFirstLocationOffice = new DecisionQuery
         {
             Title = "Is the first location=office",
-            Test = (_locations, _times) =>
+            Test = (locations, times) =>
             {
                 // is no time indication present and more than 1 location
-                if (_locations.Values[0].Place.Equals("office"))
+                if (locations.Values[0].Place.Equals("office"))
                 {
                     return true;
                 }
@@ -223,10 +223,10 @@ public class DecisionTree : Node
         var isFirstIndexTimeKeyword = new DecisionQuery
         {
             Title = "Is the first index found a time keyword",
-            Test = (_locations, _times) =>
+            Test = (locations, times) =>
             {
                 // is no time indication present and more than 1 location
-                if (_times.Count > 0 && _locations.Keys[0] > _times.Keys[0])
+                if (times.Count > 0 && locations.Keys[0] > times.Keys[0])
                 {
                     return true;
                 }
@@ -242,12 +242,12 @@ public class DecisionTree : Node
         var noTimesAndMultipleLocations = new DecisionQuery
         {
             Title = "Does message contain multiple Locations and no Times",
-            Test = (_locations, _times) =>
+            Test = (locations, times) =>
             {
                 // is no time indication present and more than 1 location
-                if (_times.IsNullOrEmpty())
+                if (times.IsNullOrEmpty())
                 {
-                    if (_locations.Count > 1)
+                    if (locations.Count > 1)
                     {
                         return true;
                     }
@@ -265,11 +265,11 @@ public class DecisionTree : Node
         var insertIll = new Action
         {
             Title = "Inserting Ill at location 0 and deleting other locations",
-            PerformAction = (_locations, _times) =>
+            PerformAction = (locations, times) =>
             {
                 Console.WriteLine("in action query");
-                _locations.Clear();
-                _locations.Add(0, new Location("ill"));
+                locations.Clear();
+                locations.Add(0, new Location("ill"));
                 return true;
             },
             
@@ -280,9 +280,9 @@ public class DecisionTree : Node
         var isIll = new DecisionQuery
         {
             Title = "Is location Ill identified",
-            Test = (_locations, _times) =>
+            Test = (locations, times) =>
             {
-                foreach (var location in _locations)
+                foreach (var location in locations)
                 {
                     if (location.Value.Place.Equals("ill"))
                     {
@@ -301,9 +301,9 @@ public class DecisionTree : Node
         var trunk = new DecisionQuery
         {
             Title = "Is Location Found",
-            Test = (_locations, _times) =>
+            Test = (locations, times) =>
             {
-                if (_locations.Count == 0)
+                if (locations.Count == 0)
                 {
                     return false;
                 }
@@ -315,6 +315,6 @@ public class DecisionTree : Node
             Negative = insertUndefined
         };
         
-        trunk.Perform(_locations, _times);
+        trunk.Perform(locations, times);
     }
 }

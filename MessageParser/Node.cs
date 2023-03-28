@@ -5,8 +5,7 @@ namespace Parser;
 
 public abstract class Node
 
-
 {
-    public bool Verbose = Settings.GetInstance().Verbose;
-    public abstract void Perform(SortedList<int, Location> _locations, SortedList<int, TimeOnly> _times);
+    protected bool Verbose = Settings.GetInstance().Verbose;
+    public abstract void Perform(SortedList<int, Location> locations, SortedList<int, TimeOnly> times);
 }

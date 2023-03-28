@@ -24,12 +24,15 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "CorsPolicy",
         policy =>
         {
-            policy.WithOrigins(
-                    "http://localhost:5174")
-                .WithMethods("GET", "POST", "OPTIONS");
+            policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
+
         });
 });
-
+/*
+policy.WithOrigins(
+        "http://localhost:5174")
+    .WithMethods("GET", "POST", "OPTIONS");
+*/
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 builder.Services.AddControllers();
 

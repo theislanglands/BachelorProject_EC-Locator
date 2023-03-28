@@ -9,9 +9,9 @@ public class DecisionQuery : Node
     public Node Negative { get; set; }
     public Func<SortedList<int, Location>, SortedList<int, TimeOnly>, bool> Test { get; set; }
     
-    public override void Perform(SortedList<int, Location> _locations, SortedList<int, TimeOnly> _times)
+    public override void Perform(SortedList<int, Location> locations, SortedList<int, TimeOnly> times)
     {
-        bool result = this.Test(_locations, _times);
+        bool result = this.Test(locations, times);
         string resultAsString = result ? "yes" : "no";
 
         if (Verbose)
@@ -19,7 +19,7 @@ public class DecisionQuery : Node
             Console.WriteLine($"\t- Decision: {this.Title}? {resultAsString}");
         }
 
-        if (result) this.Positive.Perform(_locations, _times);
-        else this.Negative.Perform(_locations, _times);
+        if (result) this.Positive.Perform(locations, times);
+        else this.Negative.Perform(locations, times);
     }
 }
