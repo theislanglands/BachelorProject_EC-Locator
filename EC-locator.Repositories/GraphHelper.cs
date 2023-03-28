@@ -10,7 +10,7 @@ using Microsoft.Graph;
 
 class GraphHelper
 {
-    
+
 // Settings object
     private static readonly Settings? _settings = Settings.GetInstance();
 
@@ -48,7 +48,7 @@ class GraphHelper
         EnsureGraphForAppOnlyAuth();
         _ = _graphClient ??
             throw new System.NullReferenceException("Graph has not been initialized ");
-        
+
         return _graphClient.Users
             .Request()
             .Select(u => new
@@ -88,30 +88,41 @@ class GraphHelper
 
         return messages;
     }
-
-/*
-#pragma warning disable CS1998
-// <MakeGraphCallSnippet>
-// This function serves as a playground for testing Graph snippets
-// or other code
-
-    public async static Task MakeGraphCallAsync()
+    
+    public static Task<IChannelMessagesCollectionPage> getCalendarEventsAsync(string employeeId)
     {
-// INSERT YOUR CODE HERE
-// Note: if using _appClient, be sure to call EnsureGraphForAppOnlyAuth
-// before using it.
-// EnsureGraphForAppOnlyAuth();
+        EnsureGraphForAppOnlyAuth();
+        _ = _graphClient ??
+            throw new System.NullReferenceException("Graph has not been initialized ");
+        
+        var start = "2022-11-20T10:00:00.0000000"; //for debug only
+        var end = "2024-11-20T23:00:00.0000000"; 
+        
+        List<Option> options = new List<Option>
+        {
+            new QueryOption("startDateTime", start),
+            new QueryOption("endDateTime", end),
+            new QueryOption("orderby", "start/dateTime")
+        };
+
+        var result = _graphClient.Users[employeeId].CalendarView
+            .Request(options)
+            .GetAsync();
+        
+        foreach (var ev in result.Result)
+        {
+            Console.WriteLine($"subject: {ev.Subject}");
+            Console.WriteLine($"body: {ev.Body}");
+            Console.WriteLine($"type: {ev.Type}");
+            Console.WriteLine($"body pw: {ev.BodyPreview}");
+
+        }
+        
+        Environment.Exit(1);
+            
+        
+        return null;
     }
-// </MakeGraphCallSnippet>
-
-*/
-  
 }
-/*
-.Select(m => new
-    {
-        // Only request specific properties
-        m.Body.Content,
-        m.Id
-    })
-    */
+
+  

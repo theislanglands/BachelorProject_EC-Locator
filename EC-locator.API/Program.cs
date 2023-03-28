@@ -18,6 +18,14 @@ var builder = WebApplication.CreateBuilder(args);
 // set global environment variables
 initSettings();
 
+CalendarRepository cr = new CalendarRepository();
+
+// UNCOMMENT FOR TEST
+await cr.GetCalendarEvents();
+
+Environment.Exit(1);
+
+
 // Add services to the container.
 builder.Services.AddCors(options =>
 {
@@ -60,7 +68,6 @@ app.Run();
 MessageParser messageParser = new MessageParser();
 TeamsRepository tr = new TeamsRepository();
 
-// UNCOMMENT FOR TEST
 // await TestGettingUsersFromTeamsRepo();
 // TestMessageParser();
 // TODO: Problemer med API

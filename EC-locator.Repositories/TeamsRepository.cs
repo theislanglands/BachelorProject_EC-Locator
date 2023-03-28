@@ -1,19 +1,18 @@
 ﻿using System.Collections;
 using EC_locator.Core;
 using Microsoft.Graph;
+using EC_locator.Core.Interfaces;
 
 namespace EC_locator.Repositories;
 
-using EC_locator.Core.Interfaces;
-
 public class TeamsRepository : ITeamsRepository
 {
-    private GraphHelper graphHelper;
+    private GraphHelper _graphHelper;
     Settings _settings = Settings.GetInstance();
 
     public TeamsRepository()
     {
-        graphHelper = new GraphHelper();
+        _graphHelper = new GraphHelper();
     }
     
     public async Task<List<User>> GetUsersAsync()
