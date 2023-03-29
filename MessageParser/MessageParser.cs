@@ -92,16 +92,12 @@ public class MessageParser : IMessageParser
                         foundLocations.Add(indexOfKeyWord, locationWord.Value);
                     }
                     
-                    Environment.Exit(1);
+                    // Environment.Exit(1);
                 }
-
-     
-                    
-                    /*
-                else if (foundLocations.Keys[locationWord.Value] <= indexOfKeyWord){
-                        foundLocations[locationWord.Value] = indexOfKeyWord;
-                        */
-                
+                /*
+            else if (foundLocations.Keys[locationWord.Value] <= indexOfKeyWord){
+                    foundLocations[locationWord.Value] = indexOfKeyWord;
+                    */
             }
         }
         
@@ -114,60 +110,47 @@ public class MessageParser : IMessageParser
         {
             // Identify index of negation keyword
             int indexOfNegationWord = message.IndexOf(negationKeyWord, StringComparison.OrdinalIgnoreCase);
-            Console.WriteLine($"negation keyword index {indexOfNegationWord}"); 
         
-        // 2. Check if negation index is between two locations
-        
-            // if location[0].index < index of negation word AND index of negation < location[1] Then it is in between
+            // Check if negation index is between two locations
             
-            for (int i = 0; i < foundLocations.Count; i++)
+            for (int i = 0; i < foundLocations.Count-1; i++)
             {
-                if (foundLocations.OrderBy(key=> key.Value) == null)
+                if (foundLocations.GetKeyAtIndex(i) <= indexOfNegationWord && indexOfNegationWord < foundLocations.GetKeyAtIndex(i+1))
                 {
-                }
-            }
-            /*
-            foreach (var location in locations)
-            {
-                if (location.Value.Place.Equals("meeting"))
-                {
-                    for (int i = 0; i < times.Count; i++)
-                    {
-                        // identifying to consecutive locations
-                        if (locations.Keys[i] < times.Keys[i] && locations.Keys[i + 1] < times.Keys[i])
+                    var locationsToRemove = new List<int>();
+                    
+                    // remove location after negation word
+                    for (int j = indexOfNegationWord+1; j < foundLocations.Last().Key+1; j++) {
+                        if (foundLocations.ContainsKey(j))
                         {
-                            // either location i or i+1 is a meeting - remove the one that's not.
-                            for (int j = i; j < i + 2; j++)
+                            if (_verbose)
                             {
-                                if (!locations.Values[j].Place.Equals("meeting"))
-                                {
-                                    return true;
-                                }
+                                Console.WriteLine($"Key = {j}");
+                                Console.WriteLine($"index =  {foundLocations.IndexOfKey(j)}");
+                                Console.WriteLine(foundLocations[j]);
                             }
+                            
+                            locationsToRemove.Add((j));
                         }
+                    }
+
+                    foreach (var key in locationsToRemove)
+                    {
+                        foundLocations.Remove(key);
                     }
                 }
             }
-                    
-            return false;
-            */
         }
         
         
-        // check the location index - if the length of the negation word + 1 (" ") is equal negation
-        // => remove the location after the negation keyword
-                
-        // is no time indication present and more than 1 location
-        
-        /*
         // creating a list of Locations objects sorted after index of location in message
         SortedList<int, Location> listOfLocations = new SortedList<int, Location>();
 
         foreach (var loc in foundLocations)
         {
             Location location = new Location();
-            location.Place = loc.Key;
-            listOfLocations.Add(loc.Value, location);
+            location.Place = loc.Value;
+            listOfLocations.Add(loc.Key, location);
         }
         
         
@@ -178,9 +161,9 @@ public class MessageParser : IMessageParser
                 Console.WriteLine($"location found {location.Value.Place} at index {location.Key}");
             }
         }
-        */
-        return null;
-        //return listOfLocations;
+        
+        //return foundLocations;
+        return listOfLocations;
     }
 
     private void ModifyLocationsFound()
