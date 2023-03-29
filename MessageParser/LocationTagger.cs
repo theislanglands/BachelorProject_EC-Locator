@@ -8,22 +8,16 @@ public class LocationTagger
 {
     private LocatorRepository? _locatorRepository;
     private readonly bool _verbose;
-    private readonly object _workStartDefault;
     private Settings _settings;
-    private readonly TimeOnly _workEndDefault;
-    private readonly Location _defaultLocation;
-
+    
     public LocationTagger()
     {
         _locatorRepository= new LocatorRepository();
         _settings = Settings.GetInstance();
-        _workStartDefault = _settings.WorkStartDefault;
-        _workEndDefault = _settings.WorkEndDefault;
-        _defaultLocation = _settings.DefaultLocation;
         _verbose = _settings.Verbose;
     }
 
-    public SortedList<int, Location> IdentifyLocations(string message)                                    
+    public SortedList<int, Location> GetTags(string message)                                    
     {
         // get dictionary mapping keywords to location
         Dictionary<string, string> locationWordsDictionary= _locatorRepository.GetLocationKeyWordsDictionary();

@@ -64,7 +64,7 @@ public class MessageParserTest
     {
         messageSamples.Add(
             "Thomas, Gorm og jeg tager ned til Nørgaard Mikkelsen til møde, forventer at være retur 10.30",
-            new Location[]
+            new[]
             {
                 new Location(
                     new TimeOnly(9, 0),
@@ -77,7 +77,7 @@ public class MessageParserTest
             });
         messageSamples.Add(
             "Starter til møde hos NM. Er tilbage lidt over 10.",
-            new Location[]
+            new[]
             {
                 new Location(
                     new TimeOnly(9, 0),
@@ -90,7 +90,7 @@ public class MessageParserTest
             });
         messageSamples.Add(
             "Morn - jeg starter hos lægen og kører på Popermo efterfølgende",
-            new Location[]
+            new []
             {
                 new Location(
                     new TimeOnly(9, 0),
@@ -99,7 +99,7 @@ public class MessageParserTest
             });
         messageSamples.Add(
             "Er til møde ved Alumeco indtil 11.30 i morgen og arbejder hjemme fra derefter.",
-            new Location[]
+            new []
             {
                 new Location(
                     new TimeOnly(9,0),
@@ -112,7 +112,7 @@ public class MessageParserTest
             });
         messageSamples.Add(
             "Jeg tager hjem og arbejder efter zoo mødet  Hovedet driller lidt i dag. ",
-            new Location[]
+            new []
             {
                 new Location(
                     new TimeOnly(9,0),
@@ -125,7 +125,7 @@ public class MessageParserTest
     {
         messageSamples.Add(
             "0930 på kontoret",
-            new Location[]
+            new []
             {
                 new Location(
                     new TimeOnly(9, 0),
@@ -138,7 +138,7 @@ public class MessageParserTest
             });
         messageSamples.Add(
             "Jeg bliver hjemme indtil jeg kan aflevere min cykel til service klokken 10, og så kommer jeg ind.",
-            new Location[]
+            new []
             {
                 new Location(
                     new TimeOnly(9, 0),
@@ -151,7 +151,7 @@ public class MessageParserTest
             });
         messageSamples.Add(
             "Jeg smutter til tandlæge her klokken 12. Arbejder muligvis hjemmefra efter.",
-            new Location[]
+            new []
             {
                 new Location(
                     new TimeOnly(9, 0),
