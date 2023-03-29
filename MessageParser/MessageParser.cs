@@ -67,8 +67,8 @@ public class MessageParser : IMessageParser
         {
             if (message.Contains(locationWord.Key))
             {
+                // getting index of keyword in message
                 int indexOfKeyWord = message.IndexOf(locationWord.Key, StringComparison.OrdinalIgnoreCase);
-                // Console.WriteLine($"Found: {locationWord.Key}   =>   location: {locationWord.Value}  =>  Index: {indexOfWord}");
                 
                 // Adding Location if not already found, otherwise update index if higher
                 if (!foundLocations.ContainsKey(locationWord.Value))
@@ -121,11 +121,8 @@ public class MessageParser : IMessageParser
             if (i == 0)
             {
                 // if first location haven't allready a start time assigned => assign default
-                if (_locationTags.Values[i].Start == null)
-                {
-                    _locationTags.Values[i].Start = _workStartDefault;
-                }
-                
+                _locationTags.Values[i].Start ??= _workStartDefault;
+
                 // check if first location has a start keyword
                 if (HasStartIndicator())
                 {
@@ -310,6 +307,4 @@ public class MessageParser : IMessageParser
 
         return new TimeOnly(int.Parse(hour), int.Parse(minutes));
     }
-
-    
 }

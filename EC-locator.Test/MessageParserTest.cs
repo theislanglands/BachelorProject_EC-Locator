@@ -1,3 +1,4 @@
+using EC_locator.Core;
 using Microsoft.Graph;
 using Parser;
 using Location = EC_locator.Core.Models.Location;
@@ -8,8 +9,7 @@ namespace EC_locator.Test;
 public class MessageParserTest
 {
     // TODO: create mock - only possible to mock interfaces!
-    // Settings _settings = Mock<Settings>;
-    
+    Settings _settings = Settings.GetInstance();
     MessageParser mp;
 
     private Dictionary<string, Location[]> messageSamples;
@@ -17,9 +17,9 @@ public class MessageParserTest
     [SetUp]
     public void Setup()
     {
-        //_settings.WorkStartDefault = new TimeOnly(16, 0);
-        //_settings.WorkEndDefault = new TimeOnly(16, 0);
-        //_settings.DefaultLocation = new Location("office");
+        _settings.WorkStartDefault = new TimeOnly(9, 0);
+        _settings.WorkEndDefault = new TimeOnly(16, 0);
+        _settings.DefaultLocation = new Location("office");
         
         mp = new MessageParser();
         
@@ -30,6 +30,33 @@ public class MessageParserTest
         AddIllMessageSamples(); 
         AddStartAndStopMessageSamples();
         AddMeetingAndRemoteMessageSamples();
+    }
+    
+    [Test]
+    public void TestLocations()
+    {
+        foreach (var message in messageSamples)
+        {
+            TestLocation(message);
+        }
+    }
+
+    private void TestLocation(KeyValuePair<string, Location[]> message)
+    {
+        var locations = mp.GetLocations(message.Key);
+
+        Assert.That(locations.Count, Is.EqualTo(message.Value.Length), 
+            "number of locations found not correct");
+        
+        for (int i = 0; i < message.Value.Length; i++)
+        {
+            Assert.That(locations[i].Place, Is.EqualTo(message.Value[i].Place),
+                $"wrong location identified in message: {message.Key}");
+            Assert.That(locations[i].Start, Is.EqualTo(message.Value[i].Start),
+                $"wrong start time identified in message: {message.Key}");
+            Assert.That(locations[i].End, Is.EqualTo(message.Value[i].End),
+                $"wrong end time identified in message: {message.Key}");
+        }
     }
 
     private void AddMeetingAndRemoteMessageSamples()
@@ -373,33 +400,16 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "ill")
             });
+        messageSamples.Add(
+            "jeg er syg i dag",
+            new Location[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "ill")
+            });
     }
 
-    [Test]
-    public void TestLocations()
-    {
-        foreach (var message in messageSamples)
-        {
-            TestLocation(message);
-        }
-    }
-
-    private void TestLocation(KeyValuePair<string, Location[]> message)
-    {
-        var locations = mp.GetLocations(message.Key);
-
-        Assert.That(locations.Count, Is.EqualTo(message.Value.Length), 
-            "number of locations found not correct");
-        
-        for (int i = 0; i < message.Value.Length; i++)
-        {
-            Assert.That(locations[i].Place, Is.EqualTo(message.Value[i].Place),
-                $"wrong location identified in message: {message.Key}");
-            Assert.That(locations[i].Start, Is.EqualTo(message.Value[i].Start),
-                $"wrong start time identified in message: {message.Key}");
-            Assert.That(locations[i].End, Is.EqualTo(message.Value[i].End),
-                $"wrong end time identified in message: {message.Key}");
-        }
-        
-    }
+    
 }

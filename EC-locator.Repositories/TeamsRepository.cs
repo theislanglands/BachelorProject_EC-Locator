@@ -152,6 +152,7 @@ public class TeamsRepository : ITeamsRepository
                 "Stadig ikke på toppen, men arbejder det jeg kan",
                 "Er helt smadret - bliver under dynen, og ser om jeg kan arbejde senere",
                 "Jeg er slet ikke på toppen, så jeg bliver hjemme i dag",
+                "jeg er syg i dag",
             };
             return messages;
         }
@@ -180,8 +181,7 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
-                "jeg er syg i dag",
-
+                
             };
             return messages;
         }

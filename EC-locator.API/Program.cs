@@ -20,14 +20,13 @@ initSettings();
 
 MessageParser messageParser = new MessageParser();
 TeamsRepository tr = new TeamsRepository();
-
-await TestGettingUsersFromTeamsRepo();
-
-
 //CalendarRepository cr = new CalendarRepository();
 
-// UNCOMMENT FOR TEST
-//await cr.GetCalendarEvents();
+// await TestGettingUsersFromTeamsRepo();
+
+TestMessageParser();
+// await tr.ListMessagesAsync();
+// await cr.GetCalendarEvents();
 
 Environment.Exit(1);
 
@@ -70,20 +69,11 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
-/*
-// TODO use interfaces
-MessageParser messageParser = new MessageParser();
-TeamsRepository tr = new TeamsRepository();
 
-await TestGettingUsersFromTeamsRepo();
-// TestMessageParser();
-// TODO: Problemer med API
-// await tr.ListMessagesAsync();
-*/
 // TESTING MESSAGE PARSER
 void TestMessageParser()
 {
-    string[] messages = tr.GetMessages("sample3", new DateOnly());
+    string[] messages = tr.GetMessages("wip", new DateOnly());
 
     foreach (string message in messages)
     {
