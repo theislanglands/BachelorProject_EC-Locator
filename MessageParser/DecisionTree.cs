@@ -236,7 +236,36 @@ public class DecisionTree : Node
             Negative = oneLocationOneTime
         };
         
-        // Decision 2
+        // Decision3a
+        var locationContainNegation = new DecisionQuery
+        {
+            Title = "Is a location preceded by a negation",
+            Test = (locations, times) =>
+            {
+                
+                // Check if a negation keyword is present
+                // Identify index of negation keyword
+                // check if negation index is between two locations
+                // check the location index - if the length of the negation word + 1 (" ") is equal negation
+                // => remove the location after the negation keyword
+                
+                // is no time indication present and more than 1 location
+                if (times.IsNullOrEmpty())
+                {
+                    if (locations.Count > 1)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            },
+ 
+            Positive = insertUndefined,
+            Negative = insertUndefined
+        };
+        
+        // Decision 3
         var noTimesAndMultipleLocations = new DecisionQuery
         {
             Title = "Does message contain multiple Locations and no Times",
@@ -274,7 +303,7 @@ public class DecisionTree : Node
             GoTo = noTimesAndMultipleLocations
         };
         
-        // Decision 1
+        // Decision 2
         var isIll = new DecisionQuery
         {
             Title = "Is location Ill identified",
@@ -295,7 +324,7 @@ public class DecisionTree : Node
             Negative = noTimesAndMultipleLocations
         };
 
-        // Decision 0
+        // Decision 1
         var trunk = new DecisionQuery
         {
             Title = "Is Location Found",
