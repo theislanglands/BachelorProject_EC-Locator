@@ -33,7 +33,7 @@ public class MessageParserTest
     }
     
     [Test]
-    public void TestLocations()
+    public void MessageSample_ReturnsCorrectLocationObjects()
     {
         foreach (var message in messageSamples)
         {
