@@ -1,21 +1,15 @@
-﻿using System.Collections;
-using EC_locator.Core;
+﻿using EC_locator.Core;
 using EC_locator.Core.Interfaces;
 using EC_locator.Repositories;
-using Microsoft.Graph;
-using Microsoft.IdentityModel.Tokens;
 using Location = EC_locator.Core.Models.Location;
 
 namespace Parser;
 
 public class MessageParser : IMessageParser
 {
-    private Settings _settings;
-    
     // holding default values
     private TimeOnly _workStartDefault;
     private TimeOnly _workEndDefault;
-    private readonly Location _defaultLocation;
     
     private static LocatorRepository? _locatorRepository;
     private readonly bool _verbose;
@@ -25,7 +19,7 @@ public class MessageParser : IMessageParser
     private SortedList<int, TimeOnly>? _timeTags;
     
     // interpreted locations found in message
-    private List<Location> _locationsFound;
+    private List<Location>? _locationsFound;
 
     private LocationTagger _locationTagger = new LocationTagger();
     private TimeTagger _timeTagger = new TimeTagger();
@@ -34,12 +28,11 @@ public class MessageParser : IMessageParser
     
     public MessageParser()
     {
-       _locatorRepository= new LocatorRepository();
-       _settings = Settings.GetInstance();
-       _workStartDefault = _settings.WorkStartDefault;
-       _workEndDefault = _settings.WorkEndDefault;
-       _defaultLocation = _settings.DefaultLocation;
-       _verbose = _settings.Verbose;
+        _locatorRepository= new LocatorRepository();
+       var settings = Settings.GetInstance();
+       _workStartDefault = settings.WorkStartDefault;
+       _workEndDefault = settings.WorkEndDefault;
+       _verbose = settings.Verbose;
     }
     
     public List<Location> GetLocations(string message)
@@ -47,9 +40,8 @@ public class MessageParser : IMessageParser
         this._message = message;
         _locationsFound = new List<Location>();
         
-        // Identifying location and times tags in message
         _locationTags = _locationTagger.GetTags(message);
-        _timeTags = _timeTagger.IdentifyTimes(message);
+        _timeTags = _timeTagger.GetTags(message);
         
         // Modifying and connecting times and locations according to linguistic meanings
         ModifyLocationsFound();
@@ -76,7 +68,6 @@ public class MessageParser : IMessageParser
     
     private void AddTimesToLocations()
     {
-        // adding times to locations - Algorithm
         if (_verbose)
         {
             Console.WriteLine("running times algorithm");
@@ -86,7 +77,7 @@ public class MessageParser : IMessageParser
         {
             if (i == 0)
             {
-                // if first location haven't allready a start time assigned => assign default
+                // if first location haven't already a start time assigned => assign default
                 _locationTags.Values[i].Start ??= _workStartDefault;
 
                 // check if first location has a start keyword
@@ -109,7 +100,6 @@ public class MessageParser : IMessageParser
                     if (HasStopIndicator())
                     {
                         _locationTags.Values[i].End = _timeTags.Values[^1];
-
                     }
                     else
                     {
@@ -146,10 +136,6 @@ public class MessageParser : IMessageParser
                 return (_locationTags.Count.Equals(_timeTags.Count));
             }
         }
-
         return false;
     }
-
-
-    
 }

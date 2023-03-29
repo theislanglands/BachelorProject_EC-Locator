@@ -85,7 +85,7 @@ public class TeamsRepository : ITeamsRepository
             // If NextPageRequest is not null, there are more messages available on the server
             
             
-            messagePage.NextPageRequest.GetAsync();
+            await messagePage.NextPageRequest.GetAsync();
             var moreAvailable = messagePage.NextPageRequest != null;
             Console.WriteLine($"\nMore messages available? {moreAvailable}");
         }
@@ -95,10 +95,10 @@ public class TeamsRepository : ITeamsRepository
         }
     }
     
-    public string[] GetMessages(string employeeID, DateOnly date)
+    public string[] GetMessages(string employeeId, DateOnly date)
     {
 
-        if (employeeID.Equals("all"))
+        if (employeeId.Equals("all"))
         {
             var concatenatedMessages = this.GetMessages("sample1", new DateOnly()).ToList();
             concatenatedMessages.AddRange(this.GetMessages("sample3", new DateOnly()).ToList());
@@ -119,7 +119,7 @@ public class TeamsRepository : ITeamsRepository
             return concatenatedMessages.ToArray();
         }
 
-        if (employeeID.Equals("sample1"))
+        if (employeeId.Equals("sample1"))
         {
             string[] messages =
             {
@@ -131,7 +131,7 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
-        if (employeeID.Equals("sample2"))
+        if (employeeId.Equals("sample2"))
         {
             // hjemmefra og kontor - tilføjet til test!
             string[] messages =
@@ -148,7 +148,7 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
 
-        if (employeeID.Equals("sample3"))
+        if (employeeId.Equals("sample3"))
         {
             // Diverse - Meeting, Undefined
             string[] messages =
@@ -162,7 +162,7 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
-        if (employeeID.Equals("ill"))
+        if (employeeId.Equals("ill"))
         {
             // syg - Tilføjet til unit test
             string[] messages =
@@ -179,7 +179,7 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
-        if (employeeID.Equals("is_first_location_office"))
+        if (employeeId.Equals("is_first_location_office"))
         {
             // tilføjet til test
             string[] messages =
@@ -189,7 +189,7 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
-        if (employeeID.Equals("minute indicators"))
+        if (employeeId.Equals("minute indicators"))
         {
             // tilføjet til test
             string[] messages =
@@ -199,7 +199,7 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
-        if (employeeID.Equals("startKeywords"))
+        if (employeeId.Equals("startKeywords"))
         {
             // tilføjet til test
             string[] messages =
@@ -210,7 +210,7 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
-        if (employeeID.Equals("stopKeywords"))
+        if (employeeId.Equals("stopKeywords"))
         {
             // tilføjet til test
             string[] messages =
@@ -220,7 +220,7 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
-        if (employeeID.Equals("wip"))
+        if (employeeId.Equals("wip"))
         {
             string[] messages =
             {
@@ -230,7 +230,7 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
-        if (employeeID.Equals("negation"))
+        if (employeeId.Equals("negation"))
         {
             // added to test
             string[] messages =
@@ -242,7 +242,7 @@ public class TeamsRepository : ITeamsRepository
         }
         
         // SE PÅ DEM HER!
-        if (employeeID.Equals("outliers"))
+        if (employeeId.Equals("outliers"))
         {
             string[] messages =
             {
@@ -259,7 +259,7 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
-        if (employeeID.Equals("un-precise"))
+        if (employeeId.Equals("un-precise"))
         {
             string[] messages =
             {
