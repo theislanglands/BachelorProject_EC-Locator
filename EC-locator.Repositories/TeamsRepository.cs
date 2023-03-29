@@ -17,15 +17,36 @@ public class TeamsRepository : ITeamsRepository
     
     public async Task<List<User>> GetUsersAsync()
     {
+        List<string> excludedEmails = new List<string>();
+        excludedEmails.Add("zookort2@ecreo.dk");
+        excludedEmails.Add("zookort1@ecreo.dk");
+        excludedEmails.Add("webmuseet@ecreo.dk");
+        excludedEmails.Add("support@ecreo.dk");
+        excludedEmails.Add("stortmodelokale@ecreo.dk");
+        excludedEmails.Add("roundtable@ecreo.dk");
+        excludedEmails.Add("projekter@ecreo.dk");
+        excludedEmails.Add("leasymail@ecreo.dk");
+        excludedEmails.Add("kantinen@ecreo.dk");
+        excludedEmails.Add("it@ecreo.dk");
+        excludedEmails.Add("fod.kal@ecreo.dk");
+        excludedEmails.Add("backup.email@ecreo.dk");
+        excludedEmails.Add("bogholder@ecreo.dk");
+
         List<User> users = new();
         try
         {
             var userPage = await GraphHelper.GetUsersAsync();
 
-            // adding fetched users to list
+            // adding fetched users to list containing @ecroe.dk
             foreach (var user in userPage.CurrentPage)
             {
-                users.Add(user);
+                if (user.Mail.ToLower().EndsWith("@ecreo.dk"))
+                {
+                    if (!excludedEmails.Contains(user.Mail))
+                    {
+                        users.Add(user);
+                    }
+                }
             }
 
             // If NextPageRequest is not null, there are more user available on the server

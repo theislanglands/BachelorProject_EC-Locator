@@ -18,10 +18,16 @@ var builder = WebApplication.CreateBuilder(args);
 // set global environment variables
 initSettings();
 
-CalendarRepository cr = new CalendarRepository();
+MessageParser messageParser = new MessageParser();
+TeamsRepository tr = new TeamsRepository();
+
+await TestGettingUsersFromTeamsRepo();
+
+
+//CalendarRepository cr = new CalendarRepository();
 
 // UNCOMMENT FOR TEST
-await cr.GetCalendarEvents();
+//await cr.GetCalendarEvents();
 
 Environment.Exit(1);
 
@@ -42,6 +48,7 @@ policy.WithOrigins(
     .WithMethods("GET", "POST", "OPTIONS");
 */
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -63,16 +70,16 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
-
+/*
 // TODO use interfaces
 MessageParser messageParser = new MessageParser();
 TeamsRepository tr = new TeamsRepository();
 
-// await TestGettingUsersFromTeamsRepo();
+await TestGettingUsersFromTeamsRepo();
 // TestMessageParser();
 // TODO: Problemer med API
 // await tr.ListMessagesAsync();
-
+*/
 // TESTING MESSAGE PARSER
 void TestMessageParser()
 {

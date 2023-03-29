@@ -14,10 +14,10 @@ class GraphHelper
 // Settings object
     private static readonly Settings? _settings = Settings.GetInstance();
 
-// App-ony auth token credential
+    // App-ony auth token credential
     private static ClientSecretCredential? _clientSecretCredential;
 
-// GraphClient for access to MS graph
+    // GraphClient for access to MS graph
     private static GraphServiceClient? _graphClient;
 
     private static void EnsureGraphForAppOnlyAuth()
@@ -49,21 +49,31 @@ class GraphHelper
         _ = _graphClient ??
             throw new System.NullReferenceException("Graph has not been initialized ");
 
-        return _graphClient.Users
+        // Define the filter criteria to exclude room resources
+        List<Option> options = new List<Option>
+        {
+            new QueryOption("$filter", "userType ne 'Room'")
+        };
+        
+        var fetchedUsers = _graphClient.Users
             .Request()
             .Select(u => new
             {
                 // Only request specific properties
                 u.DisplayName,
-                u.Id
+                u.Id,
+                u.Mail,
+                u.UserType
             })
             // Get at most 5 results
             //.Top(5)
-            // Sort by display name
             .OrderBy("DisplayName")
             .GetAsync();
+        
+        return fetchedUsers;
+
+
     }
-// </GetUsersSnippet>
 
     public static Task<IChannelMessagesCollectionPage> getMessagesAsync()
     {
@@ -105,11 +115,12 @@ class GraphHelper
             new QueryOption("orderby", "start/dateTime")
         };
 
-        var result = _graphClient.Users[employeeId].CalendarView
+        var events = _graphClient.Users[employeeId].CalendarView
             .Request(options)
-            .GetAsync();
+            .GetAsync()
+            .Result;
         
-        foreach (var ev in result.Result)
+        foreach (var ev in events)
         {
             Console.WriteLine($"subject: {ev.Subject}");
             Console.WriteLine($"body: {ev.Body}");
