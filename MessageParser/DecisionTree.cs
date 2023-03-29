@@ -294,7 +294,6 @@ public class DecisionTree : Node
             Title = "Inserting Ill at location 0 and deleting other locations",
             PerformAction = (locations, times) =>
             {
-                Console.WriteLine("in action query");
                 locations.Clear();
                 locations.Add(0, new Location("ill"));
                 return true;

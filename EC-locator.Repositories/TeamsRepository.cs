@@ -177,9 +177,6 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
-        
-        
-        
         if (employeeID.Equals("startKeywords"))
         {
             // tilføjet til test
@@ -205,7 +202,18 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
-                "Kommer ikke på kontoret i denne uge", // ikke negering
+                
+
+            };
+            return messages;
+        }
+        
+        if (employeeID.Equals("negation"))
+        {
+            // added to test
+            string[] messages =
+            {
+                "Kommer ikke på kontoret", // ikke negering
 
             };
             return messages;

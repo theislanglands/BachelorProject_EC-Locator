@@ -91,57 +91,47 @@ public class MessageParser : IMessageParser
                         foundLocations.RemoveAt(indexOfFoundLocation);
                         foundLocations.Add(indexOfKeyWord, locationWord.Value);
                     }
-                    
-                    // Environment.Exit(1);
                 }
-                /*
-            else if (foundLocations.Keys[locationWord.Value] <= indexOfKeyWord){
-                    foundLocations[locationWord.Value] = indexOfKeyWord;
-                    */
             }
         }
         
-        // check if a negation is preceded by a negation
         
-        // 1. Check if a negation keyword is present
+        // Check if a negation keyword is present
         // TODO: get negation keywords from repo
-        string negationKeyWord = "ikke";
+        
+        string negationKeyWord = "ikke ";
         if (message.Contains(negationKeyWord))
         {
             // Identify index of negation keyword
             int indexOfNegationWord = message.IndexOf(negationKeyWord, StringComparison.OrdinalIgnoreCase);
-        
-            // Check if negation index is between two locations
             
+
+            var locationsToRemove = new List<int>();
+            // Check if negation index is between two locations
             for (int i = 0; i < foundLocations.Count-1; i++)
             {
                 if (foundLocations.GetKeyAtIndex(i) <= indexOfNegationWord && indexOfNegationWord < foundLocations.GetKeyAtIndex(i+1))
                 {
-                    var locationsToRemove = new List<int>();
-                    
                     // remove location after negation word
                     for (int j = indexOfNegationWord+1; j < foundLocations.Last().Key+1; j++) {
                         if (foundLocations.ContainsKey(j))
                         {
                             if (_verbose)
                             {
-                                Console.WriteLine($"Key = {j}");
-                                Console.WriteLine($"index =  {foundLocations.IndexOfKey(j)}");
-                                Console.WriteLine(foundLocations[j]);
+                                Console.WriteLine($"Negation Keyword found at index {j} - ignoring location: {foundLocations[j]}");
                             }
-                            
-                            locationsToRemove.Add((j));
-                        }
-                    }
 
-                    foreach (var key in locationsToRemove)
-                    {
-                        foundLocations.Remove(key);
+                            locationsToRemove.Add((j));
+                            break;
+                        }
                     }
                 }
             }
+            foreach (var key in locationsToRemove)
+            {
+                foundLocations.Remove(key);
+            }
         }
-        
         
         // creating a list of Locations objects sorted after index of location in message
         SortedList<int, Location> listOfLocations = new SortedList<int, Location>();
@@ -152,7 +142,6 @@ public class MessageParser : IMessageParser
             location.Place = loc.Value;
             listOfLocations.Add(loc.Key, location);
         }
-        
         
         if (_verbose)
         {

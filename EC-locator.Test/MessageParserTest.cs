@@ -30,6 +30,7 @@ public class MessageParserTest
         AddIllMessageSamples(); 
         AddStartAndStopMessageSamples();
         AddMeetingAndRemoteMessageSamples();
+        AddNegationMessageSamples();
     }
     
     [Test]
@@ -411,5 +412,17 @@ public class MessageParserTest
             });
     }
 
-    
+    private void AddNegationMessageSamples()
+    {
+        messageSamples.Add(
+            "Kommer ikke på kontoret",
+            new Location[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "home")
+            });
+    }
+
 }
