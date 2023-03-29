@@ -1,53 +1,44 @@
 ﻿using EC_locator.Core;
 using EC_locator.Core.Interfaces;
-using EC_locator.Repositories;
 using Location = EC_locator.Core.Models.Location;
 
 namespace Parser;
 
 public class MessageParser : IMessageParser
 {
-    // holding default values
-    private TimeOnly _workStartDefault;
-    private TimeOnly _workEndDefault;
-    
-    private static LocatorRepository? _locatorRepository;
     private readonly bool _verbose;
  
-    // holding identified tags and their index found in message
+    // index of identified tags in message
     private SortedList<int, Location>? _locationTags;
     private SortedList<int, TimeOnly>? _timeTags;
     
-    // interpreted locations found in message
-    private List<Location>? _locationsFound;
-
-    private LocationTagger _locationTagger = new LocationTagger();
-    private TimeTagger _timeTagger = new TimeTagger();
-    
-    private string _message;
+    private readonly LocationTagger _locationTagger = new();
+    private readonly TimeTagger _timeTagger = new();
+    private readonly TimeAndLocationConnector _timeAndLocationConnector = new();
     
     public MessageParser()
     {
-        _locatorRepository= new LocatorRepository();
-       var settings = Settings.GetInstance();
-       _workStartDefault = settings.WorkStartDefault;
-       _workEndDefault = settings.WorkEndDefault;
-       _verbose = settings.Verbose;
+        _verbose = Settings.GetInstance().Verbose;
     }
     
     public List<Location> GetLocations(string message)
     {
-        this._message = message;
-        _locationsFound = new List<Location>();
+        if (_verbose)
+        {
+            Console.WriteLine(" -- Parsing Message to Locations --");
+        }
         
+        // Getting location and time tags in message
         _locationTags = _locationTagger.GetTags(message);
         _timeTags = _timeTagger.GetTags(message);
         
         // Modifying and connecting times and locations according to linguistic meanings
         ModifyLocationsFound();
-        AddTimesToLocations();
         
-        return _locationsFound;
+        //Combining time and location tags into list of locations
+        var locationsFound = _timeAndLocationConnector.AddTimeToLocations(_locationTags, _timeTags, message);
+        
+        return locationsFound;
     }
 
     public bool ContainsTomorrow(string message)
@@ -64,78 +55,5 @@ public class MessageParser : IMessageParser
     {
         DecisionTree dt = new DecisionTree();
         dt.Perform(_locationTags, _timeTags);
-    }
-    
-    private void AddTimesToLocations()
-    {
-        if (_verbose)
-        {
-            Console.WriteLine("running times algorithm");
-        }
-
-        for (int i = 0; i < _locationTags.Count; i++)
-        {
-            if (i == 0)
-            {
-                // if first location haven't already a start time assigned => assign default
-                _locationTags.Values[i].Start ??= _workStartDefault;
-
-                // check if first location has a start keyword
-                if (HasStartIndicator())
-                {
-                    _locationTags.Values[i].Start = _timeTags.Values[0];
-                    _locationTags.Values[i].End = _timeTags.Values[1];
-                }
-            }
-            else
-            {
-                _locationTags.Values[i].Start = _locationsFound[^1].End;
-            }
-
-            // SETTING END TIMES
-            if (_locationTags.Values[i].End == null)
-            {
-                if (i == _locationTags.Count - 1)
-                {
-                    if (HasStopIndicator())
-                    {
-                        _locationTags.Values[i].End = _timeTags.Values[^1];
-                    }
-                    else
-                    {
-                        _locationTags.Values[i].End = _workEndDefault;
-                    }
-                }
-                else
-                {
-                    _locationTags.Values[i].End = _timeTags.Values[i];
-                }
-            }
-            _locationsFound.Add(_locationTags.Values[i]);
-        }
-    }
-
-    private bool HasStopIndicator()
-    {
-        foreach (var stopIndicator in _locatorRepository.GetStopIndicatorKeywords())
-        {
-            if (_timeTags.Count > 0 && _message[.._timeTags.Keys[^1]].Contains(stopIndicator))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private bool HasStartIndicator()
-    {
-        foreach (var startIndicator in _locatorRepository.GetStartIndicatorKeywords())
-        {
-            if (_timeTags.Count > 0 && _message[.._timeTags.Keys[0]].Contains(startIndicator))
-            {
-                return (_locationTags.Count.Equals(_timeTags.Count));
-            }
-        }
-        return false;
     }
 }
