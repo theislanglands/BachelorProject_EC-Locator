@@ -24,7 +24,7 @@ public class LocationController
     {
         string latestMessage;
         Location foundLocation;
-        employeeId = "ill";
+        employeeId = "all";
 
         // fetch messages from today
         string[] messages = _teamsRepository.GetMessages(employeeId, new DateOnly());

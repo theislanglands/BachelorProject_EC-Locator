@@ -54,7 +54,17 @@ public class MessageParser : IMessageParser
         
         return _locationsFound;
     }
-    
+
+    public bool ContainsTomorrow(string message)
+    {
+        if (message.Contains("i morgen"))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     private SortedList<int, Location> IdentifyLocations(string message)                                    
     {
         // get dictionary mapping keywords to location

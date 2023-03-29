@@ -97,6 +97,28 @@ public class TeamsRepository : ITeamsRepository
     
     public string[] GetMessages(string employeeID, DateOnly date)
     {
+
+        if (employeeID.Equals("all"))
+        {
+            var concatenatedMessages = this.GetMessages("sample1", new DateOnly()).ToList();
+            concatenatedMessages.AddRange(this.GetMessages("sample3", new DateOnly()).ToList());
+            concatenatedMessages.AddRange(this.GetMessages("ill", new DateOnly()).ToList());
+            concatenatedMessages.AddRange(this.GetMessages("is_first_location_office", new DateOnly()).ToList());
+            concatenatedMessages.AddRange(this.GetMessages("minute indicators", new DateOnly()).ToList());
+            concatenatedMessages.AddRange(this.GetMessages("startKeywords", new DateOnly()).ToList());
+            concatenatedMessages.AddRange(this.GetMessages("stopKeywords", new DateOnly()).ToList());
+            concatenatedMessages.AddRange(this.GetMessages("negation", new DateOnly()).ToList());
+
+            
+            Console.WriteLine();
+            foreach (var message in concatenatedMessages.ToArray())
+            {
+                Console.WriteLine(message);
+            }
+            Environment.Exit(1);
+            return concatenatedMessages.ToArray();
+        }
+
         if (employeeID.Equals("sample1"))
         {
             string[] messages =
@@ -202,8 +224,8 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
+                "Arbejder hjemmefra i morgen. Er et smut forbi tandlægen 12.30", // indeholder i morgen?
                 
-
             };
             return messages;
         }
@@ -224,13 +246,15 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
-                "Jeg er på kontoret inden frokost. Er på hjemmefra",
-                "Jeg tager lige en time eller to hjemmefra, her til morgen",
-                "Lynet skal lige have en gang service, så er først på pinden 9.15-9.30",
-                "Otto er desværre blevet syg, så jeg holder hjemmefronten indtil backup ankommer. Er på kontoret inden 11",
-                "Arbejder hjemmefra i morgen. Er et smut forbi tandlægen 12.30",
-                "Jeg holder for i dag",
-                "Jeg er forresten stadig på hjemmefra - er måske på kontoret en af de kommende dage",
+                "Jeg er på kontoret inden frokost. Er på hjemmefra", // omvendt rækkefølge - kan ikke håndtere -> false prediction
+                "Jeg tager lige en time eller to hjemmefra, her til morgen", // utvetydig -> kan ikke finde kontor
+                
+                "Lynet skal lige have en gang service, så er først på pinden 9.15-9.30", // kan ikke specificere tidspunkt - to tidspunkter efter hinanden - slet første?
+                "Otto er desværre blevet syg, så jeg holder hjemmefronten indtil backup ankommer. Er på kontoret inden 11", // Syg, men på kontoret
+                
+                "Jeg holder for i dag", // HOLDER = holder fri fra time=now -> location "home" fra NU af!
+                "Jeg er forresten stadig på hjemmefra - er måske på kontoret en af de kommende dage", // -> undefined no time keyword - Maybe "Future" keywords!
+
             };
             return messages;
         }

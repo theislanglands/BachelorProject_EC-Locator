@@ -21,17 +21,18 @@ initSettings();
 MessageParser messageParser = new MessageParser();
 TeamsRepository tr = new TeamsRepository();
 //CalendarRepository cr = new CalendarRepository();
-
+tr.GetMessages("all", new DateOnly());
+Environment.Exit(1);
 // await TestGettingUsersFromTeamsRepo();
 
-TestMessageParser();
+//TestMessageParser();
+//TestTomorrow();
 // await tr.ListMessagesAsync();
 // await cr.GetCalendarEvents();
 
-Environment.Exit(1);
-
 
 // Add services to the container.
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "CorsPolicy",
@@ -70,6 +71,28 @@ app.UseAuthorization();
 app.MapControllers();
 app.Run();
 
+void TestTomorrow()
+{
+    string[] messages = tr.GetMessages("wip", new DateOnly());
+
+    foreach (string message in messages)
+    {
+        Console.WriteLine($"\n{message}");
+        Console.WriteLine($"Contains tomorrow {messageParser.ContainsTomorrow(message)}");
+        /*
+        var locations = messageParser.GetLocations(message);
+
+        foreach (var location in locations)
+        {
+            Console.WriteLine(location);
+        }
+        */
+    }
+
+    Environment.Exit(1);
+    
+}
+
 // TESTING MESSAGE PARSER
 void TestMessageParser()
 {
@@ -78,9 +101,13 @@ void TestMessageParser()
     foreach (string message in messages)
     {
         Console.WriteLine($"\n{message}");
+        
 
         var locations = messageParser.GetLocations(message);
-
+        if (messageParser.ContainsTomorrow(message))
+        {
+            Console.WriteLine("Location(s) for tomorrow");
+        }
         foreach (var location in locations)
         {
             Console.WriteLine(location);
