@@ -1,10 +1,76 @@
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
+using Microsoft.Data.SqlClient;
+
 
 namespace EC_locator.Repositories;
 
 public class LocatorRepository : ILocatorRepository
 {
+    
+    SqlConnection connection;
+    
+    public void OpenConnection()
+    {
+        SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+        builder.DataSource = "localhost"; 
+        builder.UserID = "sa";            
+        builder.Password = "Secretpassword1!";     
+        builder.InitialCatalog = "Keywords";
+        builder.TrustServerCertificate = true;
+        connection = new SqlConnection(builder.ConnectionString);
+        
+        try
+        {
+            Console.WriteLine("connecting to database");
+            connection.Open();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unable to connect: {ex.Message}");
+        }
+    }
+
+    public void CloseConnection()
+    {
+        try
+        {
+            Console.WriteLine("Closing database connection");
+            connection.Close();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error when closing database {ex.Message}");
+        }
+    }
+    
+    public List<string> getLocationsFromDB()
+    {
+        List<string> locations = new();
+        OpenConnection();
+        
+        try
+        {
+            Console.WriteLine("reading location records");
+            string sql = "SELECT * FROM Location";
+            SqlCommand cmd = new SqlCommand(sql, connection);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                locations.Add(reader.GetString(1));
+            }
+            reader.Close();
+            
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unable to read records {ex.Message}");
+        }
+        
+        CloseConnection();
+        return locations;
+    }
+    
     public Dictionary<string, string> GetLocationKeyWordsDictionary()
     {   
         string[,] keywords =
@@ -48,7 +114,7 @@ public class LocatorRepository : ILocatorRepository
             
             { "kommer ind", "office" },
             { "retur", "office"},
-            {"er tilbage", "office"},
+            { "er tilbage", "office"},
             { "på kontoret", "office" },
             { "inde", "office" },
             { "på arbejdet", "office" },
@@ -71,6 +137,7 @@ public class LocatorRepository : ILocatorRepository
             { "er hos", "remote" },
             { "ved", "remote" }
         };
+        
         Dictionary<string, string> keywordsDic = new Dictionary<string, string>();
         for (int i = 0; i < keywords.GetLength(0); i++)
         {
@@ -139,9 +206,10 @@ public class LocatorRepository : ILocatorRepository
             "derefter",
             "er væk",
             "smutter",
-            "stopper ved",
             "kører",
         };
         return keywords;
     }
+
+
 }

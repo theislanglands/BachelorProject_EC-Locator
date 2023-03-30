@@ -21,7 +21,17 @@ initSettings();
 MessageParser messageParser = new MessageParser();
 TeamsRepository tr = new TeamsRepository();
 //CalendarRepository cr = new CalendarRepository();
-tr.GetMessages("all", new DateOnly());
+LocatorRepository lr = new LocatorRepository();
+
+var test = lr.getLocationsFromDB();
+foreach (var t in test)
+{
+    Console.WriteLine($"for loop: {t}");
+}
+
+
+
+//tr.GetMessages("all", new DateOnly());
 Environment.Exit(1);
 // await TestGettingUsersFromTeamsRepo();
 

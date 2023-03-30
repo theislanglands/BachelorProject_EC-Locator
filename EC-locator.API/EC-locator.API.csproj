@@ -29,4 +29,8 @@
       <ProjectReference Include="..\MessageParser\MessageParser.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="WeatherForecast.cs" />
+    </ItemGroup>
+
 </Project>

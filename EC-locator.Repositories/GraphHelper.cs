@@ -65,8 +65,6 @@ class GraphHelper
                 u.Mail,
                 u.UserType
             })
-            // Get at most 5 results
-            //.Top(5)
             .OrderBy("DisplayName")
             .GetAsync();
         
