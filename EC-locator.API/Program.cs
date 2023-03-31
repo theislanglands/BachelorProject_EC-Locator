@@ -23,10 +23,11 @@ TeamsRepository tr = new TeamsRepository();
 //CalendarRepository cr = new CalendarRepository();
 LocatorRepository lr = new LocatorRepository();
 
-var test = lr.getLocationsFromDB();
+var test = lr.GetLocationKeywordsDB();
+
 foreach (var t in test)
 {
-    Console.WriteLine($"for loop: {t}");
+    Console.WriteLine($"for loop: keyword {t.Key}, location: {t.Value}");
 }
 
 

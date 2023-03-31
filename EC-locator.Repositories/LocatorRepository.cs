@@ -1,50 +1,25 @@
+using EC_locator.Core;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
 using Microsoft.Data.SqlClient;
-
 
 namespace EC_locator.Repositories;
 
 public class LocatorRepository : ILocatorRepository
 {
-    
-    SqlConnection connection;
-    
-    public void OpenConnection()
-    {
-        SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-        builder.DataSource = "localhost"; 
-        builder.UserID = "sa";            
-        builder.Password = "Secretpassword1!";     
-        builder.InitialCatalog = "Keywords";
-        builder.TrustServerCertificate = true;
-        connection = new SqlConnection(builder.ConnectionString);
-        
-        try
-        {
-            Console.WriteLine("connecting to database");
-            connection.Open();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Unable to connect: {ex.Message}");
-        }
-    }
+    private readonly Settings _settings;
+    private SqlConnection connection;
+    private readonly string _host, _userId, _password;
 
-    public void CloseConnection()
+    public LocatorRepository()
     {
-        try
-        {
-            Console.WriteLine("Closing database connection");
-            connection.Close();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error when closing database {ex.Message}");
-        }
+        _settings = Settings.GetInstance();
+        _host = "localhost";
+        _userId = "sa";
+        _password = "Secretpassword1!";
     }
     
-    public List<string> getLocationsFromDB()
+    public List<string> getLocationsDB()
     {
         List<string> locations = new();
         OpenConnection();
@@ -71,7 +46,50 @@ public class LocatorRepository : ILocatorRepository
         return locations;
     }
     
-    public Dictionary<string, string> GetLocationKeyWordsDictionary()
+    public Dictionary<string, string> GetLocationKeywordsDB()
+    {
+        Dictionary<string, string> keywords = new Dictionary<string, string>();
+
+        List<string> locations = new();
+        OpenConnection();
+        
+        try
+        {
+            if (_settings.Verbose)
+            {
+                Console.WriteLine("reading location keywords");
+            }
+            
+            string sql = "" +
+                         "SELECT LocationKeywords.Keyword, Location.Name " +
+                         "FROM Location " +
+                         "INNER JOIN LocationKeywords " +
+                         "ON Location.LocationID = LocationKeywords.Location";
+            SqlCommand cmd = new SqlCommand(sql, connection);
+            SqlDataReader reader = cmd.ExecuteReader();
+            
+            while (reader.Read())
+            {
+                //Console.WriteLine($"Keyword: {reader.GetString(0)}, Location: {reader.GetString(1)}");
+                keywords.Add(reader.GetString(0), reader.GetString(1));
+            }
+            reader.Close();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unable to read location keywords: {ex.Message}");
+        }
+        
+        CloseConnection();
+        
+        return keywords;
+    }
+    
+    
+    
+    
+    public Dictionary<string, string> GetLocationKeywords()
     {   
         string[,] keywords =
         {
@@ -138,6 +156,7 @@ public class LocatorRepository : ILocatorRepository
             { "ved", "remote" }
         };
         
+        // replacing string[] with dictionary
         Dictionary<string, string> keywordsDic = new Dictionary<string, string>();
         for (int i = 0; i < keywords.GetLength(0); i++)
         {
@@ -210,6 +229,46 @@ public class LocatorRepository : ILocatorRepository
         };
         return keywords;
     }
+    
+    private void OpenConnection()
+    {
+        // TODO get from .env
+        SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+        builder.DataSource = _host; 
+        builder.UserID = _userId;            
+        builder.Password = _password;     
+        builder.InitialCatalog = "Keywords";
+        builder.TrustServerCertificate = true;
+        connection = new SqlConnection(builder.ConnectionString);
+        
+        try
+        {
+            if (_settings.Verbose)
+            {
+                Console.WriteLine("connecting to database");
+            }
 
+            connection.Open();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unable to connect: {ex.Message}");
+        }
+    }
 
+    private void CloseConnection()
+    {
+        try
+        {
+            if (_settings.Verbose)
+            {
+                Console.WriteLine("Closing database connection");
+            }
+            connection.Close();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error closing database: {ex.Message}");
+        }
+    }
 }
