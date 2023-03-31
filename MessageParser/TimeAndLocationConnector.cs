@@ -30,49 +30,74 @@ public class TimeAndLocationConnector
         {
             Console.WriteLine("Adding times to locations");
         }
-
-        for (int i = 0; i < _locationTags.Count; i++)
+        
+        // adding times to location tags
+        for (int locationIndex = 0; locationIndex < _locationTags.Count; locationIndex++)
         {
-            if (i == 0)
-            {
-                // if first location haven't already a start time assigned => assign default
-                _locationTags.Values[i].Start ??= Settings.GetInstance().WorkStartDefault;
+            SetStartTime(locationIndex);
+            SetEndTime(locationIndex);
+            locationsFound.Add(_locationTags.Values[locationIndex]);
+        }
 
-                // check if first location has a start keyword
-                if (HasStartIndicator())
+        return locationsFound;
+    }
+    
+    private void SetStartTime(int locationIndex)
+    {
+        // if first location has a start keyword, assign first time tag as start, otherwise default
+        if (locationIndex == 0)
+        {
+            if (HasStartIndicator())
+            {
+                _locationTags.Values[locationIndex].Start = _timeTags.Values[0];
+                _locationTags.Values[locationIndex].End = _timeTags.Values[1];
+            }
+            else
+            {
+                _locationTags.Values[locationIndex].Start = Settings.GetInstance().WorkStartDefault;
+            }
+        }
+        // if not first location, set start time to end time of previous location
+        else
+        {
+            _locationTags.Values[locationIndex].Start = _locationTags.Values[locationIndex-1].End;
+        }
+    }
+    
+    private bool HasStartIndicator()
+    {
+        foreach (var startIndicator in _locatorRepository.GetStartIndicatorKeywords())
+        {
+            if (_timeTags.Count > 0 && _message[.._timeTags.Keys[0]].Contains(startIndicator))
+            {
+                return (_locationTags.Count.Equals(_timeTags.Count));
+            }
+        }
+        return false;
+    }
+    
+    private void SetEndTime(int locationIndex)
+    {
+        // run if end time has not been set
+        if (_locationTags.Values[locationIndex].End == null)
+        {
+            // if last location has and end-indicater, set to last time, otherwise default
+            if (locationIndex == _locationTags.Count - 1)
+            {
+                if (HasStopIndicator())
                 {
-                    _locationTags.Values[i].Start = _timeTags.Values[0];
-                    _locationTags.Values[i].End = _timeTags.Values[1];
+                    _locationTags.Values[locationIndex].End = _timeTags.Values[^1];
+                }
+                else
+                {
+                    _locationTags.Values[locationIndex].End = Settings.GetInstance().WorkEndDefault;
                 }
             }
             else
             {
-                _locationTags.Values[i].Start = locationsFound[^1].End;
+                _locationTags.Values[locationIndex].End = _timeTags.Values[locationIndex];
             }
-
-            // SETTING END TIMES
-            if (_locationTags.Values[i].End == null)
-            {
-                if (i == _locationTags.Count - 1)
-                {
-                    if (HasStopIndicator())
-                    {
-                        _locationTags.Values[i].End = _timeTags.Values[^1];
-                    }
-                    else
-                    {
-                        _locationTags.Values[i].End = Settings.GetInstance().WorkEndDefault;
-                    }
-                }
-                else
-                {
-                    _locationTags.Values[i].End = _timeTags.Values[i];
-                }
-            }
-            locationsFound.Add(_locationTags.Values[i]);
         }
-
-        return locationsFound;
     }
 
     private bool HasStopIndicator()
@@ -82,18 +107,6 @@ public class TimeAndLocationConnector
             if (_timeTags.Count > 0 && _message[.._timeTags.Keys[^1]].Contains(stopIndicator))
             {
                 return true;
-            }
-        }
-        return false;
-    }
-
-    private bool HasStartIndicator()
-    {
-        foreach (var startIndicator in _locatorRepository.GetStartIndicatorKeywords())
-        {
-            if (_timeTags.Count > 0 && _message[.._timeTags.Keys[0]].Contains(startIndicator))
-            {
-                return (_locationTags.Count.Equals(_timeTags.Count));
             }
         }
         return false;
