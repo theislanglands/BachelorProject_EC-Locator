@@ -19,6 +19,98 @@ public class LocatorRepository : ILocatorRepository
         _password = "Secretpassword1!";
     }
     
+    public List<string> GetStopIndicatorKeywordsDB()
+    {
+        var keywords = new List<string>();
+        OpenConnection();
+        
+        try
+        {
+            if (_settings.Verbose)
+            {
+                Console.WriteLine("reading Stop Indicator Keywords records");
+            }
+            string sql = "SELECT * FROM StopIndicatorKeywords";
+            SqlCommand cmd = new SqlCommand(sql, connection);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                keywords.Add(
+                    reader.GetString(0));
+            }
+            reader.Close();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unable to read Stop Indicator Keywords: {ex.Message}");
+        }
+        
+        CloseConnection();
+        return keywords;
+    }
+    
+    public List<string> GetStartIndicatorKeywordsDB()
+    {
+        var keywords = new List<string>();
+        OpenConnection();
+        
+        try
+        {
+            if (_settings.Verbose)
+            {
+                Console.WriteLine("reading Start Indicator Keywords records");
+            }
+            string sql = "SELECT * FROM StartIndicatorKeywords";
+            SqlCommand cmd = new SqlCommand(sql, connection);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                keywords.Add(
+                    reader.GetString(0));
+            }
+            reader.Close();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unable to read Start Indicator Keywords: {ex.Message}");
+        }
+        
+        CloseConnection();
+        return keywords;
+    }
+    
+    public Dictionary<string, double> GetMinuteIndicatorsDB()
+    {
+        var keywords = new Dictionary<string, double>();
+        OpenConnection();
+        
+        try
+        {
+            if (_settings.Verbose)
+            {
+                Console.WriteLine("reading Minute Indicator records");
+            }
+            string sql = "SELECT * FROM MinuteIndicatorKeywords";
+            SqlCommand cmd = new SqlCommand(sql, connection);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                keywords.Add(
+                    reader.GetString(0), 
+                    reader.GetInt16(1));
+            }
+            reader.Close();
+            
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unable to read Minute Indicator-keywords: {ex.Message}");
+        }
+        
+        CloseConnection();
+        return keywords;
+    }
+    
     public Dictionary<string, TimeOnly> GetTimeKeywordsDB()
     {
         Dictionary<string, TimeOnly> timeKeywords = new();
@@ -35,8 +127,6 @@ public class LocatorRepository : ILocatorRepository
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                //Console.WriteLine($"Keyword: {reader.GetString(0)}, Time: {TimeOnly.Parse(reader.GetTimeSpan(1).ToString())}");
-                
                 timeKeywords.Add(
                     reader.GetString(0), 
                     TimeOnly.Parse(reader.GetTimeSpan(1).ToString()));

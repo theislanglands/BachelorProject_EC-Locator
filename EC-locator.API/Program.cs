@@ -23,14 +23,7 @@ TeamsRepository tr = new TeamsRepository();
 //CalendarRepository cr = new CalendarRepository();
 LocatorRepository lr = new LocatorRepository();
 
-var test = lr.GetTimeKeywordsDB();
-
-foreach (var t in test)
-{
-    Console.WriteLine($"for loop: keyword {t.Key}, time: {t.Value}");
-}
-
-
+/// var test = lr.GetStopIndicatorKeywordsDB();
 
 //tr.GetMessages("all", new DateOnly());
 Environment.Exit(1);
