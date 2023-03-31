@@ -1,49 +1,59 @@
-/* Creating Databse */
+/* Creating Database */
+
 CREATE DATABASE Keywords;
 GO;
 
-Use Keywords;
+USE Keywords;
 GO;
 
 /* Creating tables */
+
+DROP TABLE IF EXISTS Location;
 CREATE TABLE Location
 (
     LocationID INT NOT NULL,
-    Name       VARCHAR(16),
+    Name VARCHAR(16),
     PRIMARY KEY (LocationID)
 );
 
+DROP TABLE IF EXISTS LocationKeywords;
 CREATE TABLE LocationKeywords
 (
-    Keyword  CHAR(24) NOT NULL,
-    Location INT      NOT NULL,
+    Keyword  VARCHAR(24) NOT NULL,
+    Location INT NOT NULL,
     PRIMARY KEY (Keyword),
     FOREIGN KEY (Location) REFERENCES Location (LocationID)
 );
 
+
+
+DROP TABLE IF EXISTS TimeKeywords;
 CREATE TABLE TimeKeywords
 (
-    Keyword CHAR(24) NOT NULL,
-    Time    TIME     NOT NULL,
+    Keyword VARCHAR(24) NOT NULL,
+    Time TIME NOT NULL,
     PRIMARY KEY (Keyword)
 );
 
+DROP TABLE IF EXISTS MinuteIndicatorKeywords;
 CREATE TABLE MinuteIndicatorKeywords
 (
-    Keyword CHAR(24) NOT NULL,
+    Keyword VARCHAR(24) NOT NULL,
     Minutes SMALLINT NOT NULL,
     PRIMARY KEY (Keyword)
 );
 
+DROP TABLE IF EXISTS StartIndicatorKeywords;
 CREATE TABLE StartIndicatorKeywords
 (
-    Keyword CHAR(24) NOT NULL,
+    Keyword VARCHAR(24) NOT NULL,
     PRIMARY KEY (Keyword)
 );
 
+DROP TABLE IF EXISTS StopIndicatorKeywords;
 CREATE TABLE StopIndicatorKeywords
 (
-    Keyword CHAR(24) NOT NULL,
+    Keyword VARCHAR(24) NOT NULL,
     PRIMARY KEY (Keyword)
 );
 
