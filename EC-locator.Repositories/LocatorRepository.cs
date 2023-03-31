@@ -19,6 +19,40 @@ public class LocatorRepository : ILocatorRepository
         _password = "Secretpassword1!";
     }
     
+    public Dictionary<string, TimeOnly> GetTimeKeywordsDB()
+    {
+        Dictionary<string, TimeOnly> timeKeywords = new();
+        OpenConnection();
+        
+        try
+        {
+            if (_settings.Verbose)
+            {
+                Console.WriteLine("reading TimeKeywords records");
+            }
+            string sql = "SELECT * FROM TimeKeywords";
+            SqlCommand cmd = new SqlCommand(sql, connection);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                //Console.WriteLine($"Keyword: {reader.GetString(0)}, Time: {TimeOnly.Parse(reader.GetTimeSpan(1).ToString())}");
+                
+                timeKeywords.Add(
+                    reader.GetString(0), 
+                    TimeOnly.Parse(reader.GetTimeSpan(1).ToString()));
+            }
+            reader.Close();
+            
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unable to read time-keywords: {ex.Message}");
+        }
+        
+        CloseConnection();
+        return timeKeywords;
+    }
+    
     public List<string> getLocationsDB()
     {
         List<string> locations = new();
@@ -26,7 +60,10 @@ public class LocatorRepository : ILocatorRepository
         
         try
         {
-            Console.WriteLine("reading location records");
+            if (_settings.Verbose)
+            {
+                Console.WriteLine("reading location records");
+            }
             string sql = "SELECT * FROM Location";
             SqlCommand cmd = new SqlCommand(sql, connection);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -70,11 +107,9 @@ public class LocatorRepository : ILocatorRepository
             
             while (reader.Read())
             {
-                //Console.WriteLine($"Keyword: {reader.GetString(0)}, Location: {reader.GetString(1)}");
                 keywords.Add(reader.GetString(0), reader.GetString(1));
             }
             reader.Close();
-
         }
         catch (Exception ex)
         {
@@ -85,9 +120,6 @@ public class LocatorRepository : ILocatorRepository
         
         return keywords;
     }
-    
-    
-    
     
     public Dictionary<string, string> GetLocationKeywords()
     {   
