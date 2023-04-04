@@ -1,4 +1,5 @@
 using EC_locator.Core;
+using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
 using EC_locator.Repositories;
 
@@ -6,17 +7,17 @@ namespace Parser;
 
 public class TimeAndLocationConnector : ITimeAndLocationConnector
 {
-    private static LocatorRepository? _locatorRepository;
+    private ILocatorRepository? _locatorRepository;
     private readonly bool _verbose;
  
     private SortedList<int, Location>? _locationTags;
     private SortedList<int, TimeOnly>? _timeTags;
     private string _message;
 
-    public TimeAndLocationConnector()
+    public TimeAndLocationConnector(ILocatorRepository locatorRepository)
     {
         _verbose = Settings.GetInstance().Verbose;
-        _locatorRepository = new LocatorRepository();
+        _locatorRepository = locatorRepository;
     }
 
     public List<Location> AddTimeToLocations(SortedList<int, Location> locationTags, SortedList<int, TimeOnly> timeTags, string message)

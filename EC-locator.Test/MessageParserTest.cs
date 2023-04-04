@@ -1,5 +1,6 @@
 using EC_locator.Core;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using EC_locator.Core.Interfaces;
+using EC_locator.Repositories;
 using Parser;
 using Location = EC_locator.Core.Models.Location;
 
@@ -10,10 +11,11 @@ public class MessageParserTest
 {
     // TODO: create mock - only possible to mock interfaces!
     private Settings _settings; 
-    private LocationTagger _locationTagger;
-    private TimeTagger _timeTagger;
-    private TimeAndLocationConnector _timeAndLocationConnector;
-    MessageParser mp;
+    private ILocationTagger _locationTagger;
+    private ITimeTagger _timeTagger;
+    private ITimeAndLocationConnector _timeAndLocationConnector;
+    private ILocatorRepository _locatorRepository;
+    MessageParser _messageParser;
 
     private Dictionary<string, Location[]> messageSamples;
 
@@ -21,15 +23,14 @@ public class MessageParserTest
     public void Setup()
     {
         _settings = Settings.GetInstance();
-        _locationTagger = new LocationTagger();
-        _timeTagger = new TimeTagger();
-        _timeAndLocationConnector = new TimeAndLocationConnector();
         _settings.WorkStartDefault = new TimeOnly(9, 0);
         _settings.WorkEndDefault = new TimeOnly(16, 0);
         _settings.DefaultLocation = new Location("office");
-        
-        mp = new MessageParser(_settings, _locationTagger, _timeTagger, _timeAndLocationConnector);
-        
+        _locatorRepository = new LocatorRepository();
+        _locationTagger = new LocationTagger(_locatorRepository);
+        _timeTagger = new TimeTagger(_locatorRepository);
+        _timeAndLocationConnector = new TimeAndLocationConnector(_locatorRepository);
+        _messageParser = new MessageParser(_settings, _locationTagger, _timeTagger, _timeAndLocationConnector);
         
         messageSamples = new Dictionary<string, Location[]>(); 
         AddHomeMessageSamples();
@@ -51,7 +52,7 @@ public class MessageParserTest
 
     private void TestLocation(KeyValuePair<string, Location[]> message)
     {
-        var locations = mp.GetLocations(message.Key);
+        var locations = _messageParser.GetLocations(message.Key);
 
         Assert.That(locations.Count, Is.EqualTo(message.Value.Length), 
             "number of locations found not correct");

@@ -7,6 +7,8 @@ using EC_locator.Repositories;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Parser;
+using Microsoft.Extensions.Configuration;
+
 
 namespace API.Controllers;
 
@@ -18,6 +20,7 @@ public class LocationController
     private ITeamsRepository _teamsRepository;
     private readonly IMessageParser _messageParser;
     Settings _settings = Settings.GetInstance();
+    private readonly IConfiguration _config;
 
     public LocationController(IMessageParser messageParser, ITeamsRepository teamsRepository)
     {

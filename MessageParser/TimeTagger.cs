@@ -1,17 +1,18 @@
 using EC_locator.Core;
+using EC_locator.Core.Interfaces;
 using EC_locator.Repositories;
 
 namespace Parser;
 
 public class TimeTagger : ITimeTagger
 {
-    private readonly LocatorRepository _locatorRepository;
+    private readonly ILocatorRepository _locatorRepository;
     private readonly bool _verbose;
 
-    public TimeTagger()
+    public TimeTagger(ILocatorRepository locatorRepository)
     {
         var settings = Settings.GetInstance();
-        _locatorRepository = new LocatorRepository();
+        _locatorRepository = locatorRepository;
         _verbose = settings.Verbose;
     }
 

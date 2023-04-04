@@ -11,8 +11,15 @@ using Microsoft.Identity.Web;
 using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
 using Location = EC_locator.Core.Models.Location;
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using GlobalSettings = EC_locator.Core.GlobalSettings;
+
+
 // TODO update interfaces
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // set global environment variables
 initSettings();
@@ -25,7 +32,13 @@ void ConfigureLocatorServices(IServiceCollection services)
 {
     services.AddSingleton<IMessageParser, MessageParser>();
     services.AddSingleton<ITeamsRepository, TeamsRepository>();
+    services.AddSingleton<ILocatorRepository, LocatorRepository>();
     services.AddSingleton<ISettings, Settings>();
+        
+    //services.AddSingleton(typeof(IConfiguration), builder.Configuration);
+    services.Configure<GlobalSettings>(builder.Configuration);
+
+    
     
     // message parser services
     services.AddSingleton<ILocationTagger, LocationTagger>();

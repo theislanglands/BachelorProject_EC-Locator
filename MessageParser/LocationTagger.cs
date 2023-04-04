@@ -12,16 +12,15 @@ public class LocationTagger : ILocationTagger
     private readonly ILocatorRepository _locatorRepository;
     private readonly bool _verbose;
 
-    public LocationTagger()
+    public LocationTagger(ILocatorRepository locatorRepository)
     {
         var host = Host.CreateDefaultBuilder().ConfigureServices(
                 services =>
                 {
                     services.AddSingleton<ISettings, Settings>();
-                    services.AddSingleton<ILocatorRepository, LocatorRepository>();
                 })
             .Build();
-        _locatorRepository = host.Services.GetRequiredService<ILocatorRepository>();
+        _locatorRepository = locatorRepository;
         _verbose = host.Services.GetRequiredService<ISettings>().GetInstance().Verbose;
     }
 

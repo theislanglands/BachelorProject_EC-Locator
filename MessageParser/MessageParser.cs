@@ -1,8 +1,12 @@
-﻿using EC_locator.Core;
+﻿using System.Collections.Immutable;
+using EC_locator.Core;
+
 using EC_locator.Core.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Location = EC_locator.Core.Models.Location;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace Parser;
 
@@ -10,6 +14,7 @@ public class MessageParser : IMessageParser
 {
     private readonly bool _verbose;
     private readonly Settings _settings;
+    private readonly IConfiguration _config;
  
     // index of identified tags in message
     private SortedList<int, Location>? _locationTags;
@@ -20,13 +25,14 @@ public class MessageParser : IMessageParser
     private readonly ITimeAndLocationConnector _timeAndLocationConnector;
 
 
-    public MessageParser(ISettings settings, ILocationTagger locationTagger, ITimeTagger timeTagger, ITimeAndLocationConnector timeAndLocationConnector)
+    public MessageParser(ISettings settings, ILocationTagger locationTagger, ITimeTagger timeTagger, ITimeAndLocationConnector timeAndLocationConnector, IOptions<GlobalSettings> settingsOptions)
     {
         _settings = settings.GetInstance();
         _locationTagger = locationTagger;
         _timeTagger = timeTagger;
         _timeAndLocationConnector = timeAndLocationConnector;
         _verbose = _settings.Verbose;
+        Console.WriteLine(settingsOptions.Value.Verbose);
     }
     
     public List<Location> GetLocations(string message)
