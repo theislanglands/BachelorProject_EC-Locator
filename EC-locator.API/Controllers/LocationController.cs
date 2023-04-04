@@ -3,11 +3,13 @@ using System.Text.Json.Serialization;
 using EC_locator.Core;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
+using EC_locator.Core.SettingsOptions;
 using EC_locator.Repositories;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using EC_locator.Parsers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 
 namespace API.Controllers;
@@ -19,12 +21,13 @@ public class LocationController
 {
     private ITeamsRepository _teamsRepository;
     private readonly IMessageParser _messageParser;
-    Settings _settings = Settings.GetInstance();
-
-    public LocationController(IMessageParser messageParser, ITeamsRepository teamsRepository)
+    private readonly bool _verbose;
+    
+    public LocationController(IMessageParser messageParser, ITeamsRepository teamsRepository, IOptions<VerboseOptions> settingsOptions)
     {
         _messageParser = messageParser;
         _teamsRepository = teamsRepository;
+        _verbose = settingsOptions.Value.Verbose;
     }
     
     [HttpGet("{employeeId}")]
@@ -48,7 +51,7 @@ public class LocationController
         TimeOnly currentTime = TimeOnly.FromDateTime(DateTime.Now);
         currentTime = new TimeOnly(9, 15);
 
-        if (_settings.Verbose)
+        if (_verbose)
         {
             Console.WriteLine("\n- LOCATION CONTROLLER -");
             Console.WriteLine($"EmployeeID: {employeeId}");
@@ -100,7 +103,7 @@ public class LocationController
         // find the location matching time
         foreach (var location in locations)
         {
-            if (_settings.Verbose)
+            if (_verbose)
             {
                 Console.WriteLine(location);
                 Console.WriteLine($"location start-time <= currenttime: {location.Start < time} ");
@@ -111,7 +114,7 @@ public class LocationController
             if (location.Start <= time && time < location.End)
             {
                 foundLocation = location;
-                if (_settings.Verbose)
+                if (_verbose)
                 {
                     Console.WriteLine($"\nfound location {foundLocation}");
                 }
@@ -124,7 +127,7 @@ public class LocationController
         if (foundLocation == null)
         {
             // no loctions found
-            if (_settings.Verbose)
+            if (_verbose)
             {
                 Console.WriteLine($"\nno location matching current time");
             }

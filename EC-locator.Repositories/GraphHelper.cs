@@ -14,19 +14,20 @@ using Microsoft.Graph;
 public class GraphHelper : IGraphHelper
 {
     private static GraphServiceClient? _graphClient;
-    private readonly string _clientId;
-    private readonly string _clientSecret;
-    private readonly string _tenantId;
-
+    private readonly string _clientId, _clientSecret, _tenantId;
+    private readonly string _teamId, _channelId;
+    
     // App-ony auth token credential
     private static ClientSecretCredential? _clientSecretCredential;
 
     // GraphClient for access to MS graph
-    public GraphHelper(IOptions<GraphHelperOptions> settingsOptions)
+    public GraphHelper(IOptions<GraphHelperOptions> settingsOptions, IOptions<TeamsOptions> teamsSettings)
     {
         _clientId = settingsOptions.Value.ClientId;
         _clientSecret = settingsOptions.Value.ClientSecret;
         _tenantId = settingsOptions.Value.TenantId;
+        _teamId = teamsSettings.Value.TeamId;
+        _channelId = teamsSettings.Value.ChannelId;
     }
 
     private void EnsureGraphForAppOnlyAuth()
@@ -87,11 +88,8 @@ public class GraphHelper : IGraphHelper
         // Ensure client isn't null
         _ = _graphClient ??
             throw new System.NullReferenceException("Graph has not been initialized ");
-
-        string? teamID = Settings.GetInstance().TeamId;
-        string? channelID = Settings.GetInstance().ChannelID;
-
-        var messages = _graphClient.Teams[teamID].Channels[channelID].Messages
+        
+        var messages = _graphClient.Teams[_teamId].Channels[_channelId].Messages
             .Request()
             .Select(m => new
             {

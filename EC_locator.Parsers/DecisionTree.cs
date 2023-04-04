@@ -1,15 +1,22 @@
 using EC_locator.Core.Models;
+using EC_locator.Core.SettingsOptions;
 using EC_locator.Parsers.Decisions;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace EC_locator.Parsers;
 
 public class DecisionTree : Node
 {
+    private IOptions<VerboseOptions> _options; 
+    public DecisionTree(IOptions<VerboseOptions> settingsOptions) : base(settingsOptions)
+    {
+        _options = settingsOptions;
+    }
     public override void Perform(SortedList<int, Location> locations, SortedList<int, TimeOnly> times)
     {
         // Action 1
-        var insertUndefined = new Action
+        var insertUndefined = new Action(_options)
         {
             Title = "Inserting Undefined at location 0",
             PerformAction = (locations, times) =>
@@ -19,11 +26,11 @@ public class DecisionTree : Node
                 return true;
             },
             
-            GoTo = new FinalResult(),
+            GoTo = new FinalResult(_options),
         };
         
         // Action 5
-        var deleteLocationNotMeeting = new Action
+        var deleteLocationNotMeeting = new Action(_options)
         {
             Title = "Deleting location not a meeting",
             PerformAction = (locations, times) =>
@@ -63,12 +70,12 @@ public class DecisionTree : Node
                 return true;
             },
             
-            GoTo = new FinalResult()
+            GoTo = new FinalResult(_options)
         };
         
         
         // Decision 8
-        var isMeetingPresent = new DecisionQuery
+        var isMeetingPresent = new DecisionQuery(_options)
         {
             Title = "Is meeting present as one of the additional locations",
             Test = (locations, times) =>
@@ -103,7 +110,7 @@ public class DecisionTree : Node
         };
         
         // Decision 7
-        var isLocationCountTwoHigherThanTime = new DecisionQuery
+        var isLocationCountTwoHigherThanTime = new DecisionQuery(_options)
         {
             Title = "Is location count two higher than time count",
             Test = (locations, times) =>
@@ -117,11 +124,11 @@ public class DecisionTree : Node
             },
  
             Positive = isMeetingPresent,
-            Negative = new FinalResult()
+            Negative = new FinalResult(_options)
         };
         
         // Action 5
-        var insertHomeA5= new Action
+        var insertHomeA5= new Action(_options)
         {
             Title = "Inserting home at location 0",
             PerformAction = (locations, times) =>
@@ -135,7 +142,7 @@ public class DecisionTree : Node
         
         
         // Decision 6
-        var isFirstLocationNotHome = new DecisionQuery
+        var isFirstLocationNotHome = new DecisionQuery(_options)
         {
             Title = "Is first location different from home",
             Test = (locations, times) =>
@@ -153,7 +160,7 @@ public class DecisionTree : Node
         };
         
         // Decision 5
-        var oneLocationOneTime = new DecisionQuery
+        var oneLocationOneTime = new DecisionQuery(_options)
         {
             Title = "Is there one location and one time",
             Test = (locations, times) =>
@@ -172,7 +179,7 @@ public class DecisionTree : Node
         };
         
         // Action 4
-        var insertHome = new Action
+        var insertHome = new Action(_options)
         {
             Title = "Inserting home at location 0",
             PerformAction = (locations, times) =>
@@ -185,7 +192,7 @@ public class DecisionTree : Node
         };
         
         // Action 3
-        var insertOffice = new Action
+        var insertOffice = new Action(_options)
         {
             Title = "Inserting office at location 0",
             PerformAction = (locations, times) =>
@@ -198,7 +205,7 @@ public class DecisionTree : Node
         };
         
         // Decision 4
-        var isFirstLocationOffice = new DecisionQuery
+        var isFirstLocationOffice = new DecisionQuery(_options)
         {
             Title = "Is the first location=office",
             Test = (locations, times) =>
@@ -218,7 +225,7 @@ public class DecisionTree : Node
         
         
         // Decision 3
-        var isFirstIndexTimeKeyword = new DecisionQuery
+        var isFirstIndexTimeKeyword = new DecisionQuery(_options)
         {
             Title = "Is the first index found a time keyword",
             Test = (locations, times) =>
@@ -237,7 +244,7 @@ public class DecisionTree : Node
         };
         
         // Decision 3
-        var noTimesAndMultipleLocations = new DecisionQuery
+        var noTimesAndMultipleLocations = new DecisionQuery(_options)
         {
             Title = "Does message contain multiple Locations and no Times",
             Test = (locations, times) =>
@@ -260,7 +267,7 @@ public class DecisionTree : Node
         
         
         // Action 2
-        var insertIll = new Action
+        var insertIll = new Action(_options)
         {
             Title = "Inserting Ill at location 0 and deleting other locations",
             PerformAction = (locations, times) =>
@@ -270,11 +277,11 @@ public class DecisionTree : Node
                 return true;
             },
             
-            GoTo = new FinalResult()
+            GoTo = new FinalResult(_options)
         };
         
         // Decision 2
-        var isIll = new DecisionQuery
+        var isIll = new DecisionQuery(_options)
         {
             Title = "Is location Ill identified",
             Test = (locations, times) =>
@@ -295,7 +302,7 @@ public class DecisionTree : Node
         };
 
         // Decision 1
-        var trunk = new DecisionQuery
+        var trunk = new DecisionQuery(_options)
         {
             Title = "Is Location Found",
             Test = (locations, times) =>

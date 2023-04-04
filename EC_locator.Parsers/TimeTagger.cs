@@ -1,6 +1,8 @@
 using EC_locator.Core;
 using EC_locator.Core.Interfaces;
+using EC_locator.Core.SettingsOptions;
 using EC_locator.Repositories;
+using Microsoft.Extensions.Options;
 
 namespace EC_locator.Parsers;
 
@@ -9,11 +11,10 @@ public class TimeTagger : ITimeTagger
     private readonly ILocatorRepository _locatorRepository;
     private readonly bool _verbose;
 
-    public TimeTagger(ILocatorRepository locatorRepository)
+    public TimeTagger(ILocatorRepository locatorRepository, IOptions<VerboseOptions> settingsOptions)
     {
-        var settings = Settings.GetInstance();
         _locatorRepository = locatorRepository;
-        _verbose = settings.Verbose;
+        _verbose = settingsOptions.Value.Verbose;
     }
 
     public SortedList<int, TimeOnly> GetTags(string message)

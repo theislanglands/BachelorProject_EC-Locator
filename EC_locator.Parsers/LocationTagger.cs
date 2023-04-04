@@ -1,9 +1,11 @@
 using EC_locator.Core;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
+using EC_locator.Core.SettingsOptions;
 using EC_locator.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace EC_locator.Parsers;
 
@@ -12,16 +14,10 @@ public class LocationTagger : ILocationTagger
     private readonly ILocatorRepository _locatorRepository;
     private readonly bool _verbose;
 
-    public LocationTagger(ILocatorRepository locatorRepository)
+    public LocationTagger(ILocatorRepository locatorRepository, IOptions<VerboseOptions> settingsOptions)
     {
-        var host = Host.CreateDefaultBuilder().ConfigureServices(
-                services =>
-                {
-                    services.AddSingleton<ISettings, Settings>();
-                })
-            .Build();
         _locatorRepository = locatorRepository;
-        _verbose = host.Services.GetRequiredService<ISettings>().GetInstance().Verbose;
+        _verbose = settingsOptions.Value.Verbose;
     }
 
     public SortedList<int, Location> GetTags(string message)                                    

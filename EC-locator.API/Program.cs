@@ -13,28 +13,32 @@ using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
 
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-// TODO update interfaces
 var builder = WebApplication.CreateBuilder(args);
 
-
-
-// set global environment variables
-initSettings();
-
 // Add services to the container.
+ConfigureSettingsOptions(builder.Services);
+
 ConfigureLocatorServices(builder.Services);
 ConfigureApiServices(builder.Services);
+
+// configuration for app settings
+void ConfigureSettingsOptions(IServiceCollection serviceCollection)
+{
+    serviceCollection.Configure<VerboseOptions>(builder.Configuration);
+    serviceCollection.Configure<GraphHelperOptions>(builder.Configuration.GetSection("AzureAd"));
+    serviceCollection.Configure<LocatorRepositoryOptions>(builder.Configuration.GetSection("MSSQL"));
+    serviceCollection.Configure<LocatorRepositoryOptions>(builder.Configuration.GetSection("DefaultLocation"));
+    serviceCollection.Configure<LocatorRepositoryOptions>(builder.Configuration.GetSection("TeamsOptions"));
+}
 
 void ConfigureLocatorServices(IServiceCollection services)
 {
     services.AddSingleton<IMessageParser, MessageParser>();
     services.AddSingleton<ITeamsRepository, TeamsRepository>();
     services.AddSingleton<ILocatorRepository, LocatorRepository>();
-    services.AddSingleton<ISettings, Settings>();
     
     // message parser services
     services.AddSingleton<ILocationTagger, LocationTagger>();
@@ -43,12 +47,6 @@ void ConfigureLocatorServices(IServiceCollection services)
     
     // repository services
     services.AddSingleton<IGraphHelper, GraphHelper>();
-    
-    // configuration for app settings
-    services.Configure<VerboseOptions>(builder.Configuration);
-    services.Configure<GraphHelperOptions>(builder.Configuration.GetSection("AzureAd"));
-    services.Configure<LocatorRepositoryOptions>(builder.Configuration.GetSection("MSSQL"));
-
 }
 
 void ConfigureApiServices(IServiceCollection services)
@@ -182,39 +180,4 @@ async Task TestGettingUsersFromTeamsRepo()
         Console.WriteLine($"  Email: {user.Mail ?? "NO EMAIL"}"); 
     }
     Environment.Exit(1);
-}
-
-void initSettings()
-{
-    // AZURE SETTINGS
-    
-    Settings.GetInstance().ClientId = builder.Configuration.GetSection("AzureAd")["ClientId"];
-    Settings.GetInstance().TenantId = builder.Configuration.GetSection("AzureAd")["TenantId"];
-    Settings.GetInstance().ClientSecret = builder.Configuration.GetSection("AzureAd")["ClientSecret"];
-    
-    // TEAMS SETTINGS
-    Settings.GetInstance().ChannelID = builder.Configuration.GetSection("TeamsChannel")["ChannelId"];
-    Settings.GetInstance().TeamId = builder.Configuration.GetSection("TeamsChannel")["TeamId"];
-    
-    // VERBOSE SETTINGS
-    Settings.GetInstance().Verbose = builder.Configuration.GetValue<bool>("Verbose");;
-    
-    // DEFAULT LOCATION AND TIME SETTINGS
-    int hour;
-    int minutes;
-    
-    // setting start time
-    hour = builder.Configuration.GetSection("TimeDefaults").GetSection("WorkStart").GetValue<int>("Hour");
-    minutes =  builder.Configuration.GetSection("TimeDefaults").GetSection("WorkStart").GetValue<int>("Minute");
-    Settings.GetInstance().WorkStartDefault = new TimeOnly(hour, minutes);
-    
-    // setting end time
-    hour = builder.Configuration.GetSection("TimeDefaults").GetSection("WorkEnd").GetValue<int>("Hour");
-    minutes =  builder.Configuration.GetSection("TimeDefaults").GetSection("WorkEnd").GetValue<int>("Minute");
-    Settings.GetInstance().WorkEndDefault = new TimeOnly(hour, minutes);
-    
-    // setting default Location
-    Location location = new Location();
-    location.Place = builder.Configuration.GetValue<string>("LocationDefault");
-    Settings.GetInstance().DefaultLocation = location;
 }

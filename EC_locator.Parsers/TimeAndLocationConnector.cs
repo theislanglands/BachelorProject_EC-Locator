@@ -1,7 +1,9 @@
 using EC_locator.Core;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
+using EC_locator.Core.SettingsOptions;
 using EC_locator.Repositories;
+using Microsoft.Extensions.Options;
 
 namespace EC_locator.Parsers;
 
@@ -9,15 +11,20 @@ public class TimeAndLocationConnector : ITimeAndLocationConnector
 {
     private ILocatorRepository? _locatorRepository;
     private readonly bool _verbose;
+    private readonly TimeOnly _workStartDefault;
+    private readonly TimeOnly _workEndDefault;
+
  
     private SortedList<int, Location>? _locationTags;
     private SortedList<int, TimeOnly>? _timeTags;
     private string _message;
 
-    public TimeAndLocationConnector(ILocatorRepository locatorRepository)
+    public TimeAndLocationConnector(ILocatorRepository locatorRepository, IOptions<VerboseOptions> settingsOptions, IOptions<DefaultLocationOptions> locationOptions)
     {
-        _verbose = Settings.GetInstance().Verbose;
+        _verbose = settingsOptions.Value.Verbose;
         _locatorRepository = locatorRepository;
+        _workStartDefault = locationOptions.Value.DefaultWorkStart;
+        _workEndDefault = locationOptions.Value.DefaultWorkEnd;
     }
 
     public List<Location> AddTimeToLocations(SortedList<int, Location> locationTags, SortedList<int, TimeOnly> timeTags, string message)
@@ -51,11 +58,11 @@ public class TimeAndLocationConnector : ITimeAndLocationConnector
             if (HasStartIndicator())
             {
                 _locationTags.Values[locationIndex].Start = _timeTags.Values[0];
-                _locationTags.Values[locationIndex].End = _timeTags.Values.Count == 1 ? Settings.GetInstance().WorkStartDefault : _timeTags.Values[1];
+                _locationTags.Values[locationIndex].End = _timeTags.Values.Count == 1 ? _workStartDefault : _timeTags.Values[1];
             }
             else
             {
-                _locationTags.Values[locationIndex].Start = Settings.GetInstance().WorkStartDefault;
+                _locationTags.Values[locationIndex].Start = _workStartDefault;
             }
         }
         // if not first location, set start time to end time of previous location
@@ -79,7 +86,7 @@ public class TimeAndLocationConnector : ITimeAndLocationConnector
                 }
                 else
                 {
-                    _locationTags.Values[locationIndex].End = Settings.GetInstance().WorkEndDefault;
+                    _locationTags.Values[locationIndex].End = _workEndDefault;
                 }
             }
             else

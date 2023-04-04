@@ -12,7 +12,6 @@ namespace EC_locator.Test;
 public class MessageParserTest
 {
     // TODO: create mock - only possible to mock interfaces!
-    private Settings _settings; 
     private ILocationTagger _locationTagger;
     private ITimeTagger _timeTagger;
     private ITimeAndLocationConnector _timeAndLocationConnector;
@@ -24,6 +23,7 @@ public class MessageParserTest
     [SetUp]
     public void Setup()
     {
+        // settings Options used in objects
         var verboseOptions = Options.Create(new VerboseOptions { Verbose = false });
         var locatorRepositoryOptions = Options.Create(new LocatorRepositoryOptions
         {
@@ -31,20 +31,19 @@ public class MessageParserTest
             UserId = "sa",
             Password = "Secretpassword1!"
         });
-        
-        // 
+        var locationOptions = Options.Create(new DefaultLocationOptions
+        {
+            DefaultWorkStart = new TimeOnly(9,0),
+            DefaultWorkEnd = new TimeOnly(16,0),
+            DefaultLocation = "office"
+        });
 
-        _settings = Settings.GetInstance();
-        _settings.WorkStartDefault = new TimeOnly(9, 0);
-        _settings.WorkEndDefault = new TimeOnly(16, 0);
-        _settings.DefaultLocation = new Location("office");
+        // Creating objects 
         _locatorRepository = new LocatorRepository(locatorRepositoryOptions, verboseOptions);
-        _locationTagger = new LocationTagger(_locatorRepository);
-        _timeTagger = new TimeTagger(_locatorRepository);
-        _timeAndLocationConnector = new TimeAndLocationConnector(_locatorRepository);
-
+        _locationTagger = new LocationTagger(_locatorRepository, verboseOptions);
+        _timeTagger = new TimeTagger(_locatorRepository, verboseOptions);
+        _timeAndLocationConnector = new TimeAndLocationConnector(_locatorRepository, verboseOptions, locationOptions);
         _messageParser = new MessageParser(_locationTagger, _timeTagger, _timeAndLocationConnector, verboseOptions);
-
         
         messageSamples = new Dictionary<string, Location[]>(); 
         AddHomeMessageSamples();

@@ -14,6 +14,7 @@ namespace EC_locator.Parsers;
 public class MessageParser : IMessageParser
 {
     private readonly bool _verbose;
+    private IOptions<VerboseOptions> _options;
     private readonly ILocationTagger _locationTagger;
     private readonly ITimeTagger _timeTagger;
     private readonly ITimeAndLocationConnector _timeAndLocationConnector;
@@ -28,6 +29,7 @@ public class MessageParser : IMessageParser
         _timeTagger = timeTagger;
         _timeAndLocationConnector = timeAndLocationConnector;
         _verbose = settingsOptions.Value.Verbose;
+        _options = settingsOptions;
     }
     
     public List<Location> GetLocations(string message)
@@ -62,7 +64,8 @@ public class MessageParser : IMessageParser
     
     private void ModifyLocationsFound()
     {
-        DecisionTree dt = new DecisionTree();
+        // TODO inject dependency!
+        DecisionTree dt = new DecisionTree(_options);
         dt.Perform(_locationTags, _timeTags);
     }
 }
