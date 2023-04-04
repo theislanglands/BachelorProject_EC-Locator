@@ -1,18 +1,28 @@
 using EC_locator.Core;
+using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
 using EC_locator.Repositories;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Parser;
 
 public class LocationTagger
 {
-    private readonly LocatorRepository? _locatorRepository;
+    private readonly ILocatorRepository _locatorRepository;
     private readonly bool _verbose;
 
     public LocationTagger()
     {
-        _locatorRepository= new LocatorRepository();
-        _verbose = Settings.GetInstance().Verbose;
+        var host = Host.CreateDefaultBuilder().ConfigureServices(
+                services =>
+                {
+                    services.AddSingleton<ISettings, Settings>();
+                    services.AddSingleton<ILocatorRepository, LocatorRepository>();
+                })
+            .Build();
+        _locatorRepository = host.Services.GetRequiredService<ILocatorRepository>();
+        _verbose = host.Services.GetRequiredService<ISettings>().GetInstance().Verbose;
     }
 
     public SortedList<int, Location> GetTags(string message)                                    

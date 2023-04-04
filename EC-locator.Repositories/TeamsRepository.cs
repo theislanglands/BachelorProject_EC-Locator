@@ -115,7 +115,7 @@ public class TeamsRepository : ITeamsRepository
             {
                 Console.WriteLine(message);
             }
-            Environment.Exit(1);
+            
             return concatenatedMessages.ToArray();
         }
 
@@ -224,7 +224,7 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
-                "Arbejder hjemmefra i morgen. Er et smut forbi tandlægen 12.30", // indeholder i morgen?
+                "Jeg starter ud hjemme 9.30 og er på kontoret til frokost",
                 
             };
             return messages;
@@ -271,10 +271,6 @@ public class TeamsRepository : ITeamsRepository
         return null;
     }
     
-    
-    
-    
-    
     public async Task<ArrayList> GetMessagesAsync()
     {
         ArrayList returnArray = new ArrayList();
@@ -286,7 +282,6 @@ public class TeamsRepository : ITeamsRepository
             // Output each users's details
             foreach (var user in userPage.CurrentPage)
             {
-
                 returnArray.Add(user);
             }
 

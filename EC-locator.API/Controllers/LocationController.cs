@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using EC_locator.Core;
+using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
 using EC_locator.Repositories;
 using Microsoft.AspNetCore.Cors;
@@ -14,17 +15,22 @@ namespace API.Controllers;
 [EnableCors]
 public class LocationController
 {
-    // TODO: use ITeamsrepository interface instead 
-    private TeamsRepository _teamsRepository = new TeamsRepository();
-    private MessageParser _messageParser = new MessageParser();
+    private ITeamsRepository _teamsRepository = new TeamsRepository();
+    private readonly IMessageParser _messageParser;
     Settings _settings = Settings.GetInstance();
 
+    public LocationController(IMessageParser messageParser)
+    {
+        _messageParser = messageParser;
+        
+    }
+    
     [HttpGet("{employeeId}")]
     public async Task<string> GetCurrentLocationAsync(string employeeId)
     {
         string latestMessage;
         Location foundLocation;
-        employeeId = "all";
+        employeeId = "wip";
 
         // fetch messages from today
         string[] messages = _teamsRepository.GetMessages(employeeId, new DateOnly());
@@ -38,7 +44,7 @@ public class LocationController
         
         // find current time
         TimeOnly currentTime = TimeOnly.FromDateTime(DateTime.Now);
-        // currentTime = new TimeOnly(9, 59);
+        currentTime = new TimeOnly(9, 15);
 
         if (_settings.Verbose)
         {
@@ -56,28 +62,47 @@ public class LocationController
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
-        
-        LocationReturn locationReturn = new LocationReturn
-        {
-            Place = foundLocation.Place,
-            LocationEndTime = foundLocation.End.Value.ToString(),
-            TeamMessage = latestMessage
-        };
 
-        return JsonSerializer.Serialize(locationReturn, options);
+
+        if (foundLocation != null)
+        {
+            LocationReturn locationReturn = new LocationReturn
+            {
+                Place = foundLocation.Place,
+                LocationEndTime = foundLocation.End.Value.ToString(),
+                TeamMessage = latestMessage
+                
+            };
+            return JsonSerializer.Serialize(locationReturn, options);
+
+        }
+        else
+        {
+            LocationReturn locationReturn = new LocationReturn
+            {
+                Place = "no location found",
+                LocationEndTime = "NA",
+                TeamMessage = "no location matching current time"
+
+            };
+            return JsonSerializer.Serialize(locationReturn, options);
+
+        }
+
+        //return JsonSerializer.Serialize(locationReturn, options);
     }
 
     private Location FindLocation(List<Location> locations, TimeOnly time)
     {
-        Location foundLocation = new Location();
+        Location foundLocation = null;
         // find the location matching time
         foreach (var location in locations)
         {
             if (_settings.Verbose)
             {
                 Console.WriteLine(location);
-                Console.WriteLine($"location.Start <= time: {location.Start < time} ");
-                Console.WriteLine($"time < location.End: {time < location.End} ");
+                Console.WriteLine($"location start-time <= currenttime: {location.Start < time} ");
+                Console.WriteLine($"current time < location-endtime: {time < location.End} ");
             }
 
             // see if current time is after startTime and beforeEndTime
@@ -93,13 +118,13 @@ public class LocationController
             }
         }
 
-        if (foundLocation.Start == null)
+        
+        if (foundLocation == null)
         {
             // no loctions found
-            foundLocation = new Location("unable to find location in Location Controller");
             if (_settings.Verbose)
             {
-                Console.WriteLine($"\nerror: {foundLocation}");
+                Console.WriteLine($"\nno location matching current time");
             }
         }
 

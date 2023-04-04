@@ -10,56 +10,67 @@ using Microsoft.Identity.Web;
 using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
 using Location = EC_locator.Core.Models.Location;
 
-
 // TODO update interfaces
-
 var builder = WebApplication.CreateBuilder(args);
 
 // set global environment variables
 initSettings();
 
-MessageParser messageParser = new MessageParser();
-TeamsRepository tr = new TeamsRepository();
-//CalendarRepository cr = new CalendarRepository();
-LocatorRepository lr = new LocatorRepository();
-
-/// var test = lr.GetStopIndicatorKeywordsDB();
-
-//tr.GetMessages("all", new DateOnly());
-Environment.Exit(1);
-// await TestGettingUsersFromTeamsRepo();
-
-//TestMessageParser();
-//TestTomorrow();
-// await tr.ListMessagesAsync();
-// await cr.GetCalendarEvents();
 
 
 // Add services to the container.
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "CorsPolicy",
-        policy =>
-        {
-            policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
-
-        });
+    if (builder.Environment.IsDevelopment())
+    {
+        options.AddPolicy(name: "CorsPolicy",
+            policy =>
+            {
+                policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
+            });
+    }
+    else
+    {
+        options.AddPolicy(name: "CorsPolicy",
+            policy =>
+            {
+                policy.WithOrigins(
+                        "http://localhost:5174")
+                    .WithMethods("GET", "POST", "OPTIONS");
+            });
+    }
 });
-/*
-policy.WithOrigins(
-        "http://localhost:5174")
-    .WithMethods("GET", "POST", "OPTIONS");
-*/
+
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
+builder.Services.AddSingleton<IMessageParser, MessageParser>();
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 var app = builder.Build();
+
+IMessageParser messageParser = app.Services.GetService<IMessageParser>();
+ITeamsRepository tr = new TeamsRepository();
+CalendarRepository cr = new CalendarRepository();
+ILocatorRepository lr = new LocatorRepository();
+
+
+/*
+var test = lr.GetStopIndicatorKeywords();
+tr.GetMessages("all", new DateOnly());
+await TestGettingUsersFromTeamsRepo();
+TestMessageParser();
+TestTomorrow();
+await tr.ListMessagesAsync();
+await cr.GetCalendarEvents();
+*/
+
+
 
 // Configure the HTTP request pipeline.
 app.UseCors("CorsPolicy");
@@ -74,6 +85,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
 
 void TestTomorrow()
 {
@@ -137,6 +149,7 @@ async Task TestGettingUsersFromTeamsRepo()
 void initSettings()
 {
     // AZURE SETTINGS
+    
     Settings.GetInstance().ClientId = builder.Configuration.GetSection("AzureAd")["ClientId"];
     Settings.GetInstance().TenantId = builder.Configuration.GetSection("AzureAd")["TenantId"];
     Settings.GetInstance().ClientSecret = builder.Configuration.GetSection("AzureAd")["ClientSecret"];

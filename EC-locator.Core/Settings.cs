@@ -7,7 +7,7 @@ namespace EC_locator.Core
 
 
 // singleton holding Azure settings
-public sealed class Settings
+public sealed class Settings : ISettings
 {
     // AZURE ACCESS
     public string? ClientId { get; set; }
@@ -25,11 +25,15 @@ public sealed class Settings
     public TimeOnly WorkStartDefault { get; set; }
     public TimeOnly WorkEndDefault { get; set; }
     public Location DefaultLocation { get; set; }
-    
-    
-    // Singleton instance
+
     private static Settings _instance;
     
+    public Settings()
+    {
+
+    }
+
+    // Singleton instance
     public static Settings GetInstance()
     {
         if (_instance == null)
@@ -38,6 +42,11 @@ public sealed class Settings
         }
         
         return _instance;
+    }
+
+    Settings ISettings.GetInstance()
+    {
+        return GetInstance();
     }
 }
 

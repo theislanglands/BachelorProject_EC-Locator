@@ -1,6 +1,8 @@
 ﻿using EC_locator.Core;
 using EC_locator.Core.Interfaces;
 using Location = EC_locator.Core.Models.Location;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Parser;
 
@@ -18,7 +20,15 @@ public class MessageParser : IMessageParser
     
     public MessageParser()
     {
-        _verbose = Settings.GetInstance().Verbose;
+        var host = Host.CreateDefaultBuilder().ConfigureServices(
+                services =>
+                {
+                    services.AddSingleton<ISettings, Settings>();
+                })
+            
+            .Build();
+        var settings = host.Services.GetRequiredService<ISettings>();
+        _verbose = settings.GetInstance().Verbose;
     }
     
     public List<Location> GetLocations(string message)
