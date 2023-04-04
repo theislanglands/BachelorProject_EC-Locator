@@ -39,6 +39,7 @@ void ConfigureLocatorServices(IServiceCollection services)
     services.AddSingleton<IMessageParser, MessageParser>();
     services.AddSingleton<ITeamsRepository, TeamsRepository>();
     services.AddSingleton<ILocatorRepository, LocatorRepository>();
+    services.AddSingleton<ICalendarRepository, CalendarRepository>();
     
     // message parser services
     services.AddSingleton<ILocationTagger, LocationTagger>();
@@ -86,23 +87,17 @@ var app = builder.Build();
 
 IMessageParser messageParser = app.Services.GetService<IMessageParser>();
 ITeamsRepository tr = app.Services.GetService<ITeamsRepository>();
-
-//CalendarRepository cr = new CalendarRepository();
-//ILocatorRepository lr = new LocatorRepository();
+ICalendarRepository cr = app.Services.GetService<ICalendarRepository>();
 ILocatorRepository lr = app.Services.GetService<ILocatorRepository>();
 
 
-
-/*
 var test = lr.GetStopIndicatorKeywords();
-tr.GetMessages("all", new DateOnly());
-await TestGettingUsersFromTeamsRepo();
-TestMessageParser();
-TestTomorrow();
-await tr.ListMessagesAsync();
-await cr.GetCalendarEvents();
-*/
-
+// tr.GetMessages("all", new DateOnly());
+// await TestGettingUsersFromTeamsRepo();
+//TestMessageParser();
+//TestTomorrow();
+// await tr.ListMessagesAsync();
+// await cr.GetCalendarEvents();
 
 
 // Configure the HTTP request pipeline.
@@ -119,10 +114,6 @@ app.UseAuthorization();
 app.MapControllers();
 app.Run();
 
-
-
-
-
 void TestTomorrow()
 {
     string[] messages = tr.GetMessages("wip", new DateOnly());
@@ -131,14 +122,6 @@ void TestTomorrow()
     {
         Console.WriteLine($"\n{message}");
         Console.WriteLine($"Contains tomorrow {messageParser.ContainsTomorrow(message)}");
-        /*
-        var locations = messageParser.GetLocations(message);
-
-        foreach (var location in locations)
-        {
-            Console.WriteLine(location);
-        }
-        */
     }
 
     Environment.Exit(1);
