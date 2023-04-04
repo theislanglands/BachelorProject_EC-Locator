@@ -47,6 +47,8 @@ void ConfigureLocatorServices(IServiceCollection services)
     // configuration for app settings
     services.Configure<VerboseOptions>(builder.Configuration);
     services.Configure<GraphHelperOptions>(builder.Configuration.GetSection("AzureAd"));
+    services.Configure<LocatorRepositoryOptions>(builder.Configuration.GetSection("MSSQL"));
+
 }
 
 void ConfigureApiServices(IServiceCollection services)
@@ -88,7 +90,9 @@ IMessageParser messageParser = app.Services.GetService<IMessageParser>();
 ITeamsRepository tr = app.Services.GetService<ITeamsRepository>();
 
 //CalendarRepository cr = new CalendarRepository();
-ILocatorRepository lr = new LocatorRepository();
+//ILocatorRepository lr = new LocatorRepository();
+ILocatorRepository lr = app.Services.GetService<ILocatorRepository>();
+
 
 
 /*

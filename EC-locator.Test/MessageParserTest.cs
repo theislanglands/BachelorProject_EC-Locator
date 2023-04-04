@@ -24,17 +24,26 @@ public class MessageParserTest
     [SetUp]
     public void Setup()
     {
+        var verboseOptions = Options.Create(new VerboseOptions { Verbose = false });
+        var locatorRepositoryOptions = Options.Create(new LocatorRepositoryOptions
+        {
+            Host = "localhost",
+            UserId = "sa",
+            Password = "Secretpassword1!"
+        });
+        
+        // 
+
         _settings = Settings.GetInstance();
         _settings.WorkStartDefault = new TimeOnly(9, 0);
         _settings.WorkEndDefault = new TimeOnly(16, 0);
         _settings.DefaultLocation = new Location("office");
-        _locatorRepository = new LocatorRepository();
+        _locatorRepository = new LocatorRepository(locatorRepositoryOptions, verboseOptions);
         _locationTagger = new LocationTagger(_locatorRepository);
         _timeTagger = new TimeTagger(_locatorRepository);
         _timeAndLocationConnector = new TimeAndLocationConnector(_locatorRepository);
-        var options = Options.Create(new VerboseOptions { Verbose = false });
 
-        _messageParser = new MessageParser(_locationTagger, _timeTagger, _timeAndLocationConnector, options);
+        _messageParser = new MessageParser(_locationTagger, _timeTagger, _timeAndLocationConnector, verboseOptions);
 
         
         messageSamples = new Dictionary<string, Location[]>(); 

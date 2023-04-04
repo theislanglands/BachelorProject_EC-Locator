@@ -1,22 +1,24 @@
 using EC_locator.Core;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
+using EC_locator.Core.SettingsOptions;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Options;
 
 namespace EC_locator.Repositories;
 
 public class LocatorRepository : ILocatorRepository
 {
-    private readonly Settings _settings;
+    private readonly bool _verbose;
     private SqlConnection connection;
     private readonly string _host, _userId, _password;
 
-    public LocatorRepository()
+    public LocatorRepository(IOptions<LocatorRepositoryOptions> databaseSettings, IOptions<VerboseOptions> verboseSettings)
     {
-        _settings = Settings.GetInstance();
-        _host = "localhost";
-        _userId = "sa";
-        _password = "Secretpassword1!";
+        _host = databaseSettings.Value.Host;
+        _userId = databaseSettings.Value.UserId;
+        _password = databaseSettings.Value.Password;
+        _verbose = verboseSettings.Value.Verbose;
     }
     
     public List<string> GetStopIndicatorKeywordsDB()
@@ -26,7 +28,7 @@ public class LocatorRepository : ILocatorRepository
         
         try
         {
-            if (_settings.Verbose)
+            if (_verbose)
             {
                 Console.WriteLine("reading Stop Indicator Keywords records");
             }
@@ -56,7 +58,7 @@ public class LocatorRepository : ILocatorRepository
         
         try
         {
-            if (_settings.Verbose)
+            if (_verbose)
             {
                 Console.WriteLine("reading Start Indicator Keywords records");
             }
@@ -86,7 +88,7 @@ public class LocatorRepository : ILocatorRepository
         
         try
         {
-            if (_settings.Verbose)
+            if (_verbose)
             {
                 Console.WriteLine("reading Minute Indicator records");
             }
@@ -118,7 +120,7 @@ public class LocatorRepository : ILocatorRepository
         
         try
         {
-            if (_settings.Verbose)
+            if (_verbose)
             {
                 Console.WriteLine("reading TimeKeywords records");
             }
@@ -150,7 +152,7 @@ public class LocatorRepository : ILocatorRepository
         
         try
         {
-            if (_settings.Verbose)
+            if (_verbose)
             {
                 Console.WriteLine("reading location records");
             }
@@ -182,7 +184,7 @@ public class LocatorRepository : ILocatorRepository
         
         try
         {
-            if (_settings.Verbose)
+            if (_verbose)
             {
                 Console.WriteLine("reading location keywords");
             }
@@ -365,7 +367,7 @@ public class LocatorRepository : ILocatorRepository
         
         try
         {
-            if (_settings.Verbose)
+            if (_verbose)
             {
                 Console.WriteLine("connecting to database");
             }
@@ -382,7 +384,7 @@ public class LocatorRepository : ILocatorRepository
     {
         try
         {
-            if (_settings.Verbose)
+            if (_verbose)
             {
                 Console.WriteLine("Closing database connection");
             }

@@ -2,19 +2,20 @@
 using EC_locator.Core;
 using Microsoft.Graph;
 using EC_locator.Core.Interfaces;
+using EC_locator.Core.SettingsOptions;
+using Microsoft.Extensions.Options;
 
 namespace EC_locator.Repositories;
 
 public class TeamsRepository : ITeamsRepository
 {
-    private IGraphHelper _graphHelper;
+    private readonly IGraphHelper _graphHelper;
     private readonly bool _verbose;
-
-    Settings _settings = Settings.GetInstance();
-
-    public TeamsRepository(IGraphHelper graphHelper)
+    
+    public TeamsRepository(IGraphHelper graphHelper, IOptions<VerboseOptions> settingsOptions)
     {
         _graphHelper = graphHelper;
+        _verbose = settingsOptions.Value.Verbose;
     }
     
     public async Task<List<User>> GetUsersAsync()
@@ -54,7 +55,7 @@ public class TeamsRepository : ITeamsRepository
             // If NextPageRequest is not null, there are more user available on the server
             // Access the next page: userPage.NextPageRequest.GetAsync();
             var moreAvailable = userPage.NextPageRequest != null;
-            if (_settings.Verbose)
+            if (_verbose)
             {
                 Console.WriteLine($"\nMore users available? {moreAvailable}");
             }
@@ -62,7 +63,7 @@ public class TeamsRepository : ITeamsRepository
         }
         catch (Exception ex)
         {
-            if (_settings.Verbose)
+            if (_verbose)
             {
                 Console.WriteLine($"Error getting users: {ex.Message}");
             }

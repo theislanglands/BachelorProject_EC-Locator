@@ -14,10 +14,9 @@ using Microsoft.Graph;
 public class GraphHelper : IGraphHelper
 {
     private static GraphServiceClient? _graphClient;
-    private string _clientId, _clientSecret, _teanantId;
-    
-    // Settings object
-    private static readonly Settings? _settings = Settings.GetInstance();
+    private readonly string _clientId;
+    private readonly string _clientSecret;
+    private readonly string _tenantId;
 
     // App-ony auth token credential
     private static ClientSecretCredential? _clientSecretCredential;
@@ -27,14 +26,13 @@ public class GraphHelper : IGraphHelper
     {
         _clientId = settingsOptions.Value.ClientId;
         _clientSecret = settingsOptions.Value.ClientSecret;
-        _teanantId = settingsOptions.Value.TenantId;
-        Console.WriteLine($"CID: {_clientId}, CS: {_clientSecret}, TID: {_teanantId}" );
+        _tenantId = settingsOptions.Value.TenantId;
     }
 
     private void EnsureGraphForAppOnlyAuth()
     {
         // Ensure settings has been initialized
-        if (_settings.ClientId == null || _settings.ClientSecret == null || _settings.TenantId == null)
+        if (_clientId == null || _clientSecret == null || _tenantId == null)
         {
             throw new System.NullReferenceException("MS Graph Settings not initialized");
         }
@@ -42,7 +40,7 @@ public class GraphHelper : IGraphHelper
         if (_clientSecretCredential == null)
         {
             _clientSecretCredential = new ClientSecretCredential(
-                _settings.TenantId, _settings.ClientId, _settings.ClientSecret);
+                _tenantId, _clientId, _clientSecret);
         }
 
         if (_graphClient == null)

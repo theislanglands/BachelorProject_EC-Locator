@@ -2,6 +2,8 @@ using EC_locator.Core.Interfaces;
 
 using System.Collections;
 using EC_locator.Core;
+using EC_locator.Core.SettingsOptions;
+using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 
 
@@ -9,13 +11,14 @@ namespace EC_locator.Repositories;
 
 public class CalendarRepository : ICalendarRepository
 {
+    private readonly bool _verbose;
     private IGraphHelper _graphHelper;
-    Settings _settings = Settings.GetInstance();
     // CALENDAR EVENTS ALL-DAY
 
-    public CalendarRepository(IGraphHelper graphHelper)
+    public CalendarRepository(IGraphHelper graphHelper, IOptions<VerboseOptions> settingsOptions)
     {
         _graphHelper = graphHelper;
+        _verbose = settingsOptions.Value.Verbose;
     }
 
     public async Task<List<User>> GetCalendarEvents()
