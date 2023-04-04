@@ -1,4 +1,3 @@
-using EC_locator.Core;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.SettingsOptions;
 using EC_locator.Repositories;
@@ -18,7 +17,7 @@ public class MessageParserTest
     private ILocatorRepository _locatorRepository;
     MessageParser _messageParser;
 
-    private Dictionary<string, Location[]> messageSamples;
+    private Dictionary<string, Location[]> _messageSamples;
 
     [SetUp]
     public void Setup()
@@ -33,8 +32,8 @@ public class MessageParserTest
         });
         var locationOptions = Options.Create(new DefaultLocationOptions
         {
-            DefaultWorkStart = new TimeOnly(9,0),
-            DefaultWorkEnd = new TimeOnly(16,0),
+            DefaultWorkStart = "9:00",
+            DefaultWorkEnd = "16:00",
             DefaultLocation = "office"
         });
 
@@ -45,7 +44,7 @@ public class MessageParserTest
         _timeAndLocationConnector = new TimeAndLocationConnector(_locatorRepository, verboseOptions, locationOptions);
         _messageParser = new MessageParser(_locationTagger, _timeTagger, _timeAndLocationConnector, verboseOptions);
         
-        messageSamples = new Dictionary<string, Location[]>(); 
+        _messageSamples = new Dictionary<string, Location[]>(); 
         AddHomeMessageSamples();
         AddHomeAndOfficeMessageSamples();
         AddIllMessageSamples(); 
@@ -57,7 +56,7 @@ public class MessageParserTest
     [Test]
     public void MessageSample_ReturnsCorrectLocationObjects()
     {
-        foreach (var message in messageSamples)
+        foreach (var message in _messageSamples)
         {
             TestLocation(message);
         }
@@ -83,7 +82,7 @@ public class MessageParserTest
 
     private void AddMeetingAndRemoteMessageSamples()
     {
-        messageSamples.Add(
+        _messageSamples.Add(
             "Thomas, Gorm og jeg tager ned til Nørgaard Mikkelsen til møde, forventer at være retur 10.30",
             new[]
             {
@@ -96,7 +95,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "office")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Starter til møde hos NM. Er tilbage lidt over 10.",
             new[]
             {
@@ -109,7 +108,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "office")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Morn - jeg starter hos lægen og kører på Popermo efterfølgende",
             new []
             {
@@ -118,7 +117,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "remote"),
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Er til møde ved Alumeco indtil 11.30 i morgen og arbejder hjemme fra derefter.",
             new []
             {
@@ -131,7 +130,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "home"),
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Jeg tager hjem og arbejder efter zoo mødet  Hovedet driller lidt i dag. ",
             new []
             {
@@ -144,7 +143,7 @@ public class MessageParserTest
 
     private void AddHomeAndOfficeMessageSamples()
     {
-        messageSamples.Add(
+        _messageSamples.Add(
             "0930 på kontoret",
             new []
             {
@@ -157,7 +156,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "office")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Jeg bliver hjemme indtil jeg kan aflevere min cykel til service klokken 10, og så kommer jeg ind.",
             new []
             {
@@ -170,7 +169,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "office")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Jeg smutter til tandlæge her klokken 12. Arbejder muligvis hjemmefra efter.",
             new []
             {
@@ -183,7 +182,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "home")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Jeg tager lige en time mere fra hjemmekontoret. Er inde ca. kl 10",
             new []
             {
@@ -196,7 +195,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "office")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Kommer ind på kontoret omkring kl. 11",
             new []
             {
@@ -209,7 +208,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "office")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Godmorgen, jeg starter ud hjemme og kommer ind omkring kl 10",
             new []
             {
@@ -222,7 +221,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "office")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Godmorgen. Jeg starter hjemme, men forventer at være på kontoret kl 10. Vi ses ✌",
             new []
             {
@@ -235,7 +234,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "office")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Er inde 9:15",
             new []
             {
@@ -248,7 +247,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "office")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Jeg er på kontoret cirka 09.30",
             new []
             {
@@ -266,7 +265,7 @@ public class MessageParserTest
 
     private void AddHomeMessageSamples()
     {
-        messageSamples.Add(
+        _messageSamples.Add(
             "Jeg er på hjemmefra i dag",
             new []
             {
@@ -275,7 +274,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "home")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Godmorgen. Jeg er på hjemmekontoret idag",
             new []
             {
@@ -284,7 +283,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "home")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Morn - det bliver endnu en dag på hjemmekontoret - dels pga. bentøjet og dels for at få ro til at forberede Popermo til næste uge",
             new []
             {
@@ -293,7 +292,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "home")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Jeg er på hjemmefra i dag.",
             new []
             {
@@ -306,7 +305,7 @@ public class MessageParserTest
 
     private void AddStartAndStopMessageSamples()
     {
-        messageSamples.Add(
+        _messageSamples.Add(
             "Jeg starter lige hjemme og er på kontoret til frokost",
             new []
             {
@@ -319,7 +318,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "office")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Jeg starter ud hjemme 9.30 og er på kontoret til frokost",
             new []
             {
@@ -332,7 +331,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "office")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "I morgen arbejder jeg hjemmefra og stopper 11.30",
             new []
             {
@@ -341,7 +340,7 @@ public class MessageParserTest
                     new TimeOnly(11, 30),
                     "home"),
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Vejret gjorde lige det helt lidt mere bøvlet her til morgen. Jeg er inde omkring kvart over 9...",
             new []
             {
@@ -359,7 +358,7 @@ public class MessageParserTest
 
     private void AddIllMessageSamples()
     {
-        messageSamples.Add(
+        _messageSamples.Add(
             "tager en dag under dynen",
             new []
             {
@@ -368,7 +367,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "ill")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Er hjemme med syge piger, så er lidt on/off hele dagen",
             new []
             {
@@ -377,7 +376,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "ill")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Jeg har krammet toilettet hele natten, så jeg er hjemme, og sover forhåbentligt",
             new []
             {
@@ -386,7 +385,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "ill")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Er ikke på toppen - Er on/off i dag",
             new []
             {
@@ -395,7 +394,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "ill")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Stadig ikke på toppen, men arbejder det jeg kan",
             new []
             {
@@ -404,7 +403,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "ill")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Er helt smadret - bliver under dynen, og ser om jeg kan arbejde senere",
             new []
             {
@@ -413,7 +412,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "ill")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "Jeg er slet ikke på toppen, så jeg bliver hjemme i dag",
             new []
             {
@@ -422,7 +421,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "ill")
             });
-        messageSamples.Add(
+        _messageSamples.Add(
             "jeg er syg i dag",
             new []
             {
@@ -435,7 +434,7 @@ public class MessageParserTest
 
     private void AddNegationMessageSamples()
     {
-        messageSamples.Add(
+        _messageSamples.Add(
             "Kommer ikke på kontoret",
             new []
             {

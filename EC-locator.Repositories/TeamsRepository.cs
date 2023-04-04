@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using EC_locator.Core;
 using Microsoft.Graph;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.SettingsOptions;
@@ -20,20 +19,22 @@ public class TeamsRepository : ITeamsRepository
     
     public async Task<List<User>> GetUsersAsync()
     {
-        List<string> excludedEmails = new List<string>();
-        excludedEmails.Add("zookort2@ecreo.dk");
-        excludedEmails.Add("zookort1@ecreo.dk");
-        excludedEmails.Add("webmuseet@ecreo.dk");
-        excludedEmails.Add("support@ecreo.dk");
-        excludedEmails.Add("stortmodelokale@ecreo.dk");
-        excludedEmails.Add("roundtable@ecreo.dk");
-        excludedEmails.Add("projekter@ecreo.dk");
-        excludedEmails.Add("leasymail@ecreo.dk");
-        excludedEmails.Add("kantinen@ecreo.dk");
-        excludedEmails.Add("it@ecreo.dk");
-        excludedEmails.Add("fod.kal@ecreo.dk");
-        excludedEmails.Add("backup.email@ecreo.dk");
-        excludedEmails.Add("bogholder@ecreo.dk");
+        List<string> excludedEmails = new List<string>
+        {
+            "zookort2@ecreo.dk",
+            "zookort1@ecreo.dk",
+            "webmuseet@ecreo.dk",
+            "support@ecreo.dk",
+            "stortmodelokale@ecreo.dk",
+            "roundtable@ecreo.dk",
+            "projekter@ecreo.dk",
+            "leasymail@ecreo.dk",
+            "kantinen@ecreo.dk",
+            "it@ecreo.dk",
+            "fod.kal@ecreo.dk",
+            "backup.email@ecreo.dk",
+            "bogholder@ecreo.dk"
+        };
 
         List<User> users = new();
         try
@@ -270,7 +271,7 @@ public class TeamsRepository : ITeamsRepository
             };
             return messages;
         }
-        
+
         return null;
     }
     

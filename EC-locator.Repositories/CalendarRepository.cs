@@ -8,7 +8,7 @@ namespace EC_locator.Repositories;
 public class CalendarRepository : ICalendarRepository
 {
     private readonly bool _verbose;
-    private IGraphHelper _graphHelper;
+    private readonly IGraphHelper _graphHelper;
     // CALENDAR EVENTS ALL-DAY
 
     public CalendarRepository(IGraphHelper graphHelper, IOptions<VerboseOptions> settingsOptions)

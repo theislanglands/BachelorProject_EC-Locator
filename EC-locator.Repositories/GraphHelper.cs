@@ -35,7 +35,7 @@ public class GraphHelper : IGraphHelper
         // Ensure settings has been initialized
         if (_clientId == null || _clientSecret == null || _tenantId == null)
         {
-            throw new System.NullReferenceException("MS Graph Settings not initialized");
+            throw new NullReferenceException("MS Graph Settings not initialized");
         }
 
         if (_clientSecretCredential == null)
@@ -57,7 +57,7 @@ public class GraphHelper : IGraphHelper
     {
         EnsureGraphForAppOnlyAuth();
         _ = _graphClient ??
-            throw new System.NullReferenceException("Graph has not been initialized ");
+            throw new NullReferenceException("Graph has not been initialized ");
 
         // Define the filter criteria to exclude room resources
         List<Option> options = new List<Option>
@@ -87,7 +87,7 @@ public class GraphHelper : IGraphHelper
 
         // Ensure client isn't null
         _ = _graphClient ??
-            throw new System.NullReferenceException("Graph has not been initialized ");
+            throw new NullReferenceException("Graph has not been initialized ");
         
         var messages = _graphClient.Teams[_teamId].Channels[_channelId].Messages
             .Request()
@@ -106,7 +106,7 @@ public class GraphHelper : IGraphHelper
     {
         EnsureGraphForAppOnlyAuth();
         _ = _graphClient ??
-            throw new System.NullReferenceException("Graph has not been initialized ");
+            throw new NullReferenceException("Graph has not been initialized ");
         
         var start = "2022-11-20T10:00:00.0000000"; //for debug only
         var end = "2024-11-20T23:00:00.0000000"; 

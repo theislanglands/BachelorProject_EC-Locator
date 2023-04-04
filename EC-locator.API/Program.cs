@@ -30,8 +30,8 @@ void ConfigureSettingsOptions(IServiceCollection serviceCollection)
     serviceCollection.Configure<VerboseOptions>(builder.Configuration);
     serviceCollection.Configure<GraphHelperOptions>(builder.Configuration.GetSection("AzureAd"));
     serviceCollection.Configure<LocatorRepositoryOptions>(builder.Configuration.GetSection("MSSQL"));
-    serviceCollection.Configure<LocatorRepositoryOptions>(builder.Configuration.GetSection("DefaultLocation"));
-    serviceCollection.Configure<LocatorRepositoryOptions>(builder.Configuration.GetSection("TeamsOptions"));
+    serviceCollection.Configure<DefaultLocationOptions>(builder.Configuration.GetSection("DefaultLocation"));
+    serviceCollection.Configure<TeamsOptions>(builder.Configuration.GetSection("TeamsOptions"));
 }
 
 void ConfigureLocatorServices(IServiceCollection services)

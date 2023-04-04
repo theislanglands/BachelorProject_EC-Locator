@@ -19,7 +19,7 @@ namespace API.Controllers;
 [EnableCors]
 public class LocationController
 {
-    private ITeamsRepository _teamsRepository;
+    private readonly ITeamsRepository _teamsRepository;
     private readonly IMessageParser _messageParser;
     private readonly bool _verbose;
     
@@ -35,7 +35,7 @@ public class LocationController
     {
         string latestMessage;
         Location foundLocation;
-        employeeId = "wip";
+        employeeId = "all";
 
         // fetch messages from today
         string[] messages = _teamsRepository.GetMessages(employeeId, new DateOnly());
@@ -49,7 +49,7 @@ public class LocationController
         
         // find current time
         TimeOnly currentTime = TimeOnly.FromDateTime(DateTime.Now);
-        currentTime = new TimeOnly(9, 15);
+        currentTime = new TimeOnly(11, 27);
 
         if (_verbose)
         {
@@ -61,7 +61,7 @@ public class LocationController
         
         foundLocation = FindLocation(locations, currentTime);
         
-        var options = new JsonSerializerOptions
+        var jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -78,7 +78,7 @@ public class LocationController
                 TeamMessage = latestMessage
                 
             };
-            return JsonSerializer.Serialize(locationReturn, options);
+            return JsonSerializer.Serialize(locationReturn, jsonOptions);
 
         }
         else
@@ -90,11 +90,8 @@ public class LocationController
                 TeamMessage = "no location matching current time"
 
             };
-            return JsonSerializer.Serialize(locationReturn, options);
-
+            return JsonSerializer.Serialize(locationReturn, jsonOptions);
         }
-
-        //return JsonSerializer.Serialize(locationReturn, options);
     }
 
     private Location FindLocation(List<Location> locations, TimeOnly time)

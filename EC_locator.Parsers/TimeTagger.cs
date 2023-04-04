@@ -1,7 +1,5 @@
-using EC_locator.Core;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.SettingsOptions;
-using EC_locator.Repositories;
 using Microsoft.Extensions.Options;
 
 namespace EC_locator.Parsers;

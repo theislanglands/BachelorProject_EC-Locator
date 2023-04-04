@@ -1,30 +1,29 @@
-using EC_locator.Core;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
 using EC_locator.Core.SettingsOptions;
-using EC_locator.Repositories;
 using Microsoft.Extensions.Options;
 
 namespace EC_locator.Parsers;
 
 public class TimeAndLocationConnector : ITimeAndLocationConnector
 {
-    private ILocatorRepository? _locatorRepository;
+    private readonly ILocatorRepository _locatorRepository;
     private readonly bool _verbose;
     private readonly TimeOnly _workStartDefault;
     private readonly TimeOnly _workEndDefault;
-
- 
-    private SortedList<int, Location>? _locationTags;
-    private SortedList<int, TimeOnly>? _timeTags;
-    private string _message;
+    
+    private SortedList<int, Location> _locationTags;
+    private SortedList<int, TimeOnly> _timeTags;
+    private string? _message;
 
     public TimeAndLocationConnector(ILocatorRepository locatorRepository, IOptions<VerboseOptions> settingsOptions, IOptions<DefaultLocationOptions> locationOptions)
     {
-        _verbose = settingsOptions.Value.Verbose;
         _locatorRepository = locatorRepository;
-        _workStartDefault = locationOptions.Value.DefaultWorkStart;
-        _workEndDefault = locationOptions.Value.DefaultWorkEnd;
+        string[] workStart = locationOptions.Value.DefaultWorkStart.Split(':');
+        string[] workEnd = locationOptions.Value.DefaultWorkEnd.Split(':');
+        _workStartDefault = new TimeOnly(int.Parse(workStart[0]),int.Parse(workStart[1]));
+        _workEndDefault = new TimeOnly(int.Parse(workEnd[0]), int.Parse(workEnd[1]));
+        _verbose = settingsOptions.Value.Verbose;
     }
 
     public List<Location> AddTimeToLocations(SortedList<int, Location> locationTags, SortedList<int, TimeOnly> timeTags, string message)
@@ -77,7 +76,7 @@ public class TimeAndLocationConnector : ITimeAndLocationConnector
         // run if end time has not been set
         if (_locationTags.Values[locationIndex].End == null)
         {
-            // if last location has and end-indicater, set to last time, otherwise default
+            // if last location has and end-indicator, set to last time, otherwise default
             if (locationIndex == _locationTags.Count - 1)
             {
                 if (HasStopIndicator())
@@ -100,7 +99,7 @@ public class TimeAndLocationConnector : ITimeAndLocationConnector
     {
         foreach (var startIndicator in _locatorRepository.GetStartIndicatorKeywords())
         {
-            if (_timeTags.Count > 0 && _message[.._timeTags.Keys[0]].Contains(startIndicator))
+            if (_message != null && _timeTags.Count > 0 && _message[.._timeTags.Keys[0]].Contains(startIndicator))
             {
                 return (_locationTags.Count.Equals(_timeTags.Count));
             }
@@ -111,7 +110,7 @@ public class TimeAndLocationConnector : ITimeAndLocationConnector
     {
         foreach (var stopIndicator in _locatorRepository.GetStopIndicatorKeywords())
         {
-            if (_timeTags.Count > 0 && _message[.._timeTags.Keys[^1]].Contains(stopIndicator))
+            if (_message != null && _timeTags.Count > 0 && _message[.._timeTags.Keys[^1]].Contains(stopIndicator))
             {
                 return true;
             }

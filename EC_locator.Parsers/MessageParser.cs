@@ -1,12 +1,6 @@
-﻿using System.Collections.Immutable;
-using EC_locator.Core;
-
-using EC_locator.Core.Interfaces;
+﻿using EC_locator.Core.Interfaces;
 using EC_locator.Core.SettingsOptions;
-using Microsoft.Extensions.Configuration;
 using Location = EC_locator.Core.Models.Location;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace EC_locator.Parsers;
@@ -14,7 +8,7 @@ namespace EC_locator.Parsers;
 public class MessageParser : IMessageParser
 {
     private readonly bool _verbose;
-    private IOptions<VerboseOptions> _options;
+    private readonly IOptions<VerboseOptions> _options;
     private readonly ILocationTagger _locationTagger;
     private readonly ITimeTagger _timeTagger;
     private readonly ITimeAndLocationConnector _timeAndLocationConnector;

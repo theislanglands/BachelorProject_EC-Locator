@@ -8,7 +8,7 @@ namespace EC_locator.Parsers;
 
 public class DecisionTree : Node
 {
-    private IOptions<VerboseOptions> _options; 
+    private readonly IOptions<VerboseOptions> _options; 
     public DecisionTree(IOptions<VerboseOptions> settingsOptions) : base(settingsOptions)
     {
         _options = settingsOptions;
@@ -35,7 +35,6 @@ public class DecisionTree : Node
             Title = "Deleting location not a meeting",
             PerformAction = (locations, times) =>
             {
-                int locationToRemove = -1;
                 foreach (var location in locations)
                 {
                     // identifying to consecutive locations
@@ -54,18 +53,6 @@ public class DecisionTree : Node
                             }
                         }
                     }
-                    /*
-                    if (locationToRemove == -1)
-                    {
-                        _locations.Clear();
-                        _locations.Add(0, new Location("undefined"));
-                    }
-                    
-                    {
-                        //Console.WriteLine("moving location not a meeting");
-                        _locations.Remove(_locations.Keys[locationToRemove]);
-                    }
-                    */
                 }
                 return true;
             },
