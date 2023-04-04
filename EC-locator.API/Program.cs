@@ -2,19 +2,20 @@ using System.Collections;
 using EC_locator.Core;
 using EC_locator.Repositories;
 using EC_locator.Core.Interfaces;
-using Parser;
+using EC_locator.Parsers;
+using Location = EC_locator.Core.Models.Location;
+using EC_locator.Core.SettingsOptions;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
-using Location = EC_locator.Core.Models.Location;
+
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using GlobalSettings = EC_locator.Core.GlobalSettings;
-
 
 // TODO update interfaces
 var builder = WebApplication.CreateBuilder(args);
@@ -34,16 +35,18 @@ void ConfigureLocatorServices(IServiceCollection services)
     services.AddSingleton<ITeamsRepository, TeamsRepository>();
     services.AddSingleton<ILocatorRepository, LocatorRepository>();
     services.AddSingleton<ISettings, Settings>();
-        
-    //services.AddSingleton(typeof(IConfiguration), builder.Configuration);
-    services.Configure<GlobalSettings>(builder.Configuration);
-
-    
     
     // message parser services
     services.AddSingleton<ILocationTagger, LocationTagger>();
     services.AddSingleton<ITimeTagger, TimeTagger>();
     services.AddSingleton<ITimeAndLocationConnector, TimeAndLocationConnector>();
+    
+    // repository services
+    services.AddSingleton<IGraphHelper, GraphHelper>();
+    
+    // configuration for app settings
+    services.Configure<VerboseOptions>(builder.Configuration);
+    services.Configure<GraphHelperOptions>(builder.Configuration.GetSection("AzureAd"));
 }
 
 void ConfigureApiServices(IServiceCollection services)
@@ -82,8 +85,9 @@ void ConfigureApiServices(IServiceCollection services)
 var app = builder.Build();
 
 IMessageParser messageParser = app.Services.GetService<IMessageParser>();
-ITeamsRepository tr = new TeamsRepository();
-CalendarRepository cr = new CalendarRepository();
+ITeamsRepository tr = app.Services.GetService<ITeamsRepository>();
+
+//CalendarRepository cr = new CalendarRepository();
 ILocatorRepository lr = new LocatorRepository();
 
 

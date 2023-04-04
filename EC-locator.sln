@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC-locator.API", "EC-locator.API\EC-locator.API.csproj", "{20424D46-EAF2-4C6B-82F5-9906E651953F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageParser", "MessageParser\MessageParser.csproj", "{012B5781-AE71-4D94-8829-1C0DFB565427}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC_locator.Parsers", "EC_locator.Parsers\EC_locator.Parsers.csproj", "{012B5781-AE71-4D94-8829-1C0DFB565427}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC-locator.Core", "EC-locator.Core\EC-locator.Core.csproj", "{4597E471-18C0-450E-8C72-6A07D62F86A6}"
 EndProject

@@ -1,6 +1,6 @@
 using EC_locator.Core.Models;
 
-namespace Parser.Decisions;
+namespace EC_locator.Parsers.Decisions;
 
 public class IsLocationsFound : DecisionQuery
 {

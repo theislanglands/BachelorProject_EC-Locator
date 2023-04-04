@@ -9,13 +9,13 @@ namespace EC_locator.Repositories;
 
 public class CalendarRepository : ICalendarRepository
 {
-    private GraphHelper _graphHelper;
+    private IGraphHelper _graphHelper;
     Settings _settings = Settings.GetInstance();
     // CALENDAR EVENTS ALL-DAY
 
-    public CalendarRepository()
+    public CalendarRepository(IGraphHelper graphHelper)
     {
-        _graphHelper = new GraphHelper();
+        _graphHelper = graphHelper;
     }
 
     public async Task<List<User>> GetCalendarEvents()
@@ -27,7 +27,7 @@ public class CalendarRepository : ICalendarRepository
         
         // theis
         var employeeId = "6e5ee9cb-11cb-405d-aaa8-60c3768340c3";
-        await GraphHelper.getCalendarEventsAsync(employeeId);
+        await _graphHelper.getCalendarEventsAsync(employeeId);
         return null;
     }
 }

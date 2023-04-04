@@ -1,8 +1,8 @@
 using EC_locator.Core.Models;
+using EC_locator.Parsers.Decisions;
 using Microsoft.IdentityModel.Tokens;
-using Parser.Decisions;
 
-namespace Parser;
+namespace EC_locator.Parsers;
 
 public class DecisionTree : Node
 {

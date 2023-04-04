@@ -7,12 +7,14 @@ namespace EC_locator.Repositories;
 
 public class TeamsRepository : ITeamsRepository
 {
-    private GraphHelper _graphHelper;
+    private IGraphHelper _graphHelper;
+    private readonly bool _verbose;
+
     Settings _settings = Settings.GetInstance();
 
-    public TeamsRepository()
+    public TeamsRepository(IGraphHelper graphHelper)
     {
-        _graphHelper = new GraphHelper();
+        _graphHelper = graphHelper;
     }
     
     public async Task<List<User>> GetUsersAsync()
@@ -35,7 +37,7 @@ public class TeamsRepository : ITeamsRepository
         List<User> users = new();
         try
         {
-            var userPage = await GraphHelper.GetUsersAsync();
+            var userPage = await _graphHelper.GetUsersAsync();
 
             // adding fetched users to list containing @ecroe.dk
             foreach (var user in userPage.CurrentPage)
@@ -73,7 +75,7 @@ public class TeamsRepository : ITeamsRepository
     {
         try
         {
-            var messagePage = await GraphHelper.getMessagesAsync();
+            var messagePage = await _graphHelper.getMessagesAsync();
     
             // Output message details
             foreach (var message in messagePage.CurrentPage)
@@ -277,7 +279,7 @@ public class TeamsRepository : ITeamsRepository
         try
         {
             
-            var userPage = await GraphHelper.GetUsersAsync();
+            var userPage = await _graphHelper.GetUsersAsync();
 
             // Output each users's details
             foreach (var user in userPage.CurrentPage)

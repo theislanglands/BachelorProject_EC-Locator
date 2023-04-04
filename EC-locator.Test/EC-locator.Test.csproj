@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MessageParser\MessageParser.csproj" />
+      <ProjectReference Include="..\EC_locator.Parsers\EC_locator.Parsers.csproj" />
     </ItemGroup>
 
 </Project>

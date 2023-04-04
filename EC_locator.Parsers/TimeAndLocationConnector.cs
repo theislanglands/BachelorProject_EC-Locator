@@ -3,7 +3,7 @@ using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
 using EC_locator.Repositories;
 
-namespace Parser;
+namespace EC_locator.Parsers;
 
 public class TimeAndLocationConnector : ITimeAndLocationConnector
 {

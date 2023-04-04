@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
+using EC_locator.Core.SettingsOptions;
+using Microsoft.Extensions.Options;
+
 namespace EC_locator.Repositories;
 
 using EC_locator.Core;
@@ -8,19 +11,27 @@ using Azure.Core;
 using Azure.Identity;
 using Microsoft.Graph;
 
-class GraphHelper
+public class GraphHelper : IGraphHelper
 {
-
-// Settings object
+    private static GraphServiceClient? _graphClient;
+    private string _clientId, _clientSecret, _teanantId;
+    
+    // Settings object
     private static readonly Settings? _settings = Settings.GetInstance();
 
     // App-ony auth token credential
     private static ClientSecretCredential? _clientSecretCredential;
 
     // GraphClient for access to MS graph
-    private static GraphServiceClient? _graphClient;
+    public GraphHelper(IOptions<GraphHelperOptions> settingsOptions)
+    {
+        _clientId = settingsOptions.Value.ClientId;
+        _clientSecret = settingsOptions.Value.ClientSecret;
+        _teanantId = settingsOptions.Value.TenantId;
+        Console.WriteLine($"CID: {_clientId}, CS: {_clientSecret}, TID: {_teanantId}" );
+    }
 
-    private static void EnsureGraphForAppOnlyAuth()
+    private void EnsureGraphForAppOnlyAuth()
     {
         // Ensure settings has been initialized
         if (_settings.ClientId == null || _settings.ClientSecret == null || _settings.TenantId == null)
@@ -43,7 +54,7 @@ class GraphHelper
     }
 
     // Get Users
-    public static Task<IGraphServiceUsersCollectionPage> GetUsersAsync()
+    public Task<IGraphServiceUsersCollectionPage> GetUsersAsync()
     {
         EnsureGraphForAppOnlyAuth();
         _ = _graphClient ??
@@ -69,11 +80,9 @@ class GraphHelper
             .GetAsync();
         
         return fetchedUsers;
-
-
     }
 
-    public static Task<IChannelMessagesCollectionPage> getMessagesAsync()
+    public Task<IChannelMessagesCollectionPage> getMessagesAsync()
     {
         EnsureGraphForAppOnlyAuth();
 
@@ -97,7 +106,7 @@ class GraphHelper
         return messages;
     }
     
-    public static Task<IChannelMessagesCollectionPage> getCalendarEventsAsync(string employeeId)
+    public Task<IChannelMessagesCollectionPage> getCalendarEventsAsync(string employeeId)
     {
         EnsureGraphForAppOnlyAuth();
         _ = _graphClient ??
@@ -126,9 +135,9 @@ class GraphHelper
             Console.WriteLine($"body pw: {ev.BodyPreview}");
 
         }
-        
+
+        Console.WriteLine("Exiting program");
         Environment.Exit(1);
-            
         
         return null;
     }

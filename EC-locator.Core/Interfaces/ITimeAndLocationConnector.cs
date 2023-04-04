@@ -1,6 +1,6 @@
 using EC_locator.Core.Models;
 
-namespace Parser;
+namespace EC_locator.Parsers;
 
 public interface ITimeAndLocationConnector
 {

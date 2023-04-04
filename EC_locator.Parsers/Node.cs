@@ -1,7 +1,7 @@
 using EC_locator.Core;
 using Location = EC_locator.Core.Models.Location;
 
-namespace Parser;
+namespace EC_locator.Parsers;
 
 public abstract class Node
 

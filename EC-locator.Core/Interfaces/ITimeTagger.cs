@@ -1,4 +1,4 @@
-namespace Parser;
+namespace EC_locator.Parsers;
 
 public interface ITimeTagger
 {

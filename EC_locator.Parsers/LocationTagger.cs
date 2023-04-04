@@ -5,7 +5,7 @@ using EC_locator.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Parser;
+namespace EC_locator.Parsers;
 
 public class LocationTagger : ILocationTagger
 {

@@ -1,7 +1,9 @@
 using EC_locator.Core;
 using EC_locator.Core.Interfaces;
+using EC_locator.Core.SettingsOptions;
 using EC_locator.Repositories;
-using Parser;
+using Microsoft.Extensions.Options;
+using EC_locator.Parsers;
 using Location = EC_locator.Core.Models.Location;
 
 namespace EC_locator.Test;
@@ -30,7 +32,10 @@ public class MessageParserTest
         _locationTagger = new LocationTagger(_locatorRepository);
         _timeTagger = new TimeTagger(_locatorRepository);
         _timeAndLocationConnector = new TimeAndLocationConnector(_locatorRepository);
-        _messageParser = new MessageParser(_settings, _locationTagger, _timeTagger, _timeAndLocationConnector);
+        var options = Options.Create(new VerboseOptions { Verbose = false });
+
+        _messageParser = new MessageParser(_locationTagger, _timeTagger, _timeAndLocationConnector, options);
+
         
         messageSamples = new Dictionary<string, Location[]>(); 
         AddHomeMessageSamples();

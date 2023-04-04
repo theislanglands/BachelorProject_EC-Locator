@@ -17,10 +17,14 @@ namespace API.Controllers;
 [EnableCors]
 public class UsersController : ControllerBase
 {
-    
-    // TODO: use ITeamsrepository interface instead 
-    private TeamsRepository _teamsRepository = new TeamsRepository();
-    
+    private readonly ITeamsRepository _teamsRepository;
+
+    public UsersController(ITeamsRepository teamsRepository)
+    {
+        _teamsRepository = teamsRepository;
+    }
+
+
     [HttpGet]
     public async Task<string> GetUsers()
     {
