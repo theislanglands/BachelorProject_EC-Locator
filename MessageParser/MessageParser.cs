@@ -9,26 +9,24 @@ namespace Parser;
 public class MessageParser : IMessageParser
 {
     private readonly bool _verbose;
+    private readonly Settings _settings;
  
     // index of identified tags in message
     private SortedList<int, Location>? _locationTags;
     private SortedList<int, TimeOnly>? _timeTags;
     
-    private readonly LocationTagger _locationTagger = new();
-    private readonly TimeTagger _timeTagger = new();
-    private readonly TimeAndLocationConnector _timeAndLocationConnector = new();
-    
-    public MessageParser()
+    private readonly ILocationTagger _locationTagger;
+    private readonly ITimeTagger _timeTagger;
+    private readonly ITimeAndLocationConnector _timeAndLocationConnector;
+
+
+    public MessageParser(ISettings settings, ILocationTagger locationTagger, ITimeTagger timeTagger, ITimeAndLocationConnector timeAndLocationConnector)
     {
-        var host = Host.CreateDefaultBuilder().ConfigureServices(
-                services =>
-                {
-                    services.AddSingleton<ISettings, Settings>();
-                })
-            
-            .Build();
-        var settings = host.Services.GetRequiredService<ISettings>();
-        _verbose = settings.GetInstance().Verbose;
+        _settings = settings.GetInstance();
+        _locationTagger = locationTagger;
+        _timeTagger = timeTagger;
+        _timeAndLocationConnector = timeAndLocationConnector;
+        _verbose = _settings.Verbose;
     }
     
     public List<Location> GetLocations(string message)

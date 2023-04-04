@@ -4,7 +4,7 @@ using EC_locator.Repositories;
 
 namespace Parser;
 
-public class TimeAndLocationConnector
+public class TimeAndLocationConnector : ITimeAndLocationConnector
 {
     private static LocatorRepository? _locatorRepository;
     private readonly bool _verbose;

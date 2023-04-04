@@ -3,7 +3,7 @@ using EC_locator.Repositories;
 
 namespace Parser;
 
-public class TimeTagger
+public class TimeTagger : ITimeTagger
 {
     private readonly LocatorRepository _locatorRepository;
     private readonly bool _verbose;

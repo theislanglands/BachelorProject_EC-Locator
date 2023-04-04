@@ -15,14 +15,14 @@ namespace API.Controllers;
 [EnableCors]
 public class LocationController
 {
-    private ITeamsRepository _teamsRepository = new TeamsRepository();
+    private ITeamsRepository _teamsRepository;
     private readonly IMessageParser _messageParser;
     Settings _settings = Settings.GetInstance();
 
-    public LocationController(IMessageParser messageParser)
+    public LocationController(IMessageParser messageParser, ITeamsRepository teamsRepository)
     {
         _messageParser = messageParser;
-        
+        _teamsRepository = teamsRepository;
     }
     
     [HttpGet("{employeeId}")]

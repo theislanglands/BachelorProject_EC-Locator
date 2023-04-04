@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Parser;
 
-public class LocationTagger
+public class LocationTagger : ILocationTagger
 {
     private readonly ILocatorRepository _locatorRepository;
     private readonly bool _verbose;

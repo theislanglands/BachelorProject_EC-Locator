@@ -1,4 +1,5 @@
 using EC_locator.Core;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Parser;
 using Location = EC_locator.Core.Models.Location;
 
@@ -8,7 +9,10 @@ namespace EC_locator.Test;
 public class MessageParserTest
 {
     // TODO: create mock - only possible to mock interfaces!
-    Settings _settings = Settings.GetInstance();
+    private Settings _settings; 
+    private LocationTagger _locationTagger;
+    private TimeTagger _timeTagger;
+    private TimeAndLocationConnector _timeAndLocationConnector;
     MessageParser mp;
 
     private Dictionary<string, Location[]> messageSamples;
@@ -16,11 +20,15 @@ public class MessageParserTest
     [SetUp]
     public void Setup()
     {
+        _settings = Settings.GetInstance();
+        _locationTagger = new LocationTagger();
+        _timeTagger = new TimeTagger();
+        _timeAndLocationConnector = new TimeAndLocationConnector();
         _settings.WorkStartDefault = new TimeOnly(9, 0);
         _settings.WorkEndDefault = new TimeOnly(16, 0);
         _settings.DefaultLocation = new Location("office");
         
-        mp = new MessageParser();
+        mp = new MessageParser(_settings, _locationTagger, _timeTagger, _timeAndLocationConnector);
         
         
         messageSamples = new Dictionary<string, Location[]>(); 

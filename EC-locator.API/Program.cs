@@ -5,6 +5,7 @@ using EC_locator.Core.Interfaces;
 using Parser;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
@@ -16,41 +17,54 @@ var builder = WebApplication.CreateBuilder(args);
 // set global environment variables
 initSettings();
 
-
-
 // Add services to the container.
+ConfigureLocatorServices(builder.Services);
+ConfigureApiServices(builder.Services);
 
-builder.Services.AddCors(options =>
+void ConfigureLocatorServices(IServiceCollection services)
 {
-    if (builder.Environment.IsDevelopment())
+    services.AddSingleton<IMessageParser, MessageParser>();
+    services.AddSingleton<ITeamsRepository, TeamsRepository>();
+    services.AddSingleton<ISettings, Settings>();
+    
+    // message parser services
+    services.AddSingleton<ILocationTagger, LocationTagger>();
+    services.AddSingleton<ITimeTagger, TimeTagger>();
+    services.AddSingleton<ITimeAndLocationConnector, TimeAndLocationConnector>();
+}
+
+void ConfigureApiServices(IServiceCollection services)
+{
+    builder.Services.AddCors(options =>
     {
-        options.AddPolicy(name: "CorsPolicy",
-            policy =>
-            {
-                policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
-            });
-    }
-    else
-    {
-        options.AddPolicy(name: "CorsPolicy",
-            policy =>
-            {
-                policy.WithOrigins(
-                        "http://localhost:5174")
-                    .WithMethods("GET", "POST", "OPTIONS");
-            });
-    }
-});
-
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
-
-builder.Services.AddSingleton<IMessageParser, MessageParser>();
-builder.Services.AddControllers();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+        if (builder.Environment.IsDevelopment())
+        {
+            options.AddPolicy(name: "CorsPolicy",
+                policy =>
+                {
+                    policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
+                });
+        }
+        else
+        {
+            options.AddPolicy(name: "CorsPolicy",
+                policy =>
+                {
+                    policy.WithOrigins(
+                            "http://localhost:5174")
+                        .WithMethods("GET", "POST", "OPTIONS");
+                });
+        }
+    });
+    
+    
+    services.AddControllers();
+    //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+    
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen();
+}
 
 var app = builder.Build();
 
@@ -85,6 +99,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+
+
 
 
 void TestTomorrow()
