@@ -88,17 +88,31 @@ public class GraphHelper : IGraphHelper
         // Ensure client isn't null
         _ = _graphClient ??
             throw new NullReferenceException("Graph has not been initialized ");
-        
-        var messages = _graphClient.Teams[_teamId].Channels[_channelId].Messages
+
+        var messages = _graphClient
+            .Teams[_teamId]
+            .Channels[_channelId]
+            .Messages
             .Request()
-            .Select(m => new
-            {
-                // Only request specific properties
-                m.Id
-            })
-            .Top(3)
+            //.Filter($"lastModifiedDateTime gt 2023-04-10T06:14:43.1329004z")
+            .Top(10)
             .GetAsync();
 
+        foreach (var message in messages.Result)
+        {
+            Console.WriteLine("\n-- Message --");
+            Console.WriteLine($"Message ID: {message.Id}");
+            Console.WriteLine($"Message content: {message.Body.Content}");
+            Console.WriteLine($"Message subject: {message.Subject}");
+            Console.WriteLine($"Message replies: {message.Replies}");
+            Console.WriteLine($"Message summary: {message.Summary}");
+            Console.WriteLine($"Message createdDateTime: {message.CreatedDateTime}");
+            Console.WriteLine($"Message lastEditedDateTime: {message.LastModifiedDateTime}");
+            Console.WriteLine($"Message From.user.Displayname: {message.From.User.DisplayName}");
+
+        }
+
+        Environment.Exit(1);
         return messages;
     }
     

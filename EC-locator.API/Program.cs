@@ -20,20 +20,50 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 ConfigureSettingsOptions(builder.Services);
-
 ConfigureLocatorServices(builder.Services);
 ConfigureApiServices(builder.Services);
 
-// configuration for app settings
+var app = builder.Build();
+
+IMessageParser messageParser = app.Services.GetService<IMessageParser>();
+ITeamsRepository tr = app.Services.GetService<ITeamsRepository>();
+ICalendarRepository cr = app.Services.GetService<ICalendarRepository>();
+ILocatorRepository lr = app.Services.GetService<ILocatorRepository>();
+
+var test = lr.GetStopIndicatorKeywords();
+// tr.GetMessages("all", new DateOnly());
+// await TestGettingUsersFromTeamsRepo();
+//TestMessageParser();
+//TestTomorrow();
+await tr.ListMessagesAsync();
+// await cr.GetCalendarEvents();
+
+// Configure the HTTP request pipeline.
+app.UseCors("CorsPolicy");
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
+
+
+// configurations for app settings
 void ConfigureSettingsOptions(IServiceCollection serviceCollection)
 {
     serviceCollection.Configure<VerboseOptions>(builder.Configuration);
     serviceCollection.Configure<GraphHelperOptions>(builder.Configuration.GetSection("AzureAd"));
     serviceCollection.Configure<LocatorRepositoryOptions>(builder.Configuration.GetSection("MSSQL"));
     serviceCollection.Configure<DefaultLocationOptions>(builder.Configuration.GetSection("DefaultLocation"));
-    serviceCollection.Configure<TeamsOptions>(builder.Configuration.GetSection("TeamsOptions"));
+    serviceCollection.Configure<TeamsOptions>(builder.Configuration.GetSection("TeamsChannel"));
 }
 
+// Application Services
 void ConfigureLocatorServices(IServiceCollection services)
 {
     services.AddSingleton<IMessageParser, MessageParser>();
@@ -50,6 +80,7 @@ void ConfigureLocatorServices(IServiceCollection services)
     services.AddSingleton<IGraphHelper, GraphHelper>();
 }
 
+// Api configuration
 void ConfigureApiServices(IServiceCollection services)
 {
     builder.Services.AddCors(options =>
@@ -74,7 +105,6 @@ void ConfigureApiServices(IServiceCollection services)
         }
     });
     
-    
     services.AddControllers();
     //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
     
@@ -82,37 +112,6 @@ void ConfigureApiServices(IServiceCollection services)
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
 }
-
-var app = builder.Build();
-
-IMessageParser messageParser = app.Services.GetService<IMessageParser>();
-ITeamsRepository tr = app.Services.GetService<ITeamsRepository>();
-ICalendarRepository cr = app.Services.GetService<ICalendarRepository>();
-ILocatorRepository lr = app.Services.GetService<ILocatorRepository>();
-
-
-var test = lr.GetStopIndicatorKeywords();
-// tr.GetMessages("all", new DateOnly());
-// await TestGettingUsersFromTeamsRepo();
-//TestMessageParser();
-//TestTomorrow();
-// await tr.ListMessagesAsync();
-// await cr.GetCalendarEvents();
-
-
-// Configure the HTTP request pipeline.
-app.UseCors("CorsPolicy");
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
-app.Run();
 
 void TestTomorrow()
 {

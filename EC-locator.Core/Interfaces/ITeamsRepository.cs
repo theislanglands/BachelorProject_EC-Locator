@@ -12,7 +12,7 @@ public interface ITeamsRepository
 
     // TODO: FOR TESTING - to be deleted
     
-    // testing conncection to messages
+    // testing connection to messages
     Task ListMessagesAsync();
     
     // returns hardcoded messages

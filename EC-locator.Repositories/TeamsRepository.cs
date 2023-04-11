@@ -75,6 +75,7 @@ public class TeamsRepository : ITeamsRepository
     
     public async Task ListMessagesAsync()
     {
+        Console.WriteLine("In list messages async");
         try
         {
             var messagePage = await _graphHelper.getMessagesAsync();
