@@ -87,7 +87,7 @@ public class TeamsRepository : ITeamsRepository
         }
         try
         {
-            var messages = await _graphHelper.getMessagesAsync();
+            var messages = await _graphHelper.GetMessagesAsync(date);
             
                 foreach (var message in messages.CurrentPage)
                 {
@@ -153,7 +153,7 @@ public class TeamsRepository : ITeamsRepository
         }
         try
         {
-            var messages = await _graphHelper.getMessagesAsync();
+            var messages = await _graphHelper.GetMessagesAsync(DateOnly.FromDateTime(DateTime.Now));
 
             // Output message details
             foreach (var message in messages.CurrentPage)
@@ -242,6 +242,8 @@ public class TeamsRepository : ITeamsRepository
                 "Godmorgen. Jeg starter hjemme, men forventer at være på kontoret kl 10. Vi ses ✌",
                 "Er inde 9:15",
                 "Jeg er på kontoret cirka 09.30",
+                "Er hjemmefra med Otto indtil backup kommer Jeg er inde inden frokost",
+
             };
             return messages;
         }
@@ -256,6 +258,8 @@ public class TeamsRepository : ITeamsRepository
                 "Morn - jeg starter hos lægen og kører på Popermo efterfølgende",
                 "Er til møde ved Alumeco indtil 11.30 i morgen og arbejder hjemme fra derefter.",
                 "Jeg tager hjem og arbejder efter zoo mødet  Hovedet driller lidt i dag. ",
+                "Jeg er i Nørresundby hele dagen i morgen hos Continia sammen med Martin, Simone og Jesper",
+
             };
             return messages;
         }
@@ -314,6 +318,8 @@ public class TeamsRepository : ITeamsRepository
             string[] messages =
             {
                 "I morgen arbejder jeg hjemmefra og stopper 11.30",
+                "Arbejder hjemme i dag og går fra ved frokosttid. God påske ",
+
             };
             return messages;
         }
@@ -322,8 +328,15 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
-                "Jeg starter ud hjemme 9.30 og er på kontoret til frokost",
+                "Det er som om min forkølelse er blusset op igen, så jeg er nok først på senere.",
+                "Jeg døjer stadig med øjenmigræne hvilket gør at det slører for mine øjne. Der er gode og dårlige timer. Jeg håber at komme ind på kontoret til formiddag",
+                "0920", // home 9- office start 920 -> time with no location => insert office
                 
+                "Jeg holder weekend ved 14 tiden  God påske til jer der går på ferie",
+                "Den lille er stadigvæk syg, arbejde det jeg kan ind i mellem",
+                "Felix er desværre syg med feber så tager den hjemmefra, så meget det er muligt 🤒",
+                "Jeg er på hjemmefra i morgen.",
+                "Jeg er først på kontoret omkring kl 10 i morgen",
             };
             return messages;
         }
@@ -334,6 +347,8 @@ public class TeamsRepository : ITeamsRepository
             string[] messages =
             {
                 "Kommer ikke på kontoret", // ikke negering
+                "Otto er desværre blevet syg, så jeg holder hjemmefronten indtil backup ankommer. Er på kontoret inden 11", // Syg, men på kontoret
+
 
             };
             return messages;

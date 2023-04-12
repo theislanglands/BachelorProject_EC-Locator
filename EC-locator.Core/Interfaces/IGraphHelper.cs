@@ -8,5 +8,5 @@ public interface IGraphHelper
     //Task<IChannelMessagesCollectionPage> getMessagesAsync();
     Task<IChannelMessagesCollectionPage> getCalendarEventsAsync(string employeeId);
 
-    Task<IChatMessageDeltaCollectionPage> getMessagesAsync();
+    Task<IChatMessageDeltaCollectionPage> GetMessagesAsync(DateOnly date);
 }

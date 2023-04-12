@@ -7,8 +7,6 @@ using Microsoft.Extensions.Options;
 
 namespace EC_locator.Repositories;
 
-using EC_locator.Core;
-using Azure.Core;
 using Azure.Identity;
 using Microsoft.Graph;
 
@@ -70,7 +68,6 @@ public class GraphHelper : IGraphHelper
             .Request()
             .Select(u => new
             {
-                // Only request specific properties
                 u.DisplayName,
                 u.Id,
                 u.Mail,
@@ -81,19 +78,15 @@ public class GraphHelper : IGraphHelper
         
         return fetchedUsers;
     }
-
-    //public Task<IChannelMessagesCollectionPage> getMessagesAsync()
-
-    public Task<IChatMessageDeltaCollectionPage> getMessagesAsync()
+    
+    public Task<IChatMessageDeltaCollectionPage> GetMessagesAsync(DateOnly date)
     {
         EnsureGraphForAppOnlyAuth();
-
-        // Ensure client isn't null
         _ = _graphClient ??
             throw new NullReferenceException("Graph has not been initialized ");
+
+        string dateString = date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "Z";
         
-        // AddDays(0) = today, -1 = yesterday & today!
-        string dateString = DateTime.Now.AddDays(0).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "Z";
         var messages = _graphClient
             .Teams[_teamId]
             .Channels[_channelId]

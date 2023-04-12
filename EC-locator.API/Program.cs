@@ -30,20 +30,24 @@ ITeamsRepository tr = app.Services.GetService<ITeamsRepository>();
 ICalendarRepository cr = app.Services.GetService<ICalendarRepository>();
 ILocatorRepository lr = app.Services.GetService<ILocatorRepository>();
 
-var test = lr.GetStopIndicatorKeywords();
+// var test = lr.GetStopIndicatorKeywords();
 // tr.GetMessages("all", new DateOnly());
 // await TestGettingUsersFromTeamsRepo();
-//TestMessageParser();
-//TestTomorrow();
+TestMessageParser();
+// TestTomorrow();
 // await tr.ListMessagesAsync();
-//var messages = await tr.GetMessagesAsync("3c2d2c7a-ae61-4019-b497-38f8d9ef3218", DateOnly.FromDateTime(DateTime.Now));
-//foreach (var message in messages)
-//{
-//    Console.WriteLine(message);
-//}
-// await cr.GetCalendarEvents();
 
-//Environment.Exit(1);
+/*
+var messages = await tr.GetMessagesAsync("3c2d2c7a-ae61-4019-b497-38f8d9ef3218", DateOnly.FromDateTime(DateTime.Now));
+foreach (var message in messages)
+{
+    Console.WriteLine(message);
+}
+*/
+
+// await cr.GetCalendarEvents();
+Environment.Exit(1);
+
 // Configure the HTTP request pipeline.
 app.UseCors("CorsPolicy");
 

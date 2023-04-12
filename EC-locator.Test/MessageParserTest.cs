@@ -139,6 +139,15 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "undefined"),
             });
+        _messageSamples.Add(
+            "Jeg er i Nørresundby hele dagen i morgen hos Continia sammen med Martin, Simone og Jesper",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9,0),
+                    new TimeOnly(16, 0),
+                    "remote"),
+            });
     }
 
     private void AddHomeAndOfficeMessageSamples()
@@ -260,6 +269,19 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "office")
             });
+        _messageSamples.Add(
+            "Er hjemmefra med Otto indtil backup kommer Jeg er inde inden frokost",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(11, 15),
+                    "home"),
+                new Location(
+                    new TimeOnly(11, 15),
+                    new TimeOnly(16, 0),
+                    "office")
+            });
     }
 
 
@@ -353,9 +375,24 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "office")
             });
+        _messageSamples.Add(
+            "Arbejder hjemme i dag og går fra ved frokosttid. God påske ",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9, 00),
+                    new TimeOnly(11, 15),
+                    "home"),
+                new Location(
+                    new TimeOnly(11, 15),
+                    new TimeOnly(16, 0),
+                    "day-off")
+            });
     }
 
 
+    
+    
     private void AddIllMessageSamples()
     {
         _messageSamples.Add(

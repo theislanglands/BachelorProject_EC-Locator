@@ -287,6 +287,29 @@ public class DecisionTree : Node
             Positive = insertIll,
             Negative = noTimesAndMultipleLocations
         };
+        
+        // Decision 1a
+        var oneTimeNoLocations = new DecisionQuery(_options)
+        {
+            Title = "one time and no locations",
+            Test = (locations, times) =>
+            {
+                foreach (var location in locations)
+                {
+                    if (times.Count == 1 && locations.Count == 0) 
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            },
+            
+            Positive = insertIll,
+            Negative = noTimesAndMultipleLocations
+        };
+        
+        
 
         // Decision 1
         var trunk = new DecisionQuery(_options)

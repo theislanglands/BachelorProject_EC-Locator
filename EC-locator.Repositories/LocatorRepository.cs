@@ -239,7 +239,12 @@ public class LocatorRepository : ILocatorRepository
             {  "skidt" ,"ill" },
             {  "under dynen" ,"ill" },
             {  "toilet" ,"ill" },
-
+            {  "migræne" ,"ill" },
+            
+            {  "Otto" ,"KidsIll" },
+            {  "den lille" ,"KidsIll" },
+            {  "feberbørn" ,"KidsIll" },
+            
             { "møde", "meeting" },
             
             { "hjem", "home" },
@@ -272,11 +277,11 @@ public class LocatorRepository : ILocatorRepository
             { "fridag", "day-off" },
             { "holder weekend", "day-off" },
             { "off", "day-off" },
+            { "går fra ved", "day-off" },
 
             { "tager ud til", "remote" },
             { "tager ned til", "remote" },
-            { "er hos", "remote" },
-            { "ved", "remote" }
+            { "hos", "remote" },
         };
         
         // replacing string[] with dictionary
@@ -333,6 +338,8 @@ public class LocatorRepository : ILocatorRepository
         
         return timeKeywords;
     }
+    
+
     
     
     // NOT USED
