@@ -11,7 +11,6 @@ using EC_locator.Parsers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-
 namespace API.Controllers;
 
 [ApiController]

@@ -78,31 +78,41 @@ public class TeamsRepository : ITeamsRepository
         Console.WriteLine("In list messages async");
         try
         {
-            var messagePage = await _graphHelper.getMessagesAsync();
-    
+            var messages = await _graphHelper.getMessagesAsync();
+
+            Console.WriteLine("In Teams repo print");
             // Output message details
-            foreach (var message in messagePage.CurrentPage)
+            foreach (var message in messages.CurrentPage)
             {
                 //Console.WriteLine($"User: {message.Body.Content ?? "NO CONTENT"}");
-                Console.WriteLine($"  ID: {message.Id}");
+                Console.WriteLine("\n-- Message in TR --");
+                Console.WriteLine($"Message ID: {message.Id}");
+                Console.WriteLine($"Message content: {message.Body.Content}");
+                // Console.WriteLine($"Message subject: {message.Subject}");
+                // Console.WriteLine($"Message replies: {message.Replies.Count}"); // Can be null! if no replies
+                Console.WriteLine($"Content type: {message.Body.ContentType.Value}");
+                // Console.WriteLine($"Message createdDateTime: {message.CreatedDateTime}");
+                Console.WriteLine($"Message lastEditedDateTime: {message.LastModifiedDateTime}");
+                // Console.WriteLine($"Message From.user.Displayname: {message.From.User.DisplayName}");
+                Console.WriteLine($"Message From.user.Id: {message.From.User.Id}");
             }
             
             // If NextPageRequest is not null, there are more messages available on the server
-            
-            
-            await messagePage.NextPageRequest.GetAsync();
-            var moreAvailable = messagePage.NextPageRequest != null;
+            /*
+            await messages.NextPageRequest.GetAsync();
+            var moreAvailable = messages.NextPageRequest != null;
             Console.WriteLine($"\nMore messages available? {moreAvailable}");
+            */
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error getting messages: {ex.Message}");
         }
+        Environment.Exit(1);
     }
     
     public string[] GetMessages(string employeeId, DateOnly date)
     {
-
         if (employeeId.Equals("all"))
         {
             var concatenatedMessages = this.GetMessages("sample1", new DateOnly()).ToList();

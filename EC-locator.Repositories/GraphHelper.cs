@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
+using System.Globalization;
 using EC_locator.Core.SettingsOptions;
 using Microsoft.Extensions.Options;
 
@@ -81,38 +82,27 @@ public class GraphHelper : IGraphHelper
         return fetchedUsers;
     }
 
-    public Task<IChannelMessagesCollectionPage> getMessagesAsync()
+    //public Task<IChannelMessagesCollectionPage> getMessagesAsync()
+
+    public Task<IChatMessageDeltaCollectionPage> getMessagesAsync()
     {
         EnsureGraphForAppOnlyAuth();
 
         // Ensure client isn't null
         _ = _graphClient ??
             throw new NullReferenceException("Graph has not been initialized ");
-
+        
+        // AddDays(0) = today, -1 = yesterday & today!
+        string dateString = DateTime.Now.AddDays(0).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "Z";
         var messages = _graphClient
             .Teams[_teamId]
             .Channels[_channelId]
             .Messages
+            .Delta()
             .Request()
-            //.Filter($"lastModifiedDateTime gt 2023-04-10T06:14:43.1329004z")
-            .Top(10)
+            .Filter($"lastModifiedDateTime gt {dateString}")
             .GetAsync();
 
-        foreach (var message in messages.Result)
-        {
-            Console.WriteLine("\n-- Message --");
-            Console.WriteLine($"Message ID: {message.Id}");
-            Console.WriteLine($"Message content: {message.Body.Content}");
-            Console.WriteLine($"Message subject: {message.Subject}");
-            Console.WriteLine($"Message replies: {message.Replies}");
-            Console.WriteLine($"Message summary: {message.Summary}");
-            Console.WriteLine($"Message createdDateTime: {message.CreatedDateTime}");
-            Console.WriteLine($"Message lastEditedDateTime: {message.LastModifiedDateTime}");
-            Console.WriteLine($"Message From.user.Displayname: {message.From.User.DisplayName}");
-
-        }
-
-        Environment.Exit(1);
         return messages;
     }
     
