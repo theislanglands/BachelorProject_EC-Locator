@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using Microsoft.Graph;
 using EC_locator.Core.Interfaces;
+using EC_locator.Core.Models;
+
 using EC_locator.Core.SettingsOptions;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
+using Message = EC_locator.Core.Models.Message;
 
 namespace EC_locator.Repositories;
 
@@ -74,9 +77,9 @@ public class TeamsRepository : ITeamsRepository
         return users;
     }
     
-    public async Task<ArrayList> GetMessagesAsync(string employeeId, DateOnly date)
+    public async Task<List<Message>> GetMessagesAsync(string employeeId, DateOnly date)
     {
-        List<ChatMessage> foundMessages;
+        List<Message> foundMessages = new ();
         
         if (_verbose)
         {
@@ -85,52 +88,58 @@ public class TeamsRepository : ITeamsRepository
         try
         {
             var messages = await _graphHelper.getMessagesAsync();
-
-            // Output message details
-            foreach (var message in messages.CurrentPage)
-            {
-                // check if message match a user
-                Console.WriteLine($"Message user.Id: {message.From.User.Id}");
-                if (!message.From.User.Id.Equals(employeeId))
-                {
-                    Console.WriteLine("not matching employee id");
-                    continue;
-                }
-
-                Console.WriteLine("found matching user id");
-                
-                
-                // check if message match the date
-                Console.WriteLine($"Message lastEditedDateTime: {message.LastModifiedDateTime}");
-                Console.WriteLine($"date only {DateOnly.FromDateTime(message.LastModifiedDateTime.Value.Date)}");
-                
-                
-                //Console.WriteLine($"User: {message.Body.Content ?? "NO CONTENT"}");
-                
-                // Console.WriteLine($"Message ID: {message.Id}");
-                Console.WriteLine($"Content type: {message.Body.ContentType.Value}");
-                if (message.Body.ContentType.Value.ToString().Equals("Html"))
-                {
-                    message.Body.Content = ParseHtmlToText(message.Body.Content);
-                }
-                Console.WriteLine($"Message content: {message.Body.Content}");
-                // Console.WriteLine($"Message replies: {message.Replies.Count}"); // Can be null! if no replies
-                Console.WriteLine($"Message lastEditedDateTime: {message.LastModifiedDateTime}");
-            }
             
-            // If NextPageRequest is not null, there are more user available on the server
-            // Access the next page: userPage.NextPageRequest.GetAsync();
+                foreach (var message in messages.CurrentPage)
+                {
+                    // Check if message sender match the employee ID 
+                    if (!message.From.User.Id.Equals(employeeId))
+                    {
+                        continue;
+                    }
+                    
+                    // Check if message match the date
+                    if (!date.Equals(DateOnly.FromDateTime(message.LastModifiedDateTime.Value.Date)))
+                    {
+                        continue;
+                    }
+                    
+                    // check if content is html and convert to plain text             
+                    if (message.Body.ContentType.Value.ToString().Equals("Html"))
+                    {
+                        message.Body.Content = ParseHtmlToText(message.Body.Content);
+                    }
+                    
+                    // adding to found messages
+                    foundMessages.Add(new Message()
+                    {
+                        Content = message.Body.Content,
+                        TimeStamp = message.LastModifiedDateTime.Value.DateTime,
+                        UserId = employeeId
+                    });
+
+                    // Console.WriteLine($"Message replies: {message.Replies.Count}"); // Can be null! if no replies
+                }
+
+                /*
+                // If NextPageRequest is not null, there are more user available on the server
+            // Access the next page: messages.NextPageRequest.GetAsync();
             var moreAvailable = messages.NextPageRequest != null;
             if (_verbose)
             {
                 Console.WriteLine($"\nMore messages available? {moreAvailable}");
             }
+            */
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error getting messages: {ex.Message}");
         }
-        Environment.Exit(1);
+
+        if (foundMessages.Count != 0)
+        {
+            return foundMessages;
+        }
+
         return null;
     }
     

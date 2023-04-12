@@ -35,9 +35,15 @@ var test = lr.GetStopIndicatorKeywords();
 // await TestGettingUsersFromTeamsRepo();
 //TestMessageParser();
 //TestTomorrow();
-await tr.ListMessagesAsync();
+// await tr.ListMessagesAsync();
+//var messages = await tr.GetMessagesAsync("3c2d2c7a-ae61-4019-b497-38f8d9ef3218", DateOnly.FromDateTime(DateTime.Now));
+//foreach (var message in messages)
+//{
+//    Console.WriteLine(message);
+//}
 // await cr.GetCalendarEvents();
 
+//Environment.Exit(1);
 // Configure the HTTP request pipeline.
 app.UseCors("CorsPolicy");
 

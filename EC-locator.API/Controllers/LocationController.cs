@@ -33,15 +33,38 @@ public class LocationController
     public async Task<string> GetCurrentLocationAsync(string employeeId)
     {
         string latestMessage;
-        Location foundLocation;
-        employeeId = "all";
-
-        // fetch messages from today
-        string[] messages = _teamsRepository.GetMessages(employeeId, new DateOnly());
+        Location? foundLocation;
+        // employeeId = "all";
         
-        // only Look at latest message???
+        var jsonOptions = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        // var messages = _teamsRepository.GetMessages(employeeId, DateOnly.FromDateTime(DateTime.Now));
+        
+        // fetch messages from today
+        var messages = _teamsRepository.GetMessagesAsync(employeeId, DateOnly.FromDateTime(DateTime.Now)).Result;
+        
+        if (messages == null)
+        {
+            LocationReturn locationReturn = new LocationReturn
+            {
+                Place = "no location found",
+                LocationEndTime = "NA",
+                TeamMessage = "no messages found"
+            };
+            return JsonSerializer.Serialize(locationReturn, jsonOptions);
+        }
+        
+        // only Look at latest message
+        messages.Sort();
+        latestMessage = messages.First().Content;
+        
         // Select random message (For testing)
-        latestMessage = SelectRandomMessage(messages);
+        // latestMessage = SelectRandomMessage(messages);
 
         // parse message to locations
         var locations = _messageParser.GetLocations(latestMessage);
@@ -60,14 +83,6 @@ public class LocationController
         
         foundLocation = FindLocation(locations, currentTime);
         
-        var jsonOptions = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-
-
         if (foundLocation != null)
         {
             LocationReturn locationReturn = new LocationReturn
