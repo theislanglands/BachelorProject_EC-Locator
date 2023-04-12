@@ -74,6 +74,68 @@ public class TeamsRepository : ITeamsRepository
         return users;
     }
     
+    public async Task<ArrayList> GetMessagesAsync(string employeeId, DateOnly date)
+    {
+        List<ChatMessage> foundMessages;
+        
+        if (_verbose)
+        {
+            Console.WriteLine("Fetching messages");
+        }
+        try
+        {
+            var messages = await _graphHelper.getMessagesAsync();
+
+            // Output message details
+            foreach (var message in messages.CurrentPage)
+            {
+                // check if message match a user
+                Console.WriteLine($"Message user.Id: {message.From.User.Id}");
+                if (!message.From.User.Id.Equals(employeeId))
+                {
+                    Console.WriteLine("not matching employee id");
+                    continue;
+                }
+
+                Console.WriteLine("found matching user id");
+                
+                
+                // check if message match the date
+                Console.WriteLine($"Message lastEditedDateTime: {message.LastModifiedDateTime}");
+                Console.WriteLine($"date only {DateOnly.FromDateTime(message.LastModifiedDateTime.Value.Date)}");
+                
+                
+                //Console.WriteLine($"User: {message.Body.Content ?? "NO CONTENT"}");
+                
+                // Console.WriteLine($"Message ID: {message.Id}");
+                Console.WriteLine($"Content type: {message.Body.ContentType.Value}");
+                if (message.Body.ContentType.Value.ToString().Equals("Html"))
+                {
+                    message.Body.Content = ParseHtmlToText(message.Body.Content);
+                }
+                Console.WriteLine($"Message content: {message.Body.Content}");
+                // Console.WriteLine($"Message replies: {message.Replies.Count}"); // Can be null! if no replies
+                Console.WriteLine($"Message lastEditedDateTime: {message.LastModifiedDateTime}");
+            }
+            
+            // If NextPageRequest is not null, there are more user available on the server
+            // Access the next page: userPage.NextPageRequest.GetAsync();
+            var moreAvailable = messages.NextPageRequest != null;
+            if (_verbose)
+            {
+                Console.WriteLine($"\nMore messages available? {moreAvailable}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error getting messages: {ex.Message}");
+        }
+        Environment.Exit(1);
+        return null;
+    }
+    
+    
+    
     public async Task ListMessagesAsync()
     {
         if (_verbose)
@@ -93,13 +155,13 @@ public class TeamsRepository : ITeamsRepository
                 Console.WriteLine($"Content type: {message.Body.ContentType.Value}");
                 if (message.Body.ContentType.Value.ToString().Equals("Html"))
                 {
-                    Console.WriteLine("-- CONTAINS HTML -- ");
                     message.Body.Content = ParseHtmlToText(message.Body.Content);
                 }
-
                 Console.WriteLine($"Message content: {message.Body.Content}");
                 // Console.WriteLine($"Message replies: {message.Replies.Count}"); // Can be null! if no replies
                 Console.WriteLine($"Message lastEditedDateTime: {message.LastModifiedDateTime}");
+                Console.WriteLine($"date only {DateOnly.FromDateTime(message.LastModifiedDateTime.Value.Date)}");
+
                 Console.WriteLine($"Message From.user.Id: {message.From.User.Id}");
             }
             
@@ -120,11 +182,7 @@ public class TeamsRepository : ITeamsRepository
 
     private string ParseHtmlToText(string html)
     {
-        string plainText;
-        plainText = Regex.Replace(html, "<(.|\n)*?>", "");
-        Console.WriteLine($"parserd {plainText}");
-        
-        return plainText;
+        return Regex.Replace(html, "<(.|\n)*?>", "");
     }
 
     public string[] GetMessages(string employeeId, DateOnly date)
@@ -300,35 +358,5 @@ public class TeamsRepository : ITeamsRepository
         }
 
         return null;
-    }
-    
-    public async Task<ArrayList> GetMessagesAsync()
-    {
-        ArrayList returnArray = new ArrayList();
-        try
-        {
-            
-            var userPage = await _graphHelper.GetUsersAsync();
-
-            // Output each users's details
-            foreach (var user in userPage.CurrentPage)
-            {
-                returnArray.Add(user);
-            }
-
-            // If NextPageRequest is not null, there are more users
-            // available on the server
-            // Access the next page like:
-            // userPage.NextPageRequest.GetAsync();
-            var moreAvailable = userPage.NextPageRequest != null;
-
-            Console.WriteLine($"\nMore users available? {moreAvailable}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error getting users: {ex.Message}");
-        }
-
-        return returnArray;
     }
 }

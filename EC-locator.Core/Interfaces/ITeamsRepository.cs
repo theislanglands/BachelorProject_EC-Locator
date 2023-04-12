@@ -8,7 +8,7 @@ public interface ITeamsRepository
 {
     Task<List<User>> GetUsersAsync();
 
-    Task<ArrayList> GetMessagesAsync();
+    Task<ArrayList> GetMessagesAsync(string employeeId, DateOnly date);
 
     // TODO: FOR TESTING - to be deleted
     
