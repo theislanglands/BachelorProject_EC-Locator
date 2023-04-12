@@ -80,29 +80,32 @@ public class TeamsRepository : ITeamsRepository
         {
             var messages = await _graphHelper.getMessagesAsync();
 
-            Console.WriteLine("In Teams repo print");
             // Output message details
             foreach (var message in messages.CurrentPage)
             {
                 //Console.WriteLine($"User: {message.Body.Content ?? "NO CONTENT"}");
                 Console.WriteLine("\n-- Message in TR --");
                 Console.WriteLine($"Message ID: {message.Id}");
-                Console.WriteLine($"Message content: {message.Body.Content}");
-                // Console.WriteLine($"Message subject: {message.Subject}");
-                // Console.WriteLine($"Message replies: {message.Replies.Count}"); // Can be null! if no replies
                 Console.WriteLine($"Content type: {message.Body.ContentType.Value}");
-                // Console.WriteLine($"Message createdDateTime: {message.CreatedDateTime}");
+                if (message.Body.ContentType.Value.ToString().Equals("Html"))
+                {
+                    Console.WriteLine("-- CONTAINS HTML -- ");
+                    message.Body.Content = "replaced text";
+                }
+
+                Console.WriteLine($"Message content: {message.Body.Content}");
+                // Console.WriteLine($"Message replies: {message.Replies.Count}"); // Can be null! if no replies
                 Console.WriteLine($"Message lastEditedDateTime: {message.LastModifiedDateTime}");
-                // Console.WriteLine($"Message From.user.Displayname: {message.From.User.DisplayName}");
                 Console.WriteLine($"Message From.user.Id: {message.From.User.Id}");
             }
             
-            // If NextPageRequest is not null, there are more messages available on the server
-            /*
-            await messages.NextPageRequest.GetAsync();
+            // If NextPageRequest is not null, there are more user available on the server
+            // Access the next page: userPage.NextPageRequest.GetAsync();
             var moreAvailable = messages.NextPageRequest != null;
-            Console.WriteLine($"\nMore messages available? {moreAvailable}");
-            */
+            if (_verbose)
+            {
+                Console.WriteLine($"\nMore messages available? {moreAvailable}");
+            }
         }
         catch (Exception ex)
         {
@@ -110,7 +113,12 @@ public class TeamsRepository : ITeamsRepository
         }
         Environment.Exit(1);
     }
-    
+
+    private string ParseHtmlToText(string html)
+    {
+        return "hej";
+    }
+
     public string[] GetMessages(string employeeId, DateOnly date)
     {
         if (employeeId.Equals("all"))
