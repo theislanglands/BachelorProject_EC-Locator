@@ -3,6 +3,7 @@ using Microsoft.Graph;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.SettingsOptions;
 using Microsoft.Extensions.Options;
+using System.Text.RegularExpressions;
 
 namespace EC_locator.Repositories;
 
@@ -75,7 +76,10 @@ public class TeamsRepository : ITeamsRepository
     
     public async Task ListMessagesAsync()
     {
-        Console.WriteLine("In list messages async");
+        if (_verbose)
+        {
+            Console.WriteLine("Fetching messages");
+        }
         try
         {
             var messages = await _graphHelper.getMessagesAsync();
@@ -90,7 +94,7 @@ public class TeamsRepository : ITeamsRepository
                 if (message.Body.ContentType.Value.ToString().Equals("Html"))
                 {
                     Console.WriteLine("-- CONTAINS HTML -- ");
-                    message.Body.Content = "replaced text";
+                    message.Body.Content = ParseHtmlToText(message.Body.Content);
                 }
 
                 Console.WriteLine($"Message content: {message.Body.Content}");
@@ -116,7 +120,12 @@ public class TeamsRepository : ITeamsRepository
 
     private string ParseHtmlToText(string html)
     {
-        return "hej";
+        Console.WriteLine($"html {html}");
+        string plainText;
+        plainText = Regex.Replace(html, "/<(.|\n)*?>/g", "");
+        Console.WriteLine($"parserd {plainText}");
+        
+        return plainText;
     }
 
     public string[] GetMessages(string employeeId, DateOnly date)
