@@ -120,9 +120,8 @@ public class TeamsRepository : ITeamsRepository
 
     private string ParseHtmlToText(string html)
     {
-        Console.WriteLine($"html {html}");
         string plainText;
-        plainText = Regex.Replace(html, "/<(.|\n)*?>/g", "");
+        plainText = Regex.Replace(html, "<(.|\n)*?>", "");
         Console.WriteLine($"parserd {plainText}");
         
         return plainText;
