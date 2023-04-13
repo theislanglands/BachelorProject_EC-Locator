@@ -79,7 +79,8 @@ public class TimeAndLocationConnector : ITimeAndLocationConnector
             // if last location has and end-indicator, set to last time, otherwise default
             if (locationIndex == _locationTags.Count - 1)
             {
-                if (HasStopIndicator())
+                //if (HasStopIndicator())
+                if (false)
                 {
                     _locationTags.Values[locationIndex].End = _timeTags.Values[^1];
                 }
@@ -106,6 +107,8 @@ public class TimeAndLocationConnector : ITimeAndLocationConnector
         }
         return false;
     }
+    
+    // TODO: remove if not needed - stop indicator has been used as "off" tag
     private bool HasStopIndicator()
     {
         foreach (var stopIndicator in _locatorRepository.GetStopIndicatorKeywords())

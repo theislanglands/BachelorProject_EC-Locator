@@ -29,7 +29,6 @@ public class DecisionTree : Node
             GoTo = new FinalResult(_options),
         };
         
-        // Action 5
         var deleteLocationNotMeeting = new Action(_options)
         {
             Title = "Deleting location not a meeting",
@@ -152,7 +151,6 @@ public class DecisionTree : Node
             Title = "Is there one location and one time",
             Test = (locations, times) =>
             {
-                // is no time indication present and more than 1 location
                 if (locations.Count == 1 && times.Count == 1)
                 {
                     return true;
@@ -252,6 +250,66 @@ public class DecisionTree : Node
             Negative = isFirstIndexTimeKeyword
         };
         
+        // Action 1a
+        var deleteOffLocation = new Action(_options)
+        {
+            Title = "Deleting off-location",
+            PerformAction = (locations, times) =>
+            {
+                int locationToDelete = -1;
+                foreach (var location in locations)
+                {
+                    if (location.Value.Place.Equals("off"))
+                    {
+                        locationToDelete = location.Key;
+                        break;
+                    }
+                }
+
+                if (locationToDelete != -1)
+                {
+                    locations.Remove(locationToDelete);
+                }
+
+                return true;
+            },
+            
+            GoTo = noTimesAndMultipleLocations
+        };
+        
+        // Decision 2a
+        var isOffFollowedByTwoLocations = new DecisionQuery(_options)
+        {
+            Title = "Is an off-location followed by two locations before times-tag",
+            Test = (locations, times) =>
+            {
+                // is there more than tow locations?
+                
+                // Does location contain "off"?
+                for (int i = 0; i < locations.Count; i++)
+                {
+                    if (locations.Values[i].Place.Equals("off")) {
+                        // does "off" has two sucessors?
+                        if (i < locations.Count - 2) {
+                            // is there no time tag between the two?
+                            foreach (var timeTag in times)
+                            {
+                                if (!(locations.Keys[i + 1] < timeTag.Key && timeTag.Key < locations.Keys[i+2]))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                return false;
+            },
+ 
+            Positive = deleteOffLocation,
+            Negative = noTimesAndMultipleLocations
+        };
+        
+        
         
         // Action 2
         var insertIll = new Action(_options)
@@ -265,6 +323,20 @@ public class DecisionTree : Node
             },
             
             GoTo = new FinalResult(_options)
+        };
+        
+        // Action 2a
+        var insertOfficeAtEnd = new Action(_options)
+        {
+            Title = "Inserting Office at last location",
+            PerformAction = (locations, times) =>
+            {
+                var key = times.Keys.Last() + 1;
+                locations.Add(key, new Location("office"));
+                return true;
+            },
+            
+            GoTo = insertHomeA5
         };
         
         // Decision 2
@@ -285,28 +357,25 @@ public class DecisionTree : Node
             },
             
             Positive = insertIll,
-            Negative = noTimesAndMultipleLocations
+            Negative = isOffFollowedByTwoLocations
         };
         
         // Decision 1a
         var oneTimeNoLocations = new DecisionQuery(_options)
         {
-            Title = "one time and no locations",
+            Title = "is there one time and no locations",
             Test = (locations, times) =>
             {
-                foreach (var location in locations)
+                if (times.Count == 1 && locations.Count == 0) 
                 {
-                    if (times.Count == 1 && locations.Count == 0) 
-                    {
-                        return true;
-                    }
+                    return true;
                 }
 
                 return false;
             },
             
-            Positive = insertIll,
-            Negative = noTimesAndMultipleLocations
+            Positive = insertOfficeAtEnd,
+            Negative = insertUndefined
         };
         
         
@@ -326,7 +395,7 @@ public class DecisionTree : Node
             },
             
             Positive = isIll,
-            Negative = insertUndefined
+            Negative = oneTimeNoLocations
         };
         
         trunk.Perform(locations, times);

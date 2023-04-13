@@ -67,7 +67,7 @@ public class MessageParserTest
         var locations = _messageParser.GetLocations(message.Key);
 
         Assert.That(locations.Count, Is.EqualTo(message.Value.Length), 
-            "number of locations found not correct");
+            $"number of locations found not correct in message: \n{message.Key}");
         
         for (int i = 0; i < message.Value.Length; i++)
         {
@@ -115,7 +115,7 @@ public class MessageParserTest
                 new Location(
                     new TimeOnly(9, 0),
                     new TimeOnly(16, 0),
-                    "remote"),
+                    "undefined"),
             });
         _messageSamples.Add(
             "Er til møde ved Alumeco indtil 11.30 i morgen og arbejder hjemme fra derefter.",
@@ -154,6 +154,19 @@ public class MessageParserTest
     {
         _messageSamples.Add(
             "0930 på kontoret",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(9, 30),
+                    "home"),
+                new Location(
+                    new TimeOnly(9, 30),
+                    new TimeOnly(16, 0),
+                    "office")
+            });
+        _messageSamples.Add(
+            "0930",
             new []
             {
                 new Location(
@@ -361,6 +374,10 @@ public class MessageParserTest
                     new TimeOnly(9, 00),
                     new TimeOnly(11, 30),
                     "home"),
+                new Location(
+                    new TimeOnly(11, 30),
+                    new TimeOnly(16, 00),
+                    "off"),
             });
         _messageSamples.Add(
             "Vejret gjorde lige det helt lidt mere bøvlet her til morgen. Jeg er inde omkring kvart over 9...",
@@ -386,7 +403,7 @@ public class MessageParserTest
                 new Location(
                     new TimeOnly(11, 15),
                     new TimeOnly(16, 0),
-                    "day-off")
+                    "off")
             });
     }
 
@@ -460,6 +477,15 @@ public class MessageParserTest
             });
         _messageSamples.Add(
             "jeg er syg i dag",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "ill")
+            });
+        _messageSamples.Add(
+            "Det er som om min forkølelse er blusset op igen, så jeg er nok først på senere.",
             new []
             {
                 new Location(
