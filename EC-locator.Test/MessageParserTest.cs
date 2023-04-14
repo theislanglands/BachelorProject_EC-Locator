@@ -47,7 +47,8 @@ public class MessageParserTest
         _messageSamples = new Dictionary<string, Location[]>(); 
         AddHomeMessageSamples();
         AddHomeAndOfficeMessageSamples();
-        AddIllMessageSamples(); 
+        AddIllMessageSamples();
+        AddKidsIllMessageSamples();
         AddStartAndStopMessageSamples();
         AddMeetingAndRemoteMessageSamples();
         AddNegationMessageSamples();
@@ -409,11 +410,62 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "off")
             });
+        _messageSamples.Add(
+            "Jeg holder weekend ved 14 tiden God påske til jer der går på ferie",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9, 00),
+                    new TimeOnly(14, 00),
+                    "home"),
+                new Location(
+                    new TimeOnly(14, 00),
+                    new TimeOnly(16, 0),
+                    "off")
+            });
+    }
+
+    private void AddKidsIllMessageSamples()
+    {
+        _messageSamples.Add(
+            "Er hjemme med syge piger, så er lidt on/off hele dagen",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "KidsIll")
+            });
+        _messageSamples.Add(
+            "Den lille er stadigvæk syg, arbejde det jeg kan ind i mellem",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "KidsIll")
+            });
+        _messageSamples.Add(
+            "Felix er desværre syg med feber så tager den hjemmefra, så meget det er muligt",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "KidsIll")
+            });
+        _messageSamples.Add(
+            "Otto er desværre blevet syg, så jeg holder hjemmefronten indtil backup ankommer. Er på kontoret inden 11",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "KidsIll")
+            });
     }
 
 
-    
-    
     private void AddIllMessageSamples()
     {
         _messageSamples.Add(
@@ -425,15 +477,7 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "ill")
             });
-        _messageSamples.Add(
-            "Er hjemme med syge piger, så er lidt on/off hele dagen",
-            new []
-            {
-                new Location(
-                    new TimeOnly(9, 0),
-                    new TimeOnly(16, 0),
-                    "ill")
-            });
+        
         _messageSamples.Add(
             "Jeg har krammet toilettet hele natten, så jeg er hjemme, og sover forhåbentligt",
             new []

@@ -46,7 +46,7 @@ public class LocationTagger : ILocationTagger
         var locationWordsDictionary = _locatorRepository.GetLocationKeywords();
         foreach (var locationWord in locationWordsDictionary)
         {
-            if (message.Contains(locationWord.Key))
+            if (message.Contains(locationWord.Key.ToLower()))
             {
                 // getting index of keyword in message
                 int indexOfKeyWord = message.IndexOf(locationWord.Key, StringComparison.OrdinalIgnoreCase);

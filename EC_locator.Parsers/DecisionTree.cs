@@ -325,6 +325,20 @@ public class DecisionTree : Node
             GoTo = new FinalResult(_options)
         };
         
+        // Action 2b
+        var insertKidsIll = new Action(_options)
+        {
+            Title = "Inserting Kids Ill at location 0 and deleting other locations",
+            PerformAction = (locations, times) =>
+            {
+                locations.Clear();
+                locations.Add(0, new Location("KidsIll"));
+                return true;
+            },
+            
+            GoTo = new FinalResult(_options)
+        };
+        
         // Action 2a
         var insertOfficeAtEnd = new Action(_options)
         {
@@ -338,6 +352,77 @@ public class DecisionTree : Node
             
             GoTo = insertHomeA5
         };
+        
+        // Action 2c
+        var deleteKids= new Action(_options)
+        {
+            Title = "Deleting kids-tag",
+            PerformAction = (locations, times) =>
+            {
+                List<int> locationsToDelete = new();
+                foreach (var location in locations)
+                {
+                    if (location.Value.Place.Equals("KidsIll"))
+                    {
+                        locationsToDelete.Add(location.Key);
+                    }
+                }
+
+                if (locationsToDelete.Count != 0)
+                {
+                    foreach (var location in locationsToDelete)
+                    {
+                        locations.Remove(location);
+                    }
+                }
+
+                return true;
+            },
+            
+            GoTo = isOffFollowedByTwoLocations
+        };
+        
+        // Decision 2a2
+        var isKidsIll = new DecisionQuery(_options)
+        {
+            Title = "Is kids- and Ill keyword identified",
+            Test = (locations, times) =>
+            {
+                foreach (var location in locations)
+                {
+                    if (location.Value.Place.Equals("KidsIll"))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            },
+            
+            Positive = insertKidsIll,
+            Negative = insertIll
+        };
+        
+        var isKidsPresent = new DecisionQuery(_options)
+        {
+            Title = "Is kids-keyword identified",
+            Test = (locations, times) =>
+            {
+                foreach (var location in locations)
+                {
+                    if (location.Value.Place.Equals("KidsIll"))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            },
+            
+            Positive = deleteKids,
+            Negative = isOffFollowedByTwoLocations
+        };
+        
         
         // Decision 2
         var isIll = new DecisionQuery(_options)
@@ -356,8 +441,8 @@ public class DecisionTree : Node
                 return false;
             },
             
-            Positive = insertIll,
-            Negative = isOffFollowedByTwoLocations
+            Positive = isKidsIll,
+            Negative = isKidsPresent
         };
         
         // Decision 1a

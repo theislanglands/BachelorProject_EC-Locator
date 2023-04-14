@@ -83,7 +83,7 @@ public class TeamsRepository : ITeamsRepository
         
         if (_verbose)
         {
-            Console.WriteLine("Fetching messages");
+            Console.WriteLine("Fetching messages from MS Graph");
         }
         try
         {
@@ -275,7 +275,7 @@ public class TeamsRepository : ITeamsRepository
         
         if (employeeId.Equals("ill"))
         {
-            // syg - Tilføjet til unit test
+            // syg & børn syge - Tilføjet til unit test
             string[] messages =
             {
                 "tager en dag under dynen",
@@ -287,6 +287,10 @@ public class TeamsRepository : ITeamsRepository
                 "Jeg er slet ikke på toppen, så jeg bliver hjemme i dag",
                 "jeg er syg i dag",
                 "Det er som om min forkølelse er blusset op igen, så jeg er nok først på senere.",
+                
+                "Den lille er stadigvæk syg, arbejde det jeg kan ind i mellem",
+                "Felix er desværre syg med feber så tager den hjemmefra, så meget det er muligt 🤒",
+                "Otto er desværre blevet syg, så jeg holder hjemmefronten indtil backup ankommer. Er på kontoret inden 11", // Syg, men på kontoret
             };
             return messages;
         }
@@ -333,6 +337,8 @@ public class TeamsRepository : ITeamsRepository
             {
                 "I morgen arbejder jeg hjemmefra og stopper 11.30",
                 "Arbejder hjemme i dag og går fra ved frokosttid. God påske ",
+                "Jeg holder weekend ved 14 tiden God påske til jer der går på ferie",
+
             };
             return messages;
         }
@@ -341,24 +347,7 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
-                "Jeg starter ud hjemme 9.30 og er på kontoret til frokost",
-                // off - home - 930 - Office - 11:15
-                "Godmorgen, jeg starter ud hjemme og kommer ind omkring kl 10",
-                // off - home - office - 11_15 = > delete off
-
-                "Godmorgen. Jeg starter hjemme, men forventer at være på kontoret kl 10. Vi ses ✌",
-                // off - home - office - 10 = > delete off
                 
-                "I morgen arbejder jeg hjemmefra og stopper 11.30",
-                "Jeg døjer stadig med øjenmigræne hvilket gør at det slører for mine øjne. Der er gode og dårlige timer. Jeg håber at komme ind på kontoret til formiddag",
-                "Jeg holder weekend ved 14 tiden God påske til jer der går på ferie",
-                "Jeg holder for i dag", // HOLDER = holder fri fra time=now -> location "home" fra NU af!
-                "Den lille er stadigvæk syg, arbejde det jeg kan ind i mellem",
-                "Felix er desværre syg med feber så tager den hjemmefra, så meget det er muligt 🤒",
-                "Jeg er på hjemmefra i morgen.",
-                "Jeg er først på kontoret omkring kl 10 i morgen",
-                "Otto er desværre blevet syg, så jeg holder hjemmefronten indtil backup ankommer. Er på kontoret inden 11", // Syg, men på kontoret
-
             };
             return messages;
         }
@@ -378,6 +367,10 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
+                "Jeg er på hjemmefra i morgen.",
+                "Jeg er først på kontoret omkring kl 10 i morgen",
+                "Jeg døjer stadig med øjenmigræne hvilket gør at det slører for mine øjne. Der er gode og dårlige timer. Jeg håber at komme ind på kontoret til formiddag",
+                "Jeg holder for i dag", // HOLDER = holder fri fra time=now -> location "home" fra NU af!
                 "Jeg er på kontoret inden frokost. Er på hjemmefra", // omvendt rækkefølge - kan ikke håndtere -> false prediction
                 "Jeg tager lige en time eller to hjemmefra, her til morgen", // utvetydig -> kan ikke finde kontor
                 

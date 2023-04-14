@@ -234,7 +234,6 @@ public class LocatorRepository : ILocatorRepository
             {  "på langs" ,"ill" },
             {  "syge" ,"ill" },
             {  "helbred" ,"ill" },
-            {  "feberbarn" ,"ill" },
             {  "lægger mig" ,"ill" },
             {  "skidt" ,"ill" },
             {  "under dynen" ,"ill" },
@@ -243,7 +242,19 @@ public class LocatorRepository : ILocatorRepository
             
             {  "Otto" ,"KidsIll" },
             {  "den lille" ,"KidsIll" },
-            {  "feberbørn" ,"KidsIll" },
+            {  "felix er" ,"KidsIll" },
+
+            {  "de små" ,"KidsIll" },
+            {  "familie" ,"KidsIll" },
+            {  "børn" ,"KidsIll" },
+            {  "barn" ,"KidsIll" },
+            {  "pige" ,"KidsIll" },
+            {  "dreng" ,"KidsIll" },
+            {  "Felix" ,"KidsIll" },
+            {  "unger" ,"KidsIll" },
+            {  "søn" ,"KidsIll" },
+            {  "datter" ,"KidsIll" },
+            
             
             { "møde", "meeting" },
             
