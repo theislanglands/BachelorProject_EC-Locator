@@ -283,24 +283,24 @@ public class DecisionTree : Node
             Title = "Is an off-location followed by two locations before times-tag",
             Test = (locations, times) =>
             {
-                // is there more than tow locations?
-                
-                // Does location contain "off"?
-                for (int i = 0; i < locations.Count; i++)
+                // Is a location place "off"?
+                for (int index = 0; index < locations.Count; index++)
                 {
-                    if (locations.Values[i].Place.Equals("off")) {
-                        // does "off" has two sucessors?
-                        if (i < locations.Count - 2) {
-                            // is there no time tag between the two?
-                            foreach (var timeTag in times)
-                            {
-                                if (!(locations.Keys[i + 1] < timeTag.Key && timeTag.Key < locations.Keys[i+2]))
-                                {
-                                    return true;
-                                }
-                            }
+                    if (!locations.Values[index].Place.Equals("off")) continue;
+                    
+                    // does "off" has two sucessors?
+                    if (index >= locations.Count - 2) continue;
+                    
+                    foreach (var timeTag in times)
+                    {
+                        // is there a time tag between the two locations
+                        if (locations.Keys[index + 1] < timeTag.Key && timeTag.Key < locations.Keys[index + 2])
+                        {
+                            return false;
                         }
                     }
+
+                    return true;
                 }
                 return false;
             },

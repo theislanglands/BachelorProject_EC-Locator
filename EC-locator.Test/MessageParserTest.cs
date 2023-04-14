@@ -358,6 +358,10 @@ public class MessageParserTest
             new []
             {
                 new Location(
+                    new TimeOnly(9, 00),
+                    new TimeOnly(9, 30),
+                    "off"),
+                new Location(
                     new TimeOnly(9, 30),
                     new TimeOnly(11, 15),
                     "home"),

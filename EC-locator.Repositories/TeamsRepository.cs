@@ -341,6 +341,8 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
+                "Jeg starter ud hjemme 9.30 og er på kontoret til frokost",
+                // off - home - 930 - Office - 11:15
                 "Godmorgen, jeg starter ud hjemme og kommer ind omkring kl 10",
                 // off - home - office - 11_15 = > delete off
 

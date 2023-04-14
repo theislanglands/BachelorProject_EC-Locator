@@ -54,7 +54,8 @@ public class TimeAndLocationConnector : ITimeAndLocationConnector
         // if first location has a start keyword, assign first time tag as start, otherwise default
         if (locationIndex == 0)
         {
-            if (HasStartIndicator())
+            //if (HasStartIndicator())
+            if (false)
             {
                 _locationTags.Values[locationIndex].Start = _timeTags.Values[0];
                 _locationTags.Values[locationIndex].End = _timeTags.Values.Count == 1 ? _workStartDefault : _timeTags.Values[1];
