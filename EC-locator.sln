@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC-locator.Test", "EC-locat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC-locator.Repositories", "EC-locator.Repositories\EC-locator.Repositories.csproj", "{B2417CCF-E6E5-48DE-9240-6401F70EEB83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC-locator.Locator", "EC-locator.Locator\EC-locator.Locator.csproj", "{B130FEC5-0D26-4585-8F12-9954783CCAAD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EC-locator.Locator", "EC-locator.Locator\EC-locator.Locator.csproj", "{B3DB81E9-FA51-4F7D-9E72-FEE169EADA5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,9 +38,9 @@ Global
 		{B2417CCF-E6E5-48DE-9240-6401F70EEB83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2417CCF-E6E5-48DE-9240-6401F70EEB83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2417CCF-E6E5-48DE-9240-6401F70EEB83}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B130FEC5-0D26-4585-8F12-9954783CCAAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B130FEC5-0D26-4585-8F12-9954783CCAAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B130FEC5-0D26-4585-8F12-9954783CCAAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B130FEC5-0D26-4585-8F12-9954783CCAAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3DB81E9-FA51-4F7D-9E72-FEE169EADA5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3DB81E9-FA51-4F7D-9E72-FEE169EADA5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3DB81E9-FA51-4F7D-9E72-FEE169EADA5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3DB81E9-FA51-4F7D-9E72-FEE169EADA5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

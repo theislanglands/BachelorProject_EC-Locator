@@ -46,7 +46,7 @@ public class LocationController
         // var messages = _teamsRepository.GetMessages(employeeId, DateOnly.FromDateTime(DateTime.Now));
         
         // fetch messages from today
-        var messages = _teamsRepository.GetMessagesAsync(employeeId, DateOnly.FromDateTime(DateTime.Now)).Result;
+        var messages = await _teamsRepository.GetMessagesAsync(employeeId, DateOnly.FromDateTime(DateTime.Now));
         
         if (messages == null)
         {
@@ -63,15 +63,15 @@ public class LocationController
         messages.Sort();
         latestMessage = messages.First().Content;
         
-        // Select random message (For testing)
-        // latestMessage = SelectRandomMessage(messages);
+        
+        // latestMessage = SelectRandomMessage(messages); // (FOR TESTING)
 
         // parse message to locations
         var locations = _messageParser.GetLocations(latestMessage);
         
         // find current time
         TimeOnly currentTime = TimeOnly.FromDateTime(DateTime.Now);
-        currentTime = new TimeOnly(11, 27);
+        currentTime = new TimeOnly(11, 27); // FOR TESTING
 
         if (_verbose)
         {
