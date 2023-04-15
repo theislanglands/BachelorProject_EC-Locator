@@ -197,30 +197,39 @@ public class TeamsRepository : ITeamsRepository
 
     public List<Message>? GetMessageSamples(string employeeId)
     {
+        string sampleCode = "ill";
+        
         List<Message> messages = new();
-        var samples = GetMessages(employeeId);
+        var samples = GetSamples(sampleCode);
+        int i = 1;
         foreach (var sample in samples)
         {
-            messages.Add(new Message(sample, employeeId, DateTime.Now));
+            
+            messages.Add(new Message(sample, employeeId, DateTime.Now.AddMinutes(i)));
+            i++;
+        }
+
+        if (messages.Count == 0)
+        {
+            return null;
         }
 
         return messages;
     }
 
-    public string[] GetMessages(string employeeId)
+    public string[] GetSamples(string employeeId)
     {
         if (employeeId.Equals("all"))
         {
-            var concatenatedMessages = this.GetMessages("sample1").ToList();
-            concatenatedMessages.AddRange(this.GetMessages("sample3").ToList());
-            concatenatedMessages.AddRange(this.GetMessages("ill").ToList());
-            concatenatedMessages.AddRange(this.GetMessages("is_first_location_office").ToList());
-            concatenatedMessages.AddRange(this.GetMessages("minute indicators").ToList());
-            concatenatedMessages.AddRange(this.GetMessages("startKeywords").ToList());
-            concatenatedMessages.AddRange(this.GetMessages("stopKeywords").ToList());
-            concatenatedMessages.AddRange(this.GetMessages("negation").ToList());
-
-
+            var concatenatedMessages = this.GetSamples("sample1").ToList();
+            concatenatedMessages.AddRange(this.GetSamples("sample3").ToList());
+            concatenatedMessages.AddRange(this.GetSamples("ill").ToList());
+            concatenatedMessages.AddRange(this.GetSamples("is_first_location_office").ToList());
+            concatenatedMessages.AddRange(this.GetSamples("minute indicators").ToList());
+            concatenatedMessages.AddRange(this.GetSamples("startKeywords").ToList());
+            concatenatedMessages.AddRange(this.GetSamples("stopKeywords").ToList());
+            concatenatedMessages.AddRange(this.GetSamples("negation").ToList());
+            
             if (_verbose)
             {
                 Console.WriteLine();
@@ -354,7 +363,6 @@ public class TeamsRepository : ITeamsRepository
                 "I morgen arbejder jeg hjemmefra og stopper 11.30",
                 "Arbejder hjemme i dag og går fra ved frokosttid. God påske ",
                 "Jeg holder weekend ved 14 tiden God påske til jer der går på ferie",
-
             };
             return messages;
         }
@@ -378,12 +386,22 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
+        if (employeeId.Equals("tomorrow"))
+        {
+            // added to test
+            string[] messages =
+            {
+                "Jeg er på hjemmefra i morgen.",
+            };
+            return messages;
+        }
+        
         // SE PÅ DEM HER!
         if (employeeId.Equals("outliers"))
         {
             string[] messages =
             {
-                "Jeg er på hjemmefra i morgen.",
+                
                 "Jeg er først på kontoret omkring kl 10 i morgen",
                 "Jeg døjer stadig med øjenmigræne hvilket gør at det slører for mine øjne. Der er gode og dårlige timer. Jeg håber at komme ind på kontoret til formiddag",
                 "Jeg holder for i dag", // HOLDER = holder fri fra time=now -> location "home" fra NU af!

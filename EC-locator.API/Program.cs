@@ -133,7 +133,7 @@ void ConfigureApiServices(IServiceCollection services)
 
 void TestTomorrow()
 {
-    string[] messages = tr.GetMessages("wip");
+    string[] messages = tr.GetSamples("wip");
 
     foreach (string message in messages)
     {
@@ -148,7 +148,7 @@ void TestTomorrow()
 // TESTING MESSAGE PARSER
 void TestMessageParser()
 {
-    string[] messages = tr.GetMessages("wip");
+    string[] messages = tr.GetSamples("wip");
 
     foreach (string message in messages)
     {

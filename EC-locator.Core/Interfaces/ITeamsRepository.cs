@@ -17,6 +17,6 @@ public interface ITeamsRepository
     Task ListMessagesAsync();
     
     // returns hardcoded messages
-    string[] GetMessages(string employeeID);
+    string[] GetSamples(string employeeID);
     List<Message>? GetMessageSamples(string employeeId);
 }

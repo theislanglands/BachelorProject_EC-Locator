@@ -31,6 +31,17 @@ public class Message : IComparable
 
     public int CompareTo(object? obj)
     {
-        return DateTime.Compare(this.TimeStamp, (DateTime) (obj ?? throw new ArgumentNullException(nameof(obj)))); 
+        Message? otherMessage = obj as Message;
+        
+        if (otherMessage == null)
+        {
+            return 1;
+        }
+
+        Console.WriteLine(this.TimeStamp);
+        Console.WriteLine(otherMessage.TimeStamp);
+        Console.WriteLine(DateTime.Compare(this.TimeStamp, otherMessage.TimeStamp));
+        
+        return DateTime.Compare(this.TimeStamp, otherMessage.TimeStamp); 
     }
 }
