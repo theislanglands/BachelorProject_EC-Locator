@@ -35,13 +35,9 @@ public class Message : IComparable
         
         if (otherMessage == null)
         {
-            return 1;
+            return -1;
         }
-
-        Console.WriteLine(this.TimeStamp);
-        Console.WriteLine(otherMessage.TimeStamp);
-        Console.WriteLine(DateTime.Compare(this.TimeStamp, otherMessage.TimeStamp));
         
-        return DateTime.Compare(this.TimeStamp, otherMessage.TimeStamp); 
+        return DateTime.Compare(TimeStamp, otherMessage.TimeStamp); 
     }
 }

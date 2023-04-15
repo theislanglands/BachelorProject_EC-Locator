@@ -197,7 +197,7 @@ public class TeamsRepository : ITeamsRepository
 
     public List<Message>? GetMessageSamples(string employeeId)
     {
-        string sampleCode = "ill";
+        string sampleCode = "wip";
         
         List<Message> messages = new();
         var samples = GetSamples(sampleCode);
@@ -229,6 +229,7 @@ public class TeamsRepository : ITeamsRepository
             concatenatedMessages.AddRange(this.GetSamples("startKeywords").ToList());
             concatenatedMessages.AddRange(this.GetSamples("stopKeywords").ToList());
             concatenatedMessages.AddRange(this.GetSamples("negation").ToList());
+            concatenatedMessages.AddRange(this.GetSamples("undefined").ToList());
             
             if (_verbose)
             {
@@ -386,12 +387,23 @@ public class TeamsRepository : ITeamsRepository
             return messages;
         }
         
+        if (employeeId.Equals("undefined"))
+        {
+            // added to test
+            string[] messages =
+            {
+                "prut fis kanon",
+            };
+            return messages;
+        }
+        
         if (employeeId.Equals("tomorrow"))
         {
             // added to test
             string[] messages =
             {
                 "Jeg er på hjemmefra i morgen.",
+                "Jeg er først på kontoret omkring kl 10 i morgen",
             };
             return messages;
         }
@@ -401,18 +413,13 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
-                
-                "Jeg er først på kontoret omkring kl 10 i morgen",
                 "Jeg døjer stadig med øjenmigræne hvilket gør at det slører for mine øjne. Der er gode og dårlige timer. Jeg håber at komme ind på kontoret til formiddag",
                 "Jeg holder for i dag", // HOLDER = holder fri fra time=now -> location "home" fra NU af!
                 "Jeg er på kontoret inden frokost. Er på hjemmefra", // omvendt rækkefølge - kan ikke håndtere -> false prediction
                 "Jeg tager lige en time eller to hjemmefra, her til morgen", // utvetydig -> kan ikke finde kontor
-                
                 "Lynet skal lige have en gang service, så er først på pinden 9.15-9.30", // kan ikke specificere tidspunkt - to tidspunkter efter hinanden - slet første?
                 "Otto er desværre blevet syg, så jeg holder hjemmefronten indtil backup ankommer. Er på kontoret inden 11", // Syg, men på kontoret
-                
                 "Jeg er forresten stadig på hjemmefra - er måske på kontoret en af de kommende dage", // -> undefined no time keyword - Maybe "Future" keywords!
-
             };
             return messages;
         }

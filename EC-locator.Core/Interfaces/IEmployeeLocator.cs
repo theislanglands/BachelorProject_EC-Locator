@@ -4,5 +4,6 @@ namespace EC_locator.Core.Interfaces;
 
 public interface IEmployeeLocator
 {
-    Location GetCurrentLocation(string employeeId);
+    Location? GetCurrentLocation(string employeeId);
+    Message? GetLatestMessage(string employeeId);
 }
