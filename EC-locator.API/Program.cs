@@ -2,10 +2,11 @@ using System.Collections;
 using EC_locator.Core;
 using EC_locator.Repositories;
 using EC_locator.Core.Interfaces;
+using EC_locator.Core.Models;
 using EC_locator.Parsers;
 using Location = EC_locator.Core.Models.Location;
 using EC_locator.Core.SettingsOptions;
-
+using EC_locator.Locator;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -25,15 +26,22 @@ ConfigureApiServices(builder.Services);
 
 var app = builder.Build();
 
-IMessageParser messageParser = app.Services.GetService<IMessageParser>();
-ITeamsRepository tr = app.Services.GetService<ITeamsRepository>();
-ICalendarRepository cr = app.Services.GetService<ICalendarRepository>();
-ILocatorRepository lr = app.Services.GetService<ILocatorRepository>();
+var messageParser = app.Services.GetService<IMessageParser>();
+var tr = app.Services.GetService<ITeamsRepository>();
+var cr = app.Services.GetService<ICalendarRepository>();
+var lr = app.Services.GetService<ILocatorRepository>();
+var el = app.Services.GetService<IEmployeeLocator>();
+
+Console.WriteLine(el.GetCurrentLocation("all"));
+    
+Environment.Exit(1);
+
+
 
 // var test = lr.GetStopIndicatorKeywords();
 // tr.GetMessages("all", new DateOnly());
 // await TestGettingUsersFromTeamsRepo();
-TestMessageParser();
+// TestMessageParser();
 // TestTomorrow();
 // await tr.ListMessagesAsync();
 
@@ -46,7 +54,6 @@ foreach (var message in messages)
 */
 
 // await cr.GetCalendarEvents();
-Environment.Exit(1);
 
 // Configure the HTTP request pipeline.
 app.UseCors("CorsPolicy");
@@ -80,6 +87,7 @@ void ConfigureLocatorServices(IServiceCollection services)
     services.AddSingleton<ITeamsRepository, TeamsRepository>();
     services.AddSingleton<ILocatorRepository, LocatorRepository>();
     services.AddSingleton<ICalendarRepository, CalendarRepository>();
+    services.AddSingleton<IEmployeeLocator, EmployeeLocator>();
     
     // message parser services
     services.AddSingleton<ILocationTagger, LocationTagger>();
@@ -125,7 +133,7 @@ void ConfigureApiServices(IServiceCollection services)
 
 void TestTomorrow()
 {
-    string[] messages = tr.GetMessages("wip", new DateOnly());
+    string[] messages = tr.GetMessages("wip");
 
     foreach (string message in messages)
     {
@@ -140,13 +148,12 @@ void TestTomorrow()
 // TESTING MESSAGE PARSER
 void TestMessageParser()
 {
-    string[] messages = tr.GetMessages("wip", new DateOnly());
+    string[] messages = tr.GetMessages("wip");
 
     foreach (string message in messages)
     {
         Console.WriteLine($"\n{message}");
         
-
         var locations = messageParser.GetLocations(message);
         if (messageParser.ContainsTomorrow(message))
         {

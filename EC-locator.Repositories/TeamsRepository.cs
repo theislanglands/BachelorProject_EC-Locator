@@ -77,9 +77,10 @@ public class TeamsRepository : ITeamsRepository
         return users;
     }
     
-    public async Task<List<Message>> GetMessagesAsync(string employeeId, DateOnly date)
+    public async Task<List<Message>> GetMessagesAsync(string employeeId)
     {
         List<Message> foundMessages = new ();
+        var date = DateOnly.FromDateTime(DateTime.Now).AddDays(-1);
         
         if (_verbose)
         {
@@ -194,24 +195,39 @@ public class TeamsRepository : ITeamsRepository
         return Regex.Replace(html, "<(.|\n)*?>", "");
     }
 
-    public string[] GetMessages(string employeeId, DateOnly date)
+    public List<Message>? GetMessageSamples(string employeeId)
+    {
+        List<Message> messages = new();
+        var samples = GetMessages(employeeId);
+        foreach (var sample in samples)
+        {
+            messages.Add(new Message(sample, employeeId, DateTime.Now));
+        }
+
+        return messages;
+    }
+
+    public string[] GetMessages(string employeeId)
     {
         if (employeeId.Equals("all"))
         {
-            var concatenatedMessages = this.GetMessages("sample1", new DateOnly()).ToList();
-            concatenatedMessages.AddRange(this.GetMessages("sample3", new DateOnly()).ToList());
-            concatenatedMessages.AddRange(this.GetMessages("ill", new DateOnly()).ToList());
-            concatenatedMessages.AddRange(this.GetMessages("is_first_location_office", new DateOnly()).ToList());
-            concatenatedMessages.AddRange(this.GetMessages("minute indicators", new DateOnly()).ToList());
-            concatenatedMessages.AddRange(this.GetMessages("startKeywords", new DateOnly()).ToList());
-            concatenatedMessages.AddRange(this.GetMessages("stopKeywords", new DateOnly()).ToList());
-            concatenatedMessages.AddRange(this.GetMessages("negation", new DateOnly()).ToList());
+            var concatenatedMessages = this.GetMessages("sample1").ToList();
+            concatenatedMessages.AddRange(this.GetMessages("sample3").ToList());
+            concatenatedMessages.AddRange(this.GetMessages("ill").ToList());
+            concatenatedMessages.AddRange(this.GetMessages("is_first_location_office").ToList());
+            concatenatedMessages.AddRange(this.GetMessages("minute indicators").ToList());
+            concatenatedMessages.AddRange(this.GetMessages("startKeywords").ToList());
+            concatenatedMessages.AddRange(this.GetMessages("stopKeywords").ToList());
+            concatenatedMessages.AddRange(this.GetMessages("negation").ToList());
 
-            
-            Console.WriteLine();
-            foreach (var message in concatenatedMessages.ToArray())
+
+            if (_verbose)
             {
-                Console.WriteLine(message);
+                Console.WriteLine();
+                foreach (var message in concatenatedMessages.ToArray())
+                {
+                    Console.WriteLine(message);
+                }
             }
             
             return concatenatedMessages.ToArray();

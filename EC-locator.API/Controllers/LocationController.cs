@@ -46,7 +46,7 @@ public class LocationController
         // var messages = _teamsRepository.GetMessages(employeeId, DateOnly.FromDateTime(DateTime.Now));
         
         // fetch messages from today
-        var messages = await _teamsRepository.GetMessagesAsync(employeeId, DateOnly.FromDateTime(DateTime.Now));
+        var messages = await _teamsRepository.GetMessagesAsync(employeeId);
         
         if (messages == null)
         {

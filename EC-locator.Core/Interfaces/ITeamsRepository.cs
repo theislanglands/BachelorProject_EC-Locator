@@ -9,7 +9,7 @@ public interface ITeamsRepository
 {
     Task<List<User>> GetUsersAsync();
 
-    Task<List<Message>> GetMessagesAsync(string employeeId, DateOnly date);
+    Task<List<Message>> GetMessagesAsync(string employeeId);
 
     // TODO: FOR TESTING - to be deleted
     
@@ -17,6 +17,6 @@ public interface ITeamsRepository
     Task ListMessagesAsync();
     
     // returns hardcoded messages
-    string[] GetMessages(string employeeID, DateOnly date);
-    
+    string[] GetMessages(string employeeID);
+    List<Message>? GetMessageSamples(string employeeId);
 }

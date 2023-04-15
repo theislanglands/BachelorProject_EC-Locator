@@ -79,6 +79,8 @@ public class GraphHelper : IGraphHelper
         return fetchedUsers;
     }
     
+    // returning messages from the specified day and onwords
+    
     public Task<IChatMessageDeltaCollectionPage> GetMessagesAsync(DateOnly date)
     {
         EnsureGraphForAppOnlyAuth();
