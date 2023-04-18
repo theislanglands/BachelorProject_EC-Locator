@@ -6,15 +6,17 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace EC_locator.Parsers;
 
-public class DecisionTree : Node
+public class DecisionTree
 {
     private readonly IOptions<VerboseOptions> _options; 
-    public DecisionTree(IOptions<VerboseOptions> settingsOptions) : base(settingsOptions)
+    public DecisionTree(IOptions<VerboseOptions> settingsOptions)
     {
         _options = settingsOptions;
     }
-    public override void Perform(SortedList<int, Location> locations, SortedList<int, TimeOnly> times)
+    public void Perform(SortedList<int, Location> locations, SortedList<int, TimeOnly> times)
     {
+        //BUILDING TREE AND CALLS RECURSIVELY
+        
         // Action 1
         var insertUndefined = new Action(_options)
         {
@@ -26,7 +28,7 @@ public class DecisionTree : Node
                 return true;
             },
             
-            GoTo = new FinalResult(_options),
+            GoTo = new FinalNode(_options),
         };
         
         var deleteLocationNotMeeting = new Action(_options)
@@ -56,7 +58,7 @@ public class DecisionTree : Node
                 return true;
             },
             
-            GoTo = new FinalResult(_options)
+            GoTo = new FinalNode(_options)
         };
         
         
@@ -110,7 +112,7 @@ public class DecisionTree : Node
             },
  
             Positive = isMeetingPresent,
-            Negative = new FinalResult(_options)
+            Negative = new FinalNode(_options)
         };
         
         // Action 5
@@ -322,7 +324,7 @@ public class DecisionTree : Node
                 return true;
             },
             
-            GoTo = new FinalResult(_options)
+            GoTo = new FinalNode(_options)
         };
         
         // Action 2b
@@ -336,7 +338,7 @@ public class DecisionTree : Node
                 return true;
             },
             
-            GoTo = new FinalResult(_options)
+            GoTo = new FinalNode(_options)
         };
         
         // Action 2a
@@ -466,7 +468,7 @@ public class DecisionTree : Node
         
 
         // Decision 1
-        var trunk = new DecisionQuery(_options)
+        var root = new DecisionQuery(_options)
         {
             Title = "Is Location Found",
             Test = (locations, times) =>
@@ -483,6 +485,6 @@ public class DecisionTree : Node
             Negative = oneTimeNoLocations
         };
         
-        trunk.Perform(locations, times);
+        root.Perform(locations, times);
     }
 }

@@ -41,7 +41,7 @@ public class MessageParser : IMessageParser
         ModifyLocationsFound();
         
         //Combining time and location tags into list of locations
-        var locationsFound = _timeAndLocationConnector.AddTimeToLocations(_locationTags, _timeTags, message);
+        var locationsFound = _timeAndLocationConnector.AddTimeToLocations(_locationTags, _timeTags);
         
         return locationsFound;
     }

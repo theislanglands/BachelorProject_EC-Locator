@@ -6,13 +6,15 @@ namespace EC_locator.Parsers;
 
 public class TimeTagger : ITimeTagger
 {
-    private readonly ILocatorRepository _locatorRepository;
     private readonly bool _verbose;
+    private readonly Dictionary<string, TimeOnly> _timeKeywords;
+    private readonly Dictionary<string, double> _minuteIndicators;
 
     public TimeTagger(ILocatorRepository locatorRepository, IOptions<VerboseOptions> settingsOptions)
     {
-        _locatorRepository = locatorRepository;
         _verbose = settingsOptions.Value.Verbose;
+        _timeKeywords = locatorRepository.GetTimeKeywords();
+        _minuteIndicators = locatorRepository.GetMinuteIndicators();
     }
 
     public SortedList<int, TimeOnly> GetTags(string message)
@@ -36,10 +38,9 @@ public class TimeTagger : ITimeTagger
 
     private SortedList<int, TimeOnly> IdentifyKeywordsTime(string message)
     {
-        var timeKeywords = _locatorRepository.GetTimeKeywords();
         var identifiedTimeOnIndex = new SortedList<int, TimeOnly>();
 
-        foreach (var timeKeyword in timeKeywords)
+        foreach (var timeKeyword in _timeKeywords)
         {
             if (message.Contains(timeKeyword.Key))
             {
@@ -94,9 +95,7 @@ public class TimeTagger : ITimeTagger
     // see if a message contains a minute indicator e.g "quarter past" between start and found index
     private TimeOnly AddMinuteIndication(string message, int foundAtIndex, TimeOnly foundTime)
     {
-        var minuteIndicators = _locatorRepository.GetMinuteIndicators();
-
-        foreach (var minuteIndicator in minuteIndicators)
+        foreach (var minuteIndicator in _minuteIndicators)
         {
             if (message[..foundAtIndex].Contains(minuteIndicator.Key))
             {

@@ -37,8 +37,7 @@ public class LocationTagger : ILocationTagger
         return listOfLocations;
     }
 
-    // mapping keywords to location
-
+    // mapping keywords to location, and returning their index in the message
     private SortedList<int, string> FindLocations(string message)
     {
         var foundLocations = new SortedList<int, string>();
@@ -50,21 +49,19 @@ public class LocationTagger : ILocationTagger
             {
                 // getting index of keyword in message
                 int indexOfKeyWord = message.IndexOf(locationWord.Key, StringComparison.OrdinalIgnoreCase);
-
-                // getting index of a found location containing the Value Location word
-
+                
                 // Adding Location if not already found
                 if (!foundLocations.ContainsValue(locationWord.Value))
                 {
                     foundLocations.Add(indexOfKeyWord, locationWord.Value);
                 }
-
+                
+                // Changing index - if keyword already found
                 else
                 {
                     int indexOfFoundLocation = foundLocations.IndexOfValue(locationWord.Value);
                     if (foundLocations.GetKeyAtIndex(indexOfFoundLocation) <= indexOfKeyWord)
                     {
-                        // delete found location and create a new one!
                         foundLocations.RemoveAt(indexOfFoundLocation);
                         foundLocations.Add(indexOfKeyWord, locationWord.Value);
                     }

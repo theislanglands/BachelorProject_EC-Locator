@@ -41,7 +41,7 @@ public class MessageParserTest
         _locatorRepository = new LocatorRepository(locatorRepositoryOptions, verboseOptions);
         _locationTagger = new LocationTagger(_locatorRepository, verboseOptions);
         _timeTagger = new TimeTagger(_locatorRepository, verboseOptions);
-        _timeAndLocationConnector = new TimeAndLocationConnector(_locatorRepository, verboseOptions, locationOptions);
+        _timeAndLocationConnector = new TimeAndLocationConnector(verboseOptions, locationOptions);
         _messageParser = new MessageParser(_locationTagger, _timeTagger, _timeAndLocationConnector, verboseOptions);
         
         _messageSamples = new Dictionary<string, Location[]>(); 
