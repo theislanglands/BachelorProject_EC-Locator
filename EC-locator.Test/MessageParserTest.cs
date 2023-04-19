@@ -28,7 +28,16 @@ public class MessageParserTest
         {
             Host = "localhost",
             UserId = "sa",
-            Password = "Secretpassword1!"
+            Password = "Secretpassword1!",
+            ConnectionStringRW = "Server=tcp:ecreo01.database.windows.net,1433;" +
+                                 "Initial Catalog=sqldb-eclocator-dev-001;" +
+                                 "Persist Security Info=False;" +
+                                 "User ID=eclocator-dev-ow;" +
+                                 "Password=K@7KJ.Y3Vk!(BDAaaRczTWt@lC*Q;" +
+                                 "MultipleActiveResultSets=False;" +
+                                 "Encrypt=True;" +
+                                 "TrustServerCertificate=False;" +
+                                 "Connection Timeout=30;"
         });
         var locationOptions = Options.Create(new DefaultLocationOptions
         {

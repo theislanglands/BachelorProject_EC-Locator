@@ -372,6 +372,7 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
+                "Er hjemmefra med Otto indtil backup kommer Jeg er inde inden frokost"
             };
             return messages;
         }

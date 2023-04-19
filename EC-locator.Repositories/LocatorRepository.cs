@@ -18,68 +18,8 @@ public class LocatorRepository : ILocatorRepository
         _host = databaseSettings.Value.Host;
         _userId = databaseSettings.Value.UserId;
         _password = databaseSettings.Value.Password;
-        _connectionString = databaseSettings.Value.ConnectionString;
+        _connectionString = databaseSettings.Value.ConnectionStringRW;
         _verbose = verboseSettings.Value.Verbose;
-    }
-    
-    public List<string> GetStopIndicatorKeywordsDB()
-    {
-        var keywords = new List<string>();
-        OpenConnection();
-        
-        try
-        {
-            if (_verbose)
-            {
-                Console.WriteLine("reading Stop Indicator Keywords records");
-            }
-            string sql = "SELECT * FROM StopIndicatorKeywords";
-            SqlCommand cmd = new SqlCommand(sql, connection);
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                keywords.Add(
-                    reader.GetString(0));
-            }
-            reader.Close();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Unable to read Stop Indicator Keywords: {ex.Message}");
-        }
-        
-        CloseConnection();
-        return keywords;
-    }
-    
-    public List<string> GetStartIndicatorKeywordsDB()
-    {
-        var keywords = new List<string>();
-        OpenConnection();
-        
-        try
-        {
-            if (_verbose)
-            {
-                Console.WriteLine("reading Start Indicator Keywords records");
-            }
-            string sql = "SELECT * FROM StartIndicatorKeywords";
-            SqlCommand cmd = new SqlCommand(sql, connection);
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                keywords.Add(
-                    reader.GetString(0));
-            }
-            reader.Close();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Unable to read Start Indicator Keywords: {ex.Message}");
-        }
-        
-        CloseConnection();
-        return keywords;
     }
     
     public Dictionary<string, double> GetMinuteIndicatorsDB()
@@ -224,40 +164,20 @@ public class LocatorRepository : ILocatorRepository
         string[,] keywords =
         {
             // ILL KEYWORDS
-            {  "seng", "ill" },
-            {  "dynen" ,"ill" },
-            {  "på langs" ,"ill" },
-            {  "vandret" ,"ill" },
-            {  "lægger mig" ,"ill" },
+            {  "seng", "ill" }, {  "dynen" ,"ill" }, {  "på langs" ,"ill" }, {  "vandret" ,"ill" }, {  "lægger mig" ,"ill" },
             
-            {  "syg" ,"ill" },
-            {  "ikke frisk" ,"ill" },
-            {  "ikke på toppen" ,"ill" },
-            {  "skidt" ,"ill" },
-            {  "helbred" ,"ill" },
+            {  "syg" ,"ill" }, {  "ikke frisk" ,"ill" }, {  "ikke på toppen" ,"ill" }, {  "skidt" ,"ill" }, {  "helbred" ,"ill" },
             
-            {  "influenza" ,"ill" },
-            {  "feber" ,"ill" },
-            {  "forkølelse" ,"ill" },
-            {  "svimmel" ,"ill" },
-            {  "kvalme" ,"ill" },
-            {  "ondt i hovedet" ,"ill" },
-            {  "migræne" ,"ill" },
-            {  "toilet" ,"ill" },
+            {  "influenza" ,"ill" }, {  "feber" ,"ill" }, {  "forkølelse" ,"ill" }, {  "svimmel" ,"ill" }, {  "kvalme" ,"ill" }, 
+            {  "ondt i hovedet" ,"ill" }, {  "migræne" ,"ill" }, {  "toilet" ,"ill" },
             
             // KIDS ILL KEYWORDS
-            {  "den lille" ,"KidsIll" },
-            {  "de små" ,"KidsIll" },
-            {  "familie" ,"KidsIll" },
-            {  "børn" ,"KidsIll" },
-            {  "barn" ,"KidsIll" },
-            {  "pige" ,"KidsIll" },
-            {  "dreng" ,"KidsIll" },
-            {  "unger" ,"KidsIll" },
-            {  "søn" ,"KidsIll" },
-            {  "datter" ,"KidsIll" },
-            {  "Felix" ,"KidsIll" },
-            {  "Otto" ,"KidsIll" },
+            {  "den lille" ,"kidsIll" }, {  "de små" ,"kidsIll" }, {  "familie" ,"kidsIll" },
+            {  "børn" ,"kidsIll" }, {  "barn" ,"kidsIll" },
+            {  "pige" ,"kidsIll" }, {  "dreng" ,"kidsIll" },
+            {  "unger" ,"kidsIll" }, {  "søn" ,"kidsIll" }, {  "datter" ,"kidsIll" },
+            {  "Felix" ,"kidsIll" },
+            {  "Otto" ,"kidsIll" },
             
             // MEETING KEYWORDS
             { "møde", "meeting" },
@@ -267,10 +187,7 @@ public class LocatorRepository : ILocatorRepository
             { "ikke på kontoret", "home" },
             
             // OFFICE KEYWORDS
-            { "kommer ind", "office" },
-            { "kommer jeg ind", "office" },
-            { "inde", "office" },
-            { "ind forbi", "office" },
+            { "kommer ind", "office" }, { "kommer jeg ind", "office" }, { "inde", "office" }, { "ind forbi", "office" },
             
             { "retur", "office"},
             { "er tilbage", "office"},
@@ -331,46 +248,6 @@ public class LocatorRepository : ILocatorRepository
         return timeKeywords;
     }
     
-    // CAN BE DELETED
-    public List<string> GetStartIndicatorKeywords()
-    {
-        var timeKeywords = new List<string>();
-        
-        timeKeywords.Add("starter");
-
-        return timeKeywords;
-    }
-    
-    public List<string> GetStopIndicatorKeywords()
-    {
-        var timeKeywords = new List<string>();
-        
-        timeKeywords.Add("stopper");
-        timeKeywords.Add("holder");
-        
-        return timeKeywords;
-    }
-    
-
-    
-    
-    // NOT USED
-    public string[] GetSplitterKeywords()
-    {
-        string[] keywords =
-        {
-            "fra kl",
-            "indtil",
-            "forventer",
-            "i morgen",
-            "kommer",
-            "derefter",
-            "er væk",
-            "smutter",
-            "kører",
-        };
-        return keywords;
-    }
     
     private void OpenConnection()
     {

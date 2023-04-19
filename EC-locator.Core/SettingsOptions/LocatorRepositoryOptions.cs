@@ -6,5 +6,7 @@ public class LocatorRepositoryOptions
     public string UserId { get; set; }
     public string Password { get; set; }
     
-    public string ConnectionString { get; set; }
+    public string ConnectionStringRW { get; set; }
+    public string ConnectionStringR { get; set; }
+
 }

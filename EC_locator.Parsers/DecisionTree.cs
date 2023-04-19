@@ -364,7 +364,7 @@ public class DecisionTree
                 List<int> locationsToDelete = new();
                 foreach (var location in locations)
                 {
-                    if (location.Value.Place.Equals("KidsIll"))
+                    if (location.Value.Place.Equals("kidsIll"))
                     {
                         locationsToDelete.Add(location.Key);
                     }
@@ -392,7 +392,7 @@ public class DecisionTree
             {
                 foreach (var location in locations)
                 {
-                    if (location.Value.Place.Equals("KidsIll"))
+                    if (location.Value.Place.Equals("kidsIll"))
                     {
                         return true;
                     }
@@ -412,7 +412,7 @@ public class DecisionTree
             {
                 foreach (var location in locations)
                 {
-                    if (location.Value.Place.Equals("KidsIll"))
+                    if (location.Value.Place.Equals("kidsIll"))
                     {
                         return true;
                     }

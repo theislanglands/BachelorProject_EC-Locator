@@ -42,7 +42,7 @@ public class LocationTagger : ILocationTagger
     {
         var foundLocations = new SortedList<int, string>();
  
-        var locationWordsDictionary = _locatorRepository.GetLocationKeywords();
+        var locationWordsDictionary = _locatorRepository.GetLocationKeywordsDB();
         foreach (var locationWord in locationWordsDictionary)
         {
             if (message.Contains(locationWord.Key.ToLower()))
