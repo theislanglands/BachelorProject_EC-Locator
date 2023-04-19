@@ -6,7 +6,7 @@ public interface IGraphHelper
 {
     Task<IGraphServiceUsersCollectionPage> GetUsersAsync();
     //Task<IChannelMessagesCollectionPage> getMessagesAsync();
-    Task<IChannelMessagesCollectionPage> getCalendarEventsAsync(string employeeId);
+    Task<IUserCalendarViewCollectionPage> getCalendarEventsAsync(string employeeId);
 
     Task<IChatMessageDeltaCollectionPage> GetMessagesAsync(DateOnly date);
 }

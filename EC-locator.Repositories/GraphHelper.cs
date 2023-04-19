@@ -101,7 +101,7 @@ public class GraphHelper : IGraphHelper
         return messages;
     }
     
-    public Task<IChannelMessagesCollectionPage> getCalendarEventsAsync(string employeeId)
+    public Task<IUserCalendarViewCollectionPage> getCalendarEventsAsync(string employeeId)
     {
         EnsureGraphForAppOnlyAuth();
         _ = _graphClient ??
@@ -114,8 +114,8 @@ public class GraphHelper : IGraphHelper
         DateTimeOffset startDateTime = DateTimeOffset.UtcNow;
         start = startDateTime.ToString("o"); // TIME RIGHT NOW
         //Console.WriteLine(start);
-        // DateTimeOffset endDateTime = startDateTime.AddDays(1);
-        //start = DateTime.Now.ToString();
+        DateTimeOffset endDateTime = startDateTime.AddDays(1);
+        start = endDateTime.ToString("o"); // TIME RIGHT NOW + 1 day
         
         List<Option> options = new List<Option>
         {
@@ -127,20 +127,15 @@ public class GraphHelper : IGraphHelper
         var events = _graphClient.Users[employeeId].CalendarView
             .Request(options)
             .Top(1)
-            .GetAsync()
-            .Result;
+            .GetAsync();
+            
         
-        foreach (var ev in events)
-        {
-            Console.WriteLine("");
-            Console.WriteLine($"{ev.Subject} ({ev.Start.DateTime} - {ev.End.DateTime})");
+       
 
-        }
+        //Console.WriteLine("Exiting program");
+        //Environment.Exit(1);
 
-        Console.WriteLine("Exiting program");
-        Environment.Exit(1);
-        
-        return null;
+        return events;
     }
 }
 

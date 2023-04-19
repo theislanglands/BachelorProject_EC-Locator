@@ -30,7 +30,15 @@ public class CalendarRepository : ICalendarRepository
 
         // theis
         var employeeId = "6e5ee9cb-11cb-405d-aaa8-60c3768340c3";
-        await _graphHelper.getCalendarEventsAsync(employeeId);
+        var events = await _graphHelper.getCalendarEventsAsync(employeeId);
+        
+        foreach (var ev in events)
+        {
+            Console.WriteLine("");
+            Console.WriteLine($"{ev.Subject} ({ev.Start.DateTime} - {ev.End.DateTime})");
+        }
+        
+        Environment.Exit(0);
         return null;
     }
 }
