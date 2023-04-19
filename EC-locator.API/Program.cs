@@ -32,6 +32,8 @@ var cr = app.Services.GetService<ICalendarRepository>();
 var lr = app.Services.GetService<ILocatorRepository>();
 var el = app.Services.GetService<IEmployeeLocator>();
 
+cr.GetCalendarEvents();
+
 /*
 var locationKeywords = lr.GetLocationKeywordsDB();
 foreach (var kvPair in locationKeywords)
@@ -39,11 +41,11 @@ foreach (var kvPair in locationKeywords)
     Console.WriteLine($"Key: {kvPair.Key}, Value: {kvPair.Value}");
 }
 */
-//Environment.Exit(1);
+Environment.Exit(1);
 
 //Console.WriteLine(el.GetCurrentLocation("all"));
   
-TestMessageParser();
+//TestMessageParser();
 
 
 

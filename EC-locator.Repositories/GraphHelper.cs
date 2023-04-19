@@ -107,8 +107,15 @@ public class GraphHelper : IGraphHelper
         _ = _graphClient ??
             throw new NullReferenceException("Graph has not been initialized ");
         
-        var start = "2022-11-20T10:00:00.0000000"; //for debug only
-        var end = "2024-11-20T23:00:00.0000000"; 
+        var start = "2023-04-19T13:59:00.0000000"; //for debug only
+        var end = "2026-04-20T23:00:00.0000000";
+
+        // Set the start and end times for the current window of events
+        DateTimeOffset startDateTime = DateTimeOffset.UtcNow;
+        start = startDateTime.ToString("o"); // TIME RIGHT NOW
+        //Console.WriteLine(start);
+        // DateTimeOffset endDateTime = startDateTime.AddDays(1);
+        //start = DateTime.Now.ToString();
         
         List<Option> options = new List<Option>
         {
@@ -119,15 +126,14 @@ public class GraphHelper : IGraphHelper
 
         var events = _graphClient.Users[employeeId].CalendarView
             .Request(options)
+            .Top(1)
             .GetAsync()
             .Result;
         
         foreach (var ev in events)
         {
-            Console.WriteLine($"subject: {ev.Subject}");
-            Console.WriteLine($"body: {ev.Body}");
-            Console.WriteLine($"type: {ev.Type}");
-            Console.WriteLine($"body pw: {ev.BodyPreview}");
+            Console.WriteLine("");
+            Console.WriteLine($"{ev.Subject} ({ev.Start.DateTime} - {ev.End.DateTime})");
 
         }
 
