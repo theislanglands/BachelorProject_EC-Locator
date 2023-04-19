@@ -74,8 +74,9 @@ public class LocationController
     class LocationReturn
     {
         public string? Place { get; set; }
-        public string LocationEndTime { get; set; }
         public string LocationStartTime { get; set; }
+
+        public string LocationEndTime { get; set; }
 
         public string TeamMessage { get; set; }
         public string CalenderInfo { get; set; }

@@ -23,7 +23,7 @@ public class Message : IComparable
     public override string ToString()
     {
         StringBuilder presentation = new StringBuilder();
-        presentation.Append($"Content: {Content}\n");
+        presentation.Append($"{Content}\n");
         presentation.Append($"UserId: {UserId}\n");
         presentation.Append($"TimeStamp: {TimeStamp}\n");
         return presentation.ToString();

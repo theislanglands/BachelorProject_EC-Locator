@@ -11,12 +11,14 @@ public class LocatorRepository : ILocatorRepository
     private readonly bool _verbose;
     private SqlConnection connection;
     private readonly string _host, _userId, _password;
+    private string _connectionString;
 
     public LocatorRepository(IOptions<LocatorRepositoryOptions> databaseSettings, IOptions<VerboseOptions> verboseSettings)
     {
         _host = databaseSettings.Value.Host;
         _userId = databaseSettings.Value.UserId;
         _password = databaseSettings.Value.Password;
+        _connectionString = databaseSettings.Value.ConnectionString;
         _verbose = verboseSettings.Value.Verbose;
     }
     
@@ -111,7 +113,12 @@ public class LocatorRepository : ILocatorRepository
         CloseConnection();
         return keywords;
     }
-    
+
+    public void TestConnection()
+    {
+        
+    }
+
     public Dictionary<string, TimeOnly> GetTimeKeywordsDB()
     {
         Dictionary<string, TimeOnly> timeKeywords = new();
@@ -367,13 +374,15 @@ public class LocatorRepository : ILocatorRepository
     
     private void OpenConnection()
     {
-        // TODO get from .env
         SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+        /*
         builder.DataSource = _host; 
         builder.UserID = _userId;            
         builder.Password = _password;     
         builder.InitialCatalog = "Keywords";
         builder.TrustServerCertificate = true;
+        */
+        builder.ConnectionString = _connectionString;
         connection = new SqlConnection(builder.ConnectionString);
         
         try
