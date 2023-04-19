@@ -97,12 +97,13 @@ public class TeamsRepository : ITeamsRepository
                     {
                         continue;
                     }
-                    
+                    /*
                     // Check if message match the date
                     if (!date.Equals(DateOnly.FromDateTime(message.LastModifiedDateTime.Value.Date)))
                     {
                         continue;
                     }
+                    */
                     
                     // check if content is html and convert to plain text             
                     if (message.Body.ContentType.Value.ToString().Equals("Html"))

@@ -25,9 +25,7 @@ public class LocationController
     public LocationController(IEmployeeLocator employeeLocator, IOptions<VerboseOptions> settingsOptions)
     {
         _verbose = settingsOptions.Value.Verbose;
-
         _employeeLocator = employeeLocator;
-        
         _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true,
@@ -48,8 +46,8 @@ public class LocationController
         {
             Console.WriteLine("\n- LOCATION CONTROLLER -");
             Console.WriteLine($"EmployeeID: {employeeId}");
-            Console.WriteLine($"Latest Message {latestMessage}");
-            Console.WriteLine($"Current Location {currentLocation}");
+            Console.WriteLine($"Latest Message: {latestMessage}");
+            Console.WriteLine($"Current Location: {currentLocation}");
         }
         
         if (latestMessage == null)
@@ -71,12 +69,6 @@ public class LocationController
         }
 
         return JsonSerializer.Serialize(lr, _jsonOptions);
-    }
-    
-    private string SelectRandomMessage(string[] messages)
-    {
-        int randomIndex = new Random().Next(0, messages.Length);
-        return messages[randomIndex];
     }
 
     class LocationReturn

@@ -32,7 +32,7 @@ public class EmployeeLocator : IEmployeeLocator
     {
         // FIND CURRENT TIME
         _currentTime = TimeOnly.FromDateTime(DateTime.Now);
-        _currentTime = new TimeOnly(09, 27); // FOR TESTING
+        // _currentTime = new TimeOnly(09, 27); // FOR TESTING
         
         // SEE IF OUTSIDE DEFAULT WORKING HOURS => return OFF work
         if (!IsInsideDefault(_currentTime) || IsWeekend())
@@ -87,8 +87,8 @@ public class EmployeeLocator : IEmployeeLocator
 
     public Message? GetLatestMessage(string employeeId)
     {
-        //var messages = _teamsRepository.GetMessagesAsync(employeeId).Result;
-        var messages = _teamsRepository.GetMessageSamples(employeeId);
+        var messages = _teamsRepository.GetMessagesAsync(employeeId).Result;
+        //var messages = _teamsRepository.GetMessageSamples(employeeId); // FOR TESTING
         
         if (messages != null)
         {
@@ -198,5 +198,12 @@ public class EmployeeLocator : IEmployeeLocator
         }
         
         return DateTime.Now.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday;
+    }
+    
+    // FOR TESTING
+    private string SelectRandomMessage(string[] messages)
+    {
+        int randomIndex = new Random().Next(0, messages.Length);
+        return messages[randomIndex];
     }
 }

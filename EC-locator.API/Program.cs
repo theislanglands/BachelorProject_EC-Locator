@@ -32,9 +32,13 @@ var cr = app.Services.GetService<ICalendarRepository>();
 var lr = app.Services.GetService<ILocatorRepository>();
 var el = app.Services.GetService<IEmployeeLocator>();
 
+var message = await tr.GetMessagesAsync("83e50d64-db06-4239-bfc7-695112054be7");
+Console.WriteLine(message[0].Content);
+
+Environment.Exit(1);
 //Console.WriteLine(el.GetCurrentLocation("all"));
   
-TestMessageParser();
+// TestMessageParser();
 
 
 
