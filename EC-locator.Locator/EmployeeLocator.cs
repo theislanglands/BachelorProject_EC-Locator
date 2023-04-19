@@ -45,7 +45,7 @@ public class EmployeeLocator : IEmployeeLocator
             return new Location("off");
         }
         
-        // CHECK IF THERE'S A RELEVANT MESSAGE IN TEAMS CHANNEL
+        // IF NO RELEVANT MESSAGE IN TEAMS CHANNEL => ASSUME DEFAULT LOCATION
         Message? latestMessage = GetLatestMessage(employeeId);
         if (latestMessage == null)
         {

@@ -18,18 +18,15 @@ namespace API.Controllers;
 [EnableCors]
 public class LocationController
 {
-    private readonly ITeamsRepository _teamsRepository;
-    private readonly IMessageParser _messageParser;
     private readonly bool _verbose;
     private readonly IEmployeeLocator _employeeLocator;
-
     private readonly JsonSerializerOptions _jsonOptions;
     
-    public LocationController(IMessageParser messageParser, ITeamsRepository teamsRepository, IOptions<VerboseOptions> settingsOptions)
+    public LocationController(IEmployeeLocator employeeLocator, IOptions<VerboseOptions> settingsOptions)
     {
-        _messageParser = messageParser;
-        _teamsRepository = teamsRepository;
         _verbose = settingsOptions.Value.Verbose;
+
+        _employeeLocator = employeeLocator;
         
         _jsonOptions = new JsonSerializerOptions
         {
@@ -39,7 +36,7 @@ public class LocationController
         };
     }
     
-    // TODO check async and awit if works!
+    // TODO check async and await if works!
     [HttpGet("{employeeId}")]
     public async Task<string> GetCurrentLocationAsync(string employeeId)
     {
@@ -84,7 +81,7 @@ public class LocationController
 
     class LocationReturn
     {
-        public string Place { get; set; }
+        public string? Place { get; set; }
         public string LocationEndTime { get; set; }
         public string LocationStartTime { get; set; }
 

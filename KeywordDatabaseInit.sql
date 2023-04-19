@@ -1,5 +1,4 @@
 /* Creating Database */
-
 CREATE DATABASE Keywords;
 GO;
 
@@ -24,8 +23,6 @@ CREATE TABLE LocationKeywords
     FOREIGN KEY (Location) REFERENCES Location (LocationID)
 );
 
-
-
 DROP TABLE IF EXISTS TimeKeywords;
 CREATE TABLE TimeKeywords
 (
@@ -39,20 +36,6 @@ CREATE TABLE MinuteIndicatorKeywords
 (
     Keyword VARCHAR(24) NOT NULL,
     Minutes SMALLINT NOT NULL,
-    PRIMARY KEY (Keyword)
-);
-
-DROP TABLE IF EXISTS StartIndicatorKeywords;
-CREATE TABLE StartIndicatorKeywords
-(
-    Keyword VARCHAR(24) NOT NULL,
-    PRIMARY KEY (Keyword)
-);
-
-DROP TABLE IF EXISTS StopIndicatorKeywords;
-CREATE TABLE StopIndicatorKeywords
-(
-    Keyword VARCHAR(24) NOT NULL,
     PRIMARY KEY (Keyword)
 );
 
@@ -73,27 +56,17 @@ VALUES
     ('kvart i', -15),
     ('halv', -30);
 
-INSERT INTO StopIndicatorKeywords (Keyword)
-VALUES
-    ('stopper'),
-    ('holder');
-
-INSERT INTO StartIndicatorKeywords (Keyword)
-VALUES
-    ('starter');
-
--- Insert data into the Location table
 INSERT INTO Location (LocationID, Name)
-VALUES (1, 'ill'),
-       (2, 'kidsIll'),
-       (3, 'meeting'),
-       (4, 'home'),
-       (5, 'office'),
-       (6, 'off'),
-       (7, 'remote'),
-       (8, 'undecided');
+VALUES 
+    (1, 'ill'),
+    (2, 'kidsIll'),
+    (3, 'meeting'),
+    (4, 'home'),
+    (5, 'office'),
+    (6, 'off'),
+    (7, 'remote'),
+    (8, 'undecided');
 
--- Insert data into the LocationKeywords table
 INSERT INTO LocationKeywords (Keyword, Location)
 VALUES
     ('seng', 1), ('dynen', 1), ('på langs', 1), ('vandret', 1), ('lægger mig', 1),
@@ -116,5 +89,4 @@ VALUES
     
     ('tager ud til', 7), ('tager ned til', 7), ('hos', 7);
 
-
-
+GO;
