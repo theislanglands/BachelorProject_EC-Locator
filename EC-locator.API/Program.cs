@@ -32,7 +32,7 @@ var cr = app.Services.GetService<ICalendarRepository>();
 var lr = app.Services.GetService<ILocatorRepository>();
 var el = app.Services.GetService<IEmployeeLocator>();
 
-cr.GetCalendarEvents();
+Console.WriteLine($"Calendar event: {cr.GetCurrentCalendarEvent("some emplyee ID").Result}");
 
 /*
 var locationKeywords = lr.GetLocationKeywordsDB();

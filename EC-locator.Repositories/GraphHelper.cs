@@ -107,15 +107,13 @@ public class GraphHelper : IGraphHelper
         _ = _graphClient ??
             throw new NullReferenceException("Graph has not been initialized ");
         
-        var start = "2023-04-19T13:59:00.0000000"; //for debug only
-        var end = "2026-04-20T23:00:00.0000000";
-
-        // Set the start and end times for the current window of events
+        // Set the start and end time for window of events
         DateTimeOffset startDateTime = DateTimeOffset.UtcNow;
-        start = startDateTime.ToString("o"); // TIME RIGHT NOW
-        //Console.WriteLine(start);
-        DateTimeOffset endDateTime = startDateTime.AddDays(1);
-        start = endDateTime.ToString("o"); // TIME RIGHT NOW + 1 day
+        var start = DateTimeOffset.UtcNow.ToString("o"); // TIME RIGHT NOW
+        var end = startDateTime.AddDays(1).ToString("o"); // TIME RIGHT NOW + 1 day
+        
+        //var start = "2023-04-19T13:59:00.0000000"; //for debug only
+        //var end = "2026-04-20T23:00:00.0000000";
         
         List<Option> options = new List<Option>
         {
@@ -128,13 +126,7 @@ public class GraphHelper : IGraphHelper
             .Request(options)
             .Top(1)
             .GetAsync();
-            
         
-       
-
-        //Console.WriteLine("Exiting program");
-        //Environment.Exit(1);
-
         return events;
     }
 }
