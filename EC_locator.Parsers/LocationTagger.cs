@@ -48,7 +48,7 @@ public class LocationTagger : ILocationTagger
             if (message.Contains(locationWord.Key.ToLower()))
             {
                 // getting index of keyword in message
-                int indexOfKeyWord = message.IndexOf(locationWord.Key, StringComparison.OrdinalIgnoreCase);
+                int indexOfKeyWord = message.IndexOf(locationWord.Key, StringComparison.OrdinalIgnoreCase) + 1;
                 
                 // Adding Location if not already found
                 if (!foundLocations.ContainsValue(locationWord.Value))
@@ -93,7 +93,7 @@ public class LocationTagger : ILocationTagger
         if (message.Contains(negationKeyWord))
         {
             // Identify index of negation keyword
-            int indexOfNegationWord = message.IndexOf(negationKeyWord, StringComparison.OrdinalIgnoreCase);
+            int indexOfNegationWord = message.IndexOf(negationKeyWord, StringComparison.OrdinalIgnoreCase) +1;
 
 
             var locationsToRemove = new List<int>();

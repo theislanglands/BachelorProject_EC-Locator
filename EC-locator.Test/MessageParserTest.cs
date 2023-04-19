@@ -423,6 +423,19 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "off")
             });
+        _messageSamples.Add(
+            "Lukker ned kl. 14",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9, 00),
+                    new TimeOnly(14, 00),
+                    "home"),
+                new Location(
+                    new TimeOnly(14, 00),
+                    new TimeOnly(16, 0),
+                    "off")
+            });
     }
 
     private void AddKidsIllMessageSamples()

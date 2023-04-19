@@ -144,8 +144,6 @@ public class TeamsRepository : ITeamsRepository
         return null;
     }
     
-    
-    
     public async Task ListMessagesAsync()
     {
         if (_verbose)
@@ -364,6 +362,7 @@ public class TeamsRepository : ITeamsRepository
                 "I morgen arbejder jeg hjemmefra og stopper 11.30",
                 "Arbejder hjemme i dag og går fra ved frokosttid. God påske ",
                 "Jeg holder weekend ved 14 tiden God påske til jer der går på ferie",
+                "Lukker ned kl. 14"
             };
             return messages;
         }
@@ -372,7 +371,6 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
-                
             };
             return messages;
         }

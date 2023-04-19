@@ -32,9 +32,9 @@ var cr = app.Services.GetService<ICalendarRepository>();
 var lr = app.Services.GetService<ILocatorRepository>();
 var el = app.Services.GetService<IEmployeeLocator>();
 
-Console.WriteLine(el.GetCurrentLocation("all"));
-    
-Environment.Exit(1);
+//Console.WriteLine(el.GetCurrentLocation("all"));
+  
+TestMessageParser();
 
 
 

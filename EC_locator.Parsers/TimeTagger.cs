@@ -20,6 +20,7 @@ public class TimeTagger : ITimeTagger
     public SortedList<int, TimeOnly> GetTags(string message)
     {
         var identifiedTimes = IdentifyNumericTime(message);
+        
         foreach (var item in IdentifyKeywordsTime(message))
         {
             identifiedTimes.Add(item.Key, item.Value);
@@ -44,7 +45,7 @@ public class TimeTagger : ITimeTagger
         {
             if (message.Contains(timeKeyword.Key))
             {
-                var foundAtIndex = message.IndexOf(timeKeyword.Key, StringComparison.OrdinalIgnoreCase);
+                var foundAtIndex = message.IndexOf(timeKeyword.Key, StringComparison.OrdinalIgnoreCase) + 1;
                 identifiedTimeOnIndex.Add(foundAtIndex, timeKeyword.Value);
             }
         }
@@ -84,7 +85,7 @@ public class TimeTagger : ITimeTagger
             {
                 TimeOnly foundTime = ParseToTimeOnly(number);
                 foundTime = AddMinuteIndication(message, foundAtIndex, foundTime);
-                timeOnIndex.Add(foundAtIndex, foundTime);
+                timeOnIndex.Add(foundAtIndex + 1, foundTime);
                 number = "";
             }
         }
@@ -92,7 +93,7 @@ public class TimeTagger : ITimeTagger
         return timeOnIndex;
     }
     
-    // see if a message contains a minute indicator e.g "quarter past" between start and found index
+    // check if a message contains a minute indicator e.g "quarter past" between start and found index
     private TimeOnly AddMinuteIndication(string message, int foundAtIndex, TimeOnly foundTime)
     {
         foreach (var minuteIndicator in _minuteIndicators)

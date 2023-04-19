@@ -216,83 +216,73 @@ public class LocatorRepository : ILocatorRepository
     {   
         string[,] keywords =
         {
-            { "sengedag", "ill" },
-            {  "ikke frisk" ,"ill" },
-            {  "vandret" ,"ill" },
-            {  "ikke på toppen" ,"ill" },
+            // ILL KEYWORDS
+            {  "seng", "ill" },
             {  "dynen" ,"ill" },
+            {  "på langs" ,"ill" },
+            {  "vandret" ,"ill" },
+            {  "lægger mig" ,"ill" },
+            
             {  "syg" ,"ill" },
+            {  "ikke frisk" ,"ill" },
+            {  "ikke på toppen" ,"ill" },
+            {  "skidt" ,"ill" },
+            {  "helbred" ,"ill" },
+            
             {  "influenza" ,"ill" },
-            {  "ligger syg" ,"ill" },
-            {  "lagt syg" ,"ill" },
             {  "feber" ,"ill" },
-            {  "sygdom" ,"ill" },
             {  "forkølelse" ,"ill" },
             {  "svimmel" ,"ill" },
             {  "kvalme" ,"ill" },
             {  "ondt i hovedet" ,"ill" },
-            {  "på langs" ,"ill" },
-            {  "syge" ,"ill" },
-            {  "helbred" ,"ill" },
-            {  "lægger mig" ,"ill" },
-            {  "skidt" ,"ill" },
-            {  "under dynen" ,"ill" },
-            {  "toilet" ,"ill" },
             {  "migræne" ,"ill" },
+            {  "toilet" ,"ill" },
             
-            {  "Otto" ,"KidsIll" },
+            // KIDS ILL KEYWORDS
             {  "den lille" ,"KidsIll" },
-            {  "felix er" ,"KidsIll" },
-
             {  "de små" ,"KidsIll" },
             {  "familie" ,"KidsIll" },
             {  "børn" ,"KidsIll" },
             {  "barn" ,"KidsIll" },
             {  "pige" ,"KidsIll" },
             {  "dreng" ,"KidsIll" },
-            {  "Felix" ,"KidsIll" },
             {  "unger" ,"KidsIll" },
             {  "søn" ,"KidsIll" },
             {  "datter" ,"KidsIll" },
+            {  "Felix" ,"KidsIll" },
+            {  "Otto" ,"KidsIll" },
             
-            
+            // MEETING KEYWORDS
             { "møde", "meeting" },
             
+            // HOME KEYWORDS
             { "hjem", "home" },
-            { "hjemme", "home" },
-            { "hjemmefra", "home" },
-            { "på hjemmefra", "home" },
-            { "tager den hjemmefra", "home" },
-            { "tager jeg den hjemmefra", "home" },
-            { "hjemmekontoret", "home" },
-            { "hjemmeskansen", "home" },
             { "ikke på kontoret", "home" },
-            { "kommer på kontoret", "home" },
             
+            // OFFICE KEYWORDS
             { "kommer ind", "office" },
+            { "kommer jeg ind", "office" },
+            { "inde", "office" },
+            { "ind forbi", "office" },
+            
             { "retur", "office"},
             { "er tilbage", "office"},
+            
             { "på kontoret", "office" },
-            { "inde", "office" },
             { "på arbejdet", "office" },
-            { "ind forbi", "office" },
-            { "er inde", "office" },
-            { "er inde ved", "office" },
-            { "kommer jeg ind", "office" },
             { "kommer i firmaet", "office" },
             { "konnes", "office" }, 
 
-            { "holder fri", "off" },
+            // OFF KEYWORDS
             { "fri", "off" },
-            { "holder fridag", "off" },
-            { "fridag", "off" },
-            { "holder weekend", "off" },
             { "off", "off" },
-            { "går fra ved", "off" },
+            { "går fra", "off" },
             { "stopper", "off" },
             { "holder", "off" },
+            { "lukker ned", "off" },
             { "starter", "off" },
 
+            // REMOTE KEYWORDS
             { "tager ud til", "remote" },
             { "tager ned til", "remote" },
             { "hos", "remote" },
@@ -334,6 +324,7 @@ public class LocatorRepository : ILocatorRepository
         return timeKeywords;
     }
     
+    // CAN BE DELETED
     public List<string> GetStartIndicatorKeywords()
     {
         var timeKeywords = new List<string>();
