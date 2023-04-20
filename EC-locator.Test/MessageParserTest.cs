@@ -23,7 +23,7 @@ public class MessageParserTest
     public void Setup()
     {
         // settings Options used in objects
-        var verboseOptions = Options.Create(new VerboseOptions { Verbose = false });
+        var verboseOptions = Options.Create(new VerboseOptions { Verbose = false, UseDatabase = false});
         var locatorRepositoryOptions = Options.Create(new LocatorRepositoryOptions
         {
             Host = "localhost",
@@ -208,7 +208,7 @@ public class MessageParserTest
                 new Location(
                     new TimeOnly(9, 0),
                     new TimeOnly(12, 0),
-                    "office"),
+                    "off"),
                 new Location(
                     new TimeOnly(12, 0),
                     new TimeOnly(16, 0),
