@@ -124,7 +124,7 @@ public class GraphHelper : IGraphHelper
 
         var events = _graphClient.Users[employeeId].CalendarView
             .Request(options)
-            .Top(1)
+            .Top(5)
             .GetAsync();
         
         return events;
