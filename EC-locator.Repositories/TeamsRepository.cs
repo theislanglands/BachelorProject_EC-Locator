@@ -14,32 +14,17 @@ public class TeamsRepository : ITeamsRepository
 {
     private readonly IGraphHelper _graphHelper;
     private readonly bool _verbose;
+    private readonly string[] _excludedUsers;
     
-    public TeamsRepository(IGraphHelper graphHelper, IOptions<VerboseOptions> settingsOptions)
+    public TeamsRepository(IGraphHelper graphHelper, IOptions<VerboseOptions> settingsOptions, IOptions<UsersOptions> usersOptions)
     {
         _graphHelper = graphHelper;
         _verbose = settingsOptions.Value.Verbose;
+        _excludedUsers = usersOptions.Value.ExcludedUsers;
     }
     
     public async Task<List<User>> GetUsersAsync()
     {
-        List<string> excludedEmails = new List<string>
-        {
-            "zookort2@ecreo.dk",
-            "zookort1@ecreo.dk",
-            "webmuseet@ecreo.dk",
-            "support@ecreo.dk",
-            "stortmodelokale@ecreo.dk",
-            "roundtable@ecreo.dk",
-            "projekter@ecreo.dk",
-            "leasymail@ecreo.dk",
-            "kantinen@ecreo.dk",
-            "it@ecreo.dk",
-            "fod.kal@ecreo.dk",
-            "backup.email@ecreo.dk",
-            "bogholder@ecreo.dk"
-        };
-
         List<User> users = new();
         try
         {
@@ -50,21 +35,12 @@ public class TeamsRepository : ITeamsRepository
             {
                 if (user.Mail.ToLower().EndsWith("@ecreo.dk"))
                 {
-                    if (!excludedEmails.Contains(user.Mail))
+                    if (!_excludedUsers.Contains(user.Mail))
                     {
                         users.Add(user);
                     }
                 }
             }
-
-            // If NextPageRequest is not null, there are more user available on the server
-            // Access the next page: userPage.NextPageRequest.GetAsync();
-            var moreAvailable = userPage.NextPageRequest != null;
-            if (_verbose)
-            {
-                Console.WriteLine($"\nMore users available? {moreAvailable}");
-            }
-
         }
         catch (Exception ex)
         {

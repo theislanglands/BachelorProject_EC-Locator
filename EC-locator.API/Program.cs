@@ -41,7 +41,7 @@ var TheisId = "6e5ee9cb-11cb-405d-aaa8-60c3768340c3";
 //TestRetrivingCalendarEvents();
 // TestMessageParser();
 
-// await TestGettingUsersFromTeamsRepo();
+await TestGettingUsersFromTeamsRepo();
 // TestMessageParser();
 // TestTomorrow();
 // await tr.ListMessagesAsync();
@@ -79,6 +79,7 @@ void ConfigureSettingsOptions(IServiceCollection serviceCollection)
     serviceCollection.Configure<LocatorRepositoryOptions>(builder.Configuration.GetSection("MSSQL"));
     serviceCollection.Configure<DefaultLocationOptions>(builder.Configuration.GetSection("DefaultLocation"));
     serviceCollection.Configure<TeamsOptions>(builder.Configuration.GetSection("TeamsChannel"));
+    serviceCollection.Configure<UsersOptions>(builder.Configuration);
 }
 
 // Application Services
@@ -177,7 +178,7 @@ async Task TestGettingUsersFromTeamsRepo()
     {
         Console.WriteLine($"User: {user.DisplayName ?? "NO NAME"}");
         Console.WriteLine($"  ID: {user.Id}");
-        Console.WriteLine($"  Email: {user.Mail ?? "NO EMAIL"}"); 
+        Console.WriteLine($"  Email: {user.Mail ?? "NO EMAIL"}");
     }
     Environment.Exit(1);
 }

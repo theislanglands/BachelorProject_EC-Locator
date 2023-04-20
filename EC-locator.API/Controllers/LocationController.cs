@@ -58,11 +58,9 @@ public class LocationController
                 }
         }
         
-        if (latestMessage == null)
-        {
-            lr.TeamMessage = "no messages found";
-        } 
-        else if (currentLocation == null)
+        lr.TeamMessage = latestMessage == null ? "no messages found" : latestMessage.Content;
+
+        if (currentLocation == null)
         {
             lr.Place = "no location found";
             lr.TeamMessage = "no locations identified";
@@ -73,9 +71,17 @@ public class LocationController
         else
         {
             lr.Place = currentLocation.Place;
-            lr.LocationStartTime = currentLocation.Start.Value.ToString();
-            lr.LocationEndTime = currentLocation.End.Value.ToString();
-            lr.TeamMessage = latestMessage.Content;
+
+            if (currentLocation.Start != null)
+            {
+                lr.LocationStartTime = currentLocation.Start.Value.ToString();
+            }
+
+            if (currentLocation.End != null)
+            {
+                lr.LocationEndTime = currentLocation.End.Value.ToString();
+            }
+
         }
 
         if (calendarEvents.Count != 0)
@@ -105,12 +111,12 @@ public class LocationController
     class LocationReturn
     {
         public string? Place { get; set; }
-        public string LocationStartTime { get; set; }
+        public string? LocationStartTime { get; set; }
 
-        public string LocationEndTime { get; set; }
+        public string? LocationEndTime { get; set; }
 
-        public string TeamMessage { get; set; }
-        public string CalenderInfo { get; set; }
-        public List<CalendarEvent> CurrentCalendarEvents { get; set; }
+        public string? TeamMessage { get; set; }
+        public string? CalenderInfo { get; set; }
+        public List<CalendarEvent>? CurrentCalendarEvents { get; set; }
     }
 }
