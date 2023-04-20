@@ -188,6 +188,7 @@ public class LocatorRepository : ILocatorRepository
             
             // OFFICE KEYWORDS
             { "kommer ind", "office" }, { "kommer jeg ind", "office" }, { "inde", "office" }, { "ind forbi", "office" },
+            { "komme ind", "office" },
             
             { "retur", "office"},
             { "er tilbage", "office"},
@@ -202,6 +203,7 @@ public class LocatorRepository : ILocatorRepository
             { "off", "off" },
             { "går fra", "off" },
             { "stopper", "off" },
+            { "smutter", "off" },
             { "holder", "off" },
             { "lukker ned", "off" },
             { "starter", "off" },

@@ -48,7 +48,7 @@ public class MessageParser : IMessageParser
 
     public bool ContainsTomorrow(string message)
     {
-        if (message.Contains("i morgen"))
+        if (message.ToLower().Contains("i morgen") || message.ToLower().Contains("imorgen"))
         {
             return true;
         }

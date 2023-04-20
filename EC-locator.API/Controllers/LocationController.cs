@@ -60,7 +60,6 @@ public class LocationController
         
         if (latestMessage == null)
         {
-            lr.Place = "no location found";
             lr.TeamMessage = "no messages found";
         } 
         else if (currentLocation == null)
@@ -68,6 +67,9 @@ public class LocationController
             lr.Place = "no location found";
             lr.TeamMessage = "no locations identified";
         }
+        
+        // TODO: use default if nothing found doen't come through - neither do OFF!
+        
         else
         {
             lr.Place = currentLocation.Place;
