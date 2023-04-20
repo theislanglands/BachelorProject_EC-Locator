@@ -12,4 +12,9 @@ public class CalendarEvent
         StartTime = startTime;
         EndTime = endTime;
     }
+
+    public override string ToString()
+    {
+        return $"{Subject} ({StartTime} - {EndTime})";
+    }
 }

@@ -32,7 +32,8 @@ var cr = app.Services.GetService<ICalendarRepository>();
 var lr = app.Services.GetService<ILocatorRepository>();
 var el = app.Services.GetService<IEmployeeLocator>();
 
-Console.WriteLine($"Calendar event: {cr.GetCurrentCalendarEvent("some emplyee ID").Result}");
+
+TestRetrivingCalendarEvents();
 
 /*
 var locationKeywords = lr.GetLocationKeywordsDB();
@@ -41,7 +42,7 @@ foreach (var kvPair in locationKeywords)
     Console.WriteLine($"Key: {kvPair.Key}, Value: {kvPair.Value}");
 }
 */
-Environment.Exit(1);
+
 
 //Console.WriteLine(el.GetCurrentLocation("all"));
   
@@ -188,6 +189,27 @@ async Task TestGettingUsersFromTeamsRepo()
         Console.WriteLine($"User: {user.DisplayName ?? "NO NAME"}");
         Console.WriteLine($"  ID: {user.Id}");
         Console.WriteLine($"  Email: {user.Mail ?? "NO EMAIL"}"); 
+    }
+    Environment.Exit(1);
+}
+
+void TestRetrivingCalendarEvents()
+{
+    var AndersId = "2cf3e351-6ca8-4fda-999c-14a8b048b899";
+    var BrianId = "2d3cfcdf-542d-43f5-a4b1-6f58387604eb";
+    var TheisId = "6e5ee9cb-11cb-405d-aaa8-60c3768340c3";
+
+    var evts = cr.GetCurrentCalendarEventsAsync(TheisId).Result;
+
+    if (evts == null)
+    {
+        Console.WriteLine("no events found");
+    }
+    else {
+        foreach (var ce in evts)
+        {
+            Console.WriteLine($"{ce}");
+        }
     }
     Environment.Exit(1);
 }
