@@ -2,6 +2,10 @@
 using EC_locator.Core.Models;
 using EC_locator.Core.SettingsOptions;
 using Microsoft.Extensions.Options;
+using Microsoft.Graph;
+using DayOfWeek = System.DayOfWeek;
+using Location = EC_locator.Core.Models.Location;
+using Message = EC_locator.Core.Models.Message;
 
 namespace EC_locator.Locator;
 
@@ -9,6 +13,7 @@ public class EmployeeLocator : IEmployeeLocator
 {
     private readonly ITeamsRepository _teamsRepository;
     private readonly IMessageParser _messageParser;
+    private readonly ICalendarRepository _calendarRepository;
     
     private TimeOnly _currentTime;
     private readonly bool _verbose;
@@ -16,10 +21,11 @@ public class EmployeeLocator : IEmployeeLocator
     private readonly TimeOnly _workStartDefault, _workEndDefault;
     private readonly string _defaultLocation;
 
-    public EmployeeLocator(IMessageParser messageParser, ITeamsRepository teamsRepository,IOptions<VerboseOptions> settingsOptions, IOptions<DefaultLocationOptions> locationOptions)
+    public EmployeeLocator(IMessageParser messageParser, ITeamsRepository teamsRepository,ICalendarRepository calendarRepository, IOptions<VerboseOptions> settingsOptions, IOptions<DefaultLocationOptions> locationOptions)
     {
         _messageParser = messageParser;
         _teamsRepository = teamsRepository;
+        _calendarRepository = calendarRepository;
         string[] workStart = locationOptions.Value.DefaultWorkStart.Split(':');
         string[] workEnd = locationOptions.Value.DefaultWorkEnd.Split(':');
         _workStartDefault = new TimeOnly(int.Parse(workStart[0]),int.Parse(workStart[1]));
@@ -83,8 +89,7 @@ public class EmployeeLocator : IEmployeeLocator
 
         return foundLocation;
     }
-
-
+    
     public Message? GetLatestMessage(string employeeId)
     {
         var messages = _teamsRepository.GetMessagesAsync(employeeId).Result;
@@ -131,6 +136,28 @@ public class EmployeeLocator : IEmployeeLocator
         {
             Console.WriteLine("No messages found from today or yesterday");
         }
+        return null;
+    }
+
+    public List<CalendarEvent>? GetCurrentCalendarEvents(string employeeId)
+    {
+        var calendarEvents =  _calendarRepository.GetCurrentCalendarEventsAsync(employeeId).Result;
+
+        // If events are found, select the ongoing ones!
+        if (calendarEvents != null)
+        {
+            List<CalendarEvent> ce = new();
+            
+            foreach (var calendarEvent in calendarEvents)
+            {
+                if (calendarEvent.StartTime <= DateTime.Now && DateTime.Now < calendarEvent.EndTime)
+                {
+                    ce.Add(calendarEvent);
+                }
+            }
+            return ce;
+        }
+        
         return null;
     }
 
