@@ -372,7 +372,7 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
-                "Er hjemmefra med Otto indtil backup kommer Jeg er inde inden frokost"
+                "Morn. Jeg har stadig udfordringer med bentøjet, og det gør det svært at køre bil, så jeg er på hjemmefra, og kan desværre ikke komme til GTD. Vil en af jer som kommer give dem besked når i er til indskrivning?"
             };
             return messages;
         }

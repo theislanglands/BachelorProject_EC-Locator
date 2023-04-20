@@ -7,18 +7,26 @@ namespace EC_locator.Parsers;
 
 public class LocationTagger : ILocationTagger
 {
-    private readonly ILocatorRepository _locatorRepository;
+    private readonly Dictionary<string, string> _locationKeyWords;
     private readonly bool _verbose;
 
     public LocationTagger(ILocatorRepository locatorRepository, IOptions<VerboseOptions> settingsOptions)
     {
-        _locatorRepository = locatorRepository;
         _verbose = settingsOptions.Value.Verbose;
+
+        if (settingsOptions.Value.UseDatabase)
+        {
+            _locationKeyWords = locatorRepository.GetLocationKeywordsDB();
+        }
+        else
+        {
+            _locationKeyWords = locatorRepository.GetLocationKeywords();
+        }
     }
 
     public SortedList<int, Location> GetTags(string message)                                    
     {
-        // index, found place located in the message
+        // ("index", "found place located in the message")
         
         message = message.ToLower();    
         var foundLocations = FindLocations(message);
@@ -41,9 +49,8 @@ public class LocationTagger : ILocationTagger
     private SortedList<int, string> FindLocations(string message)
     {
         var foundLocations = new SortedList<int, string>();
- 
-        var locationWordsDictionary = _locatorRepository.GetLocationKeywordsDB();
-        foreach (var locationWord in locationWordsDictionary)
+        
+        foreach (var locationWord in _locationKeyWords)
         {
             if (message.Contains(locationWord.Key.ToLower()))
             {

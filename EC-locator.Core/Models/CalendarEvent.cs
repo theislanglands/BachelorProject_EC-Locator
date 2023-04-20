@@ -15,6 +15,6 @@ public class CalendarEvent
 
     public override string ToString()
     {
-        return $"{Subject} ({StartTime} - {EndTime})";
+        return $"{Subject} ({StartTime.ToString("H:mm")} - {EndTime.ToString("H:mm")})";
     }
 }

@@ -11,7 +11,7 @@ public class LocatorRepository : ILocatorRepository
     private readonly bool _verbose;
     private SqlConnection connection;
     private readonly string _host, _userId, _password;
-    private string _connectionString;
+    private readonly string _connectionString;
 
     public LocatorRepository(IOptions<LocatorRepositoryOptions> databaseSettings, IOptions<VerboseOptions> verboseSettings)
     {
