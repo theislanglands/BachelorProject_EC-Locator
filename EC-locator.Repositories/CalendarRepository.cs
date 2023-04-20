@@ -47,7 +47,8 @@ public class CalendarRepository : ICalendarRepository
         for (int i = 0; i< calendarEvents.Count; i++)
         {
             string subject = calendarEvents[i].Subject;
-            
+            bool? isAllDay = calendarEvents[i].IsAllDay ?? false;
+
             DateTime startTime, endTime;
             if (calendarEvents[i].IsAllDay.GetValueOrDefault())
             {
@@ -65,7 +66,7 @@ public class CalendarRepository : ICalendarRepository
                 Console.WriteLine($"Found event: {subject} ({startTime} - {endTime})");
             }
             
-            foundCalendarEvents.Add(new CalendarEvent(subject, startTime, endTime));
+            foundCalendarEvents.Add(new CalendarEvent(subject, startTime, endTime, (bool) isAllDay));
         }
         
 
@@ -75,6 +76,5 @@ public class CalendarRepository : ICalendarRepository
         }
 
         return null;
-        
     }
 }

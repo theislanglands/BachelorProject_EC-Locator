@@ -39,7 +39,7 @@ var TheisId = "6e5ee9cb-11cb-405d-aaa8-60c3768340c3";
 */
 
 //TestRetrivingCalendarEvents();
-TestMessageParser();
+// TestMessageParser();
 
 // await TestGettingUsersFromTeamsRepo();
 // TestMessageParser();

@@ -9,6 +9,7 @@ using EC_locator.Core.SettingsOptions;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 
 namespace API.Controllers;
@@ -75,17 +76,26 @@ public class LocationController
             lr.TeamMessage = latestMessage.Content;
         }
 
-        if (calendarEvents != null)
+        if (calendarEvents.Count != 0)
         {
             lr.CurrentCalendarEvents = calendarEvents;
             StringBuilder calendarInfo = new StringBuilder();
             foreach (var calendarEvent in calendarEvents)
             {
                 calendarInfo.Append(calendarEvent);
+                if (!calendarEvent.Equals(calendarEvents.Last()))
+                {
+                    calendarInfo.Append(", ");
+                }
             }
 
             lr.CalenderInfo = calendarInfo.ToString();
         }
+        else
+        {
+            lr.CalenderInfo = "no calendar events found";
+        }
+
 
         return JsonSerializer.Serialize(lr, _jsonOptions);
     }
