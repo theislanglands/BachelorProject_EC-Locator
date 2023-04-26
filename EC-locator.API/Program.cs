@@ -16,6 +16,7 @@ using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Message = EC_locator.Core.Models.Message;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,32 +41,21 @@ var RuneId = "5907407f-ca28-4ff6-92d7-4b05d64a017c";
 
 
 //TestRetrivingCalendarEvents();
-// TestMessageParser();
+TestMessageParser();
 
 // await TestGettingUsersFromTeamsRepo();
 // TestTomorrow();
 // await tr.ListMessagesAsync();
 
-
+/*
 var messages = await tr.GetMessagesAsync(RuneId);
 foreach (var message in messages)
 {
     Console.WriteLine(message);
-    /*
-    if (message.Replies != null)
-    {
-        foreach (var reply in message.Replies)
-        {
-            Console.WriteLine("-- Reply --");
-            Console.WriteLine(reply);
-        }
-    }
-*/
-    //Console.WriteLine(message.Replies.Count);
 }
 
 Environment.Exit(1);
-
+*/
 // await cr.GetCalendarEvents();
 
 // Configure the HTTP request pipeline.
@@ -174,8 +164,15 @@ void TestMessageParser()
     foreach (string message in messages)
     {
         Console.WriteLine($"\n{message}");
+        Message msg = new Message()
+        {
+            Content = message,
+            TimeStamp = DateTime.Now,
+            UserId = "a user",
+            Replies = null
+        };
         
-        var locations = messageParser.GetLocations(message);
+        var locations = messageParser.GetLocations(msg);
         if (messageParser.ContainsTomorrow(message))
         {
             Console.WriteLine("Location(s) for tomorrow");

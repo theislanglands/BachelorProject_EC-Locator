@@ -1,6 +1,7 @@
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.SettingsOptions;
 using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic;
 
 namespace EC_locator.Parsers;
 
@@ -33,7 +34,16 @@ public class TimeTagger : ITimeTagger
                 Console.WriteLine($"time found {time.Value} at index {time.Key}");
             }
         }
-
+        
+        // SEE IF MESSAGE HAS A REPLY, IF ONLY CONTAINS A TIME TAG, UPDATE THE LATEST FOUND TIME TAG!
+        /*
+         * if (msg.Replies != null)
+         * {
+         *  string contentOfLastReply = msg.Replies.Last().Content;
+         *  
+         * }
+         */
+        
         return identifiedTimes;
     }
 

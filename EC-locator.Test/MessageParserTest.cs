@@ -1,4 +1,5 @@
 using EC_locator.Core.Interfaces;
+using EC_locator.Core.Models;
 using EC_locator.Core.SettingsOptions;
 using EC_locator.Repositories;
 using Microsoft.Extensions.Options;
@@ -74,7 +75,7 @@ public class MessageParserTest
 
     private void TestLocation(KeyValuePair<string, Location[]> message)
     {
-        var locations = _messageParser.GetLocations(message.Key);
+        var locations = _messageParser.GetLocations(new Message(message.Key, "", DateTime.Now, null));
 
         Assert.That(locations.Count, Is.EqualTo(message.Value.Length), 
             $"number of locations found not correct in message: \n{message.Key}");

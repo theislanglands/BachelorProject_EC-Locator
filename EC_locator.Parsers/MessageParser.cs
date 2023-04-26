@@ -1,4 +1,5 @@
 ﻿using EC_locator.Core.Interfaces;
+using EC_locator.Core.Models;
 using EC_locator.Core.SettingsOptions;
 using Location = EC_locator.Core.Models.Location;
 using Microsoft.Extensions.Options;
@@ -26,7 +27,7 @@ public class MessageParser : IMessageParser
         _options = settingsOptions;
     }
     
-    public List<Location> GetLocations(string message)
+    public List<Location> GetLocations(Message message)
     {
         if (_verbose)
         {
@@ -34,8 +35,8 @@ public class MessageParser : IMessageParser
         }
         
         // Getting location and time tags in message
-        _locationTags = _locationTagger.GetTags(message);
-        _timeTags = _timeTagger.GetTags(message);
+        _locationTags = _locationTagger.GetTags(message.Content);
+        _timeTags = _timeTagger.GetTags(message.Content);
         
         // Modifying and connecting times and locations according to linguistic meanings
         ModifyLocationsFound();

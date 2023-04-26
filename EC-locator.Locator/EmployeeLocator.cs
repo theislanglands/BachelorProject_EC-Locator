@@ -64,7 +64,7 @@ public class EmployeeLocator : IEmployeeLocator
         }
         
         // PARSE MESSAGE TO LOCATIONS       
-        List<Location>? locations = _messageParser.GetLocations(latestMessage.Content);
+        List<Location>? locations = _messageParser.GetLocations(latestMessage);
 
         if (locations == null)
         {
