@@ -79,22 +79,33 @@ public class TeamsRepository : ITeamsRepository
                     {
                         message.Body.Content = ParseHtmlToText(message.Body.Content);
                     }
-                    
+
+                    List<Message>? replies = null;
+
                     // check if message contains replies
                     if (message.Replies.Count != 0)
                     {
-                        Console.WriteLine($"message: {message.Body.Content} has {message.Replies.Count} replies");
+                        replies = new();
+                        foreach (var reply in message.Replies.CurrentPage)
+                        {
+                            replies.Add(new Message()
+                            {
+                                Content = ParseHtmlToText(reply.Body.Content),
+                                TimeStamp = reply.LastModifiedDateTime.Value.DateTime,
+                                UserId = reply.From.User.Id
+                            });
+                        }
+                        replies.Sort();
                     }
-
+                    
                     // adding to found messages
                     foundMessages.Add(new Message()
                     {
                         Content = message.Body.Content,
                         TimeStamp = message.LastModifiedDateTime.Value.DateTime,
-                        UserId = employeeId
+                        UserId = employeeId,
+                        Replies = replies
                     });
-
-                    // Console.WriteLine($"Message replies: {message.Replies.Count}"); // Can be null! if no replies
                 }
 
                 /*
@@ -146,7 +157,13 @@ public class TeamsRepository : ITeamsRepository
                 if (message.Replies.Count != 0)
                 {
                     Console.WriteLine($"Message replies: {message.Replies.Count}");
-                    Console.WriteLine(message.Replies.CurrentPage[0].Body.Content);
+                    foreach (var reply in message.Replies.CurrentPage)
+                    {
+                        Console.WriteLine(ParseHtmlToText(reply.Body.Content));
+                        Console.WriteLine(reply.LastModifiedDateTime);
+                        Console.WriteLine(reply.From.User.Id);
+                        Console.WriteLine($"Reply to self?: {reply.From.User.Id.Equals(message.From.User.Id)}");
+                    }
                 }
                 
                 Console.WriteLine($"Message lastEditedDateTime: {message.LastModifiedDateTime}");
@@ -185,7 +202,7 @@ public class TeamsRepository : ITeamsRepository
         foreach (var sample in samples)
         {
             
-            messages.Add(new Message(sample, employeeId, DateTime.Now.AddMinutes(i)));
+            messages.Add(new Message(sample, employeeId, DateTime.Now.AddMinutes(i), new List<Message>()));
             i++;
         }
 

@@ -32,26 +32,39 @@ var cr = app.Services.GetService<ICalendarRepository>();
 var lr = app.Services.GetService<ILocatorRepository>();
 var el = app.Services.GetService<IEmployeeLocator>();
 
-/*
+
 var AndersId = "2cf3e351-6ca8-4fda-999c-14a8b048b899";
 var BrianId = "2d3cfcdf-542d-43f5-a4b1-6f58387604eb";
 var TheisId = "6e5ee9cb-11cb-405d-aaa8-60c3768340c3";
-*/
+var RuneId = "5907407f-ca28-4ff6-92d7-4b05d64a017c";
+
 
 //TestRetrivingCalendarEvents();
 // TestMessageParser();
 
 // await TestGettingUsersFromTeamsRepo();
 // TestTomorrow();
-await tr.ListMessagesAsync();
+// await tr.ListMessagesAsync();
 
-/*
-var messages = await tr.GetMessagesAsync("3c2d2c7a-ae61-4019-b497-38f8d9ef3218", DateOnly.FromDateTime(DateTime.Now));
+
+var messages = await tr.GetMessagesAsync(RuneId);
 foreach (var message in messages)
 {
     Console.WriteLine(message);
-}
+    /*
+    if (message.Replies != null)
+    {
+        foreach (var reply in message.Replies)
+        {
+            Console.WriteLine("-- Reply --");
+            Console.WriteLine(reply);
+        }
+    }
 */
+    //Console.WriteLine(message.Replies.Count);
+}
+
+Environment.Exit(1);
 
 // await cr.GetCalendarEvents();
 

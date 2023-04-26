@@ -9,11 +9,14 @@ public class Message : IComparable
     public string UserId { get; set; }
     public DateTime TimeStamp { get; set; }
 
-    public Message(string content, string userId, DateTime timeStamp)
+    public List<Message>? Replies { get; set; }
+
+    public Message(string content, string userId, DateTime timeStamp, List<Message>? replies)
     {
         Content = content;
         UserId = userId;
         TimeStamp = timeStamp;
+        Replies = replies;
     }
 
     public Message()
@@ -26,6 +29,16 @@ public class Message : IComparable
         presentation.Append($"{Content}\n");
         presentation.Append($"UserId: {UserId}\n");
         presentation.Append($"TimeStamp: {TimeStamp}\n");
+
+        if (Replies != null)
+        {
+            presentation.Append("\n  -- Replies --\n");
+            foreach (var reply in Replies)
+            {
+                presentation.AppendLine(reply.ToString());
+            }
+        }
+
         return presentation.ToString();
     }
 

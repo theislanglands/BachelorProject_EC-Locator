@@ -66,7 +66,6 @@ public class GraphHelper : IGraphHelper
         
         var fetchedUsers = _graphClient.Users
             .Request()
-            .Expand("userType")
             .Select(u => new
             {
                 u.DisplayName,
@@ -80,7 +79,7 @@ public class GraphHelper : IGraphHelper
         return fetchedUsers;
     }
     
-    // returning messages from the specified day and onwords
+    // returning messages from the specified day and onwards
     public Task<IChatMessageDeltaCollectionPage> GetMessagesAsync(DateOnly date)
     {
         EnsureGraphForAppOnlyAuth();
