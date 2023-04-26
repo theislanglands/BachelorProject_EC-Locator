@@ -124,7 +124,7 @@ public class TimeTagger : ITimeTagger
     }
 
     // Parses from string to TimeOnly object
-    private static TimeOnly? ParseToTimeOnly(string number) 
+    private TimeOnly? ParseToTimeOnly(string number) 
     {
         string hour;
         string minutes;
@@ -163,8 +163,10 @@ public class TimeTagger : ITimeTagger
         }
         catch (ArgumentOutOfRangeException ex)
         {
-            Console.WriteLine("out of range");
-            //throw new ArgumentOutOfRangeException("not able to parse to time, input out of range", ex);
+            if (_verbose)
+            {
+                Console.WriteLine($"not able to pares identified number {number} into a time");
+            }
         }
 
         return returnTime;
