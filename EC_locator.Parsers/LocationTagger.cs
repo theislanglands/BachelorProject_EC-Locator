@@ -13,15 +13,7 @@ public class LocationTagger : ILocationTagger
     public LocationTagger(ILocatorRepository locatorRepository, IOptions<VerboseOptions> settingsOptions)
     {
         _verbose = settingsOptions.Value.Verbose;
-
-        if (settingsOptions.Value.UseDatabase)
-        {
-            _locationKeyWords = locatorRepository.GetLocationKeywordsDB();
-        }
-        else
-        {
-            _locationKeyWords = locatorRepository.GetLocationKeywords();
-        }
+        _locationKeyWords = locatorRepository.GetLocationKeywords();
     }
 
     public SortedList<int, Location> GetTags(string message)                                    

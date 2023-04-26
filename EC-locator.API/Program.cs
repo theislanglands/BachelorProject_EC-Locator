@@ -26,6 +26,8 @@ ConfigureApiServices(builder.Services);
 
 var app = builder.Build();
 
+Environment.Exit(1);
+
 var messageParser = app.Services.GetService<IMessageParser>();
 var tr = app.Services.GetService<ITeamsRepository>();
 var cr = app.Services.GetService<ICalendarRepository>();
@@ -87,9 +89,17 @@ void ConfigureLocatorServices(IServiceCollection services)
 {
     services.AddSingleton<IMessageParser, MessageParser>();
     services.AddSingleton<ITeamsRepository, TeamsRepository>();
-    services.AddSingleton<ILocatorRepository, LocatorRepository>();
     services.AddSingleton<ICalendarRepository, CalendarRepository>();
     services.AddSingleton<IEmployeeLocator, EmployeeLocator>();
+    
+    if (builder.Configuration.GetValue<bool>("UseDatabase"))
+    {
+        services.AddSingleton<ILocatorRepository, LocatorRepository>();
+    } 
+    else 
+    {
+        services.AddSingleton<ILocatorRepository, LocatorRepositoryLocal>();
+    }
     
     // message parser services
     services.AddSingleton<ILocationTagger, LocationTagger>();

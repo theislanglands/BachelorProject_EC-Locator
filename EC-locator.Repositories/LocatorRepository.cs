@@ -9,20 +9,16 @@ namespace EC_locator.Repositories;
 public class LocatorRepository : ILocatorRepository
 {
     private readonly bool _verbose;
-    private SqlConnection connection;
-    private readonly string _host, _userId, _password;
+    private SqlConnection _connection;
     private readonly string _connectionString;
 
     public LocatorRepository(IOptions<LocatorRepositoryOptions> databaseSettings, IOptions<VerboseOptions> verboseSettings)
     {
-        _host = databaseSettings.Value.Host;
-        _userId = databaseSettings.Value.UserId;
-        _password = databaseSettings.Value.Password;
         _connectionString = databaseSettings.Value.ConnectionStringOW;
         _verbose = verboseSettings.Value.Verbose;
     }
     
-    public Dictionary<string, double> GetMinuteIndicatorsDB()
+    public Dictionary<string, double> GetMinuteIndicators()
     {
         var keywords = new Dictionary<string, double>();
         OpenConnection();
@@ -34,7 +30,7 @@ public class LocatorRepository : ILocatorRepository
                 Console.WriteLine("reading Minute Indicator records");
             }
             string sql = "SELECT * FROM MinuteIndicatorKeywords";
-            SqlCommand cmd = new SqlCommand(sql, connection);
+            SqlCommand cmd = new SqlCommand(sql, _connection);
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -53,13 +49,8 @@ public class LocatorRepository : ILocatorRepository
         CloseConnection();
         return keywords;
     }
-
-    public void TestConnection()
-    {
-        
-    }
-
-    public Dictionary<string, TimeOnly> GetTimeKeywordsDB()
+    
+    public Dictionary<string, TimeOnly> GetTimeKeywords()
     {
         Dictionary<string, TimeOnly> timeKeywords = new();
         OpenConnection();
@@ -71,7 +62,7 @@ public class LocatorRepository : ILocatorRepository
                 Console.WriteLine("reading TimeKeywords records");
             }
             string sql = "SELECT * FROM TimeKeywords";
-            SqlCommand cmd = new SqlCommand(sql, connection);
+            SqlCommand cmd = new SqlCommand(sql, _connection);
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -91,7 +82,7 @@ public class LocatorRepository : ILocatorRepository
         return timeKeywords;
     }
     
-    public List<string> getLocationsDB()
+    public List<string> GetLocations()
     {
         List<string> locations = new();
         OpenConnection();
@@ -103,7 +94,7 @@ public class LocatorRepository : ILocatorRepository
                 Console.WriteLine("reading location records");
             }
             string sql = "SELECT * FROM Location";
-            SqlCommand cmd = new SqlCommand(sql, connection);
+            SqlCommand cmd = new SqlCommand(sql, _connection);
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -121,7 +112,7 @@ public class LocatorRepository : ILocatorRepository
         return locations;
     }
     
-    public Dictionary<string, string> GetLocationKeywordsDB()
+    public Dictionary<string, string> GetLocationKeywords()
     {
         Dictionary<string, string> keywords = new Dictionary<string, string>();
 
@@ -140,7 +131,7 @@ public class LocatorRepository : ILocatorRepository
                          "FROM Location " +
                          "INNER JOIN LocationKeywords " +
                          "ON Location.LocationID = LocationKeywords.Location";
-            SqlCommand cmd = new SqlCommand(sql, connection);
+            SqlCommand cmd = new SqlCommand(sql, _connection);
             SqlDataReader reader = cmd.ExecuteReader();
             
             while (reader.Read())
@@ -159,110 +150,12 @@ public class LocatorRepository : ILocatorRepository
         return keywords;
     }
     
-    public Dictionary<string, string> GetLocationKeywords()
-    {   
-        string[,] keywords =
-        {
-            // ILL KEYWORDS
-            {  "seng", "ill" }, {  "dynen" ,"ill" }, {  "på langs" ,"ill" }, {  "vandret" ,"ill" }, {  "lægger mig" ,"ill" },
-            
-            {  "syg" ,"ill" }, {  "ikke frisk" ,"ill" }, {  "ikke på toppen" ,"ill" }, {  "skidt" ,"ill" }, {  "helbred" ,"ill" },
-            
-            {  "influenza" ,"ill" }, {  "feber" ,"ill" }, {  "forkølelse" ,"ill" }, {  "svimmel" ,"ill" }, {  "kvalme" ,"ill" }, 
-            {  "ondt i hovedet" ,"ill" }, {  "migræne" ,"ill" }, {  "toilet" ,"ill" },
-            
-            // KIDS ILL KEYWORDS
-            {  "den lille" ,"kidsIll" }, {  "de små" ,"kidsIll" }, {  "familie" ,"kidsIll" },
-            {  "børn" ,"kidsIll" }, {  "barn" ,"kidsIll" },
-            {  "pige" ,"kidsIll" }, {  "dreng" ,"kidsIll" },
-            {  "unger" ,"kidsIll" }, {  "søn" ,"kidsIll" }, {  "datter" ,"kidsIll" },
-            {  "Felix" ,"kidsIll" },
-            {  "Otto" ,"kidsIll" },
-            
-            // MEETING KEYWORDS
-            { "møde", "meeting" },
-            
-            // HOME KEYWORDS
-            { "hjem", "home" },
-            { "ikke på kontoret", "home" },
-            
-            // OFFICE KEYWORDS
-            { "kommer ind", "office" }, { "kommer jeg ind", "office" }, { "inde", "office" }, { "ind forbi", "office" },
-            { "komme ind", "office" },
-            
-            { "retur", "office"},
-            { "er tilbage", "office"},
-            
-            { "på kontoret", "office" },
-            { "på arbejdet", "office" },
-            { "kommer i firmaet", "office" },
-            { "konnes", "office" }, 
-
-            // OFF KEYWORDS
-            { "fri", "off" },
-            { "off", "off" },
-            { "går fra", "off" },
-            { "stopper", "off" },
-            { "smutter", "off" },
-            { "holder", "off" },
-            { "lukker ned", "off" },
-            { "starter", "off" },
-
-            // REMOTE KEYWORDS
-            { "tager ud til", "remote" },
-            { "tager ned til", "remote" },
-            { "hos", "remote" },
-        };
-        
-        // replacing string[] with dictionary
-        Dictionary<string, string> keywordsDic = new Dictionary<string, string>();
-        for (int i = 0; i < keywords.GetLength(0); i++)
-        {
-            keywordsDic.Add(keywords[i,0], keywords[i,1]);
-        }
-
-        return keywordsDic;
-    }
-    
-    public Dictionary<string, TimeOnly> GetTimeKeywords()
-    {
-        var timeKeywords = new Dictionary<string, TimeOnly>();
-        
-        timeKeywords.Add("formiddag", new TimeOnly(9,0));
-        timeKeywords.Add("eftermiddag", new TimeOnly(12,0));
-        timeKeywords.Add("frokost", new TimeOnly(11, 15));
-        timeKeywords.Add("middag", new TimeOnly(12,00));
-        timeKeywords.Add("aften", new TimeOnly(16,00));
-
-        return timeKeywords;
-    }
-    
-    public Dictionary<string, double> GetMinuteIndicators()
-    {
-        var timeKeywords = new Dictionary<string, double>();
-        
-        timeKeywords.Add("kvart over", 15);
-        timeKeywords.Add("kvart i", -15);
-        timeKeywords.Add("halv", -30);
-        
-        // "forsinket" - add minutes to current time
-        
-        return timeKeywords;
-    }
-    
-    
     private void OpenConnection()
     {
         SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-        /*
-        builder.DataSource = _host; 
-        builder.UserID = _userId;            
-        builder.Password = _password;     
-        builder.InitialCatalog = "Keywords";
-        builder.TrustServerCertificate = true;
-        */
+
         builder.ConnectionString = _connectionString;
-        connection = new SqlConnection(builder.ConnectionString);
+        _connection = new SqlConnection(builder.ConnectionString);
         
         try
         {
@@ -271,7 +164,7 @@ public class LocatorRepository : ILocatorRepository
                 Console.WriteLine("connecting to database");
             }
 
-            connection.Open();
+            _connection.Open();
         }
         catch (Exception ex)
         {
@@ -287,7 +180,7 @@ public class LocatorRepository : ILocatorRepository
             {
                 Console.WriteLine("Closing database connection");
             }
-            connection.Close();
+            _connection.Close();
         }
         catch (Exception ex)
         {

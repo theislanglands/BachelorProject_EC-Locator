@@ -13,17 +13,8 @@ public class TimeTagger : ITimeTagger
     public TimeTagger(ILocatorRepository locatorRepository, IOptions<VerboseOptions> settingsOptions)
     {
         _verbose = settingsOptions.Value.Verbose;
-        if (settingsOptions.Value.UseDatabase)
-        {
-            _timeKeywords = locatorRepository.GetTimeKeywordsDB();
-            _minuteIndicators = locatorRepository.GetMinuteIndicatorsDB();
-        }
-        else
-        {
-            _timeKeywords = locatorRepository.GetTimeKeywords();
-            _minuteIndicators = locatorRepository.GetMinuteIndicators();
-        }
-
+        _timeKeywords = locatorRepository.GetTimeKeywords();
+        _minuteIndicators = locatorRepository.GetMinuteIndicators();
     }
 
     public SortedList<int, TimeOnly> GetTags(string message)
