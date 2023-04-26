@@ -4,5 +4,5 @@ namespace EC_locator.Core.Interfaces;
 
 public interface ILocationTagger
 {
-    SortedList<int, Location> GetTags(string message);
+    SortedList<int, Location> GetTags(Message message);
 }

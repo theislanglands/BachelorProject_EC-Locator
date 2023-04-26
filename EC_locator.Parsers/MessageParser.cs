@@ -35,8 +35,8 @@ public class MessageParser : IMessageParser
         }
         
         // Getting location and time tags in message
-        _locationTags = _locationTagger.GetTags(message.Content);
-        _timeTags = _timeTagger.GetTags(message.Content);
+        _locationTags = _locationTagger.GetTags(message);
+        _timeTags = _timeTagger.GetTags(message);
         
         // Modifying and connecting times and locations according to linguistic meanings
         ModifyLocationsFound();

@@ -16,13 +16,14 @@ public class LocationTagger : ILocationTagger
         _locationKeyWords = locatorRepository.GetLocationKeywords();
     }
 
-    public SortedList<int, Location> GetTags(string message)                                    
+    public SortedList<int, Location> GetTags(Message message)                                    
     {
         // ("index", "found place located in the message")
         
-        message = message.ToLower();    
-        var foundLocations = FindLocations(message);
-        HandleNegationKeywords(message, foundLocations);
+        
+        message.Content = message.Content.ToLower();    
+        var foundLocations = FindLocations(message.Content);
+        HandleNegationKeywords(message.Content, foundLocations);
 
         var listOfLocations = LocationsAsList(foundLocations);
 

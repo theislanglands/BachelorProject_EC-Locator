@@ -1,7 +1,7 @@
 using EC_locator.Core.Interfaces;
+using EC_locator.Core.Models;
 using EC_locator.Core.SettingsOptions;
 using Microsoft.Extensions.Options;
-using Microsoft.VisualBasic;
 
 namespace EC_locator.Parsers;
 
@@ -18,11 +18,11 @@ public class TimeTagger : ITimeTagger
         _minuteIndicators = locatorRepository.GetMinuteIndicators();
     }
 
-    public SortedList<int, TimeOnly> GetTags(string message)
+    public SortedList<int, TimeOnly> GetTags(Message message)
     {
-        var identifiedTimes = IdentifyNumericTime(message);
+        var identifiedTimes = IdentifyNumericTime(message.Content);
         
-        foreach (var item in IdentifyKeywordsTime(message))
+        foreach (var item in IdentifyKeywordsTime(message.Content))
         {
             identifiedTimes.Add(item.Key, item.Value);
         }
