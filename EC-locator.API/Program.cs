@@ -39,9 +39,11 @@ var BrianId = "2d3cfcdf-542d-43f5-a4b1-6f58387604eb";
 var TheisId = "6e5ee9cb-11cb-405d-aaa8-60c3768340c3";
 var RuneId = "5907407f-ca28-4ff6-92d7-4b05d64a017c";
 
+el.GetCurrentLocation(TheisId);
+Environment.Exit(1);
 
 //TestRetrivingCalendarEvents();
-TestMessageParser();
+// TestMessageParser();
 
 // await TestGettingUsersFromTeamsRepo();
 // TestTomorrow();
@@ -54,9 +56,12 @@ foreach (var message in messages)
     Console.WriteLine(message);
 }
 
-Environment.Exit(1);
+
 */
 // await cr.GetCalendarEvents();
+
+
+
 
 // Configure the HTTP request pipeline.
 app.UseCors("CorsPolicy");
@@ -80,7 +85,7 @@ void ConfigureSettingsOptions(IServiceCollection serviceCollection)
     serviceCollection.Configure<GraphHelperOptions>(builder.Configuration.GetSection("AzureAd"));
     serviceCollection.Configure<LocatorRepositoryOptions>(builder.Configuration.GetSection("MSSQL"));
     serviceCollection.Configure<DefaultLocationOptions>(builder.Configuration.GetSection("DefaultLocation"));
-    serviceCollection.Configure<TeamsOptions>(builder.Configuration.GetSection("TeamsChannel"));
+    serviceCollection.Configure<TeamsOptions>(builder.Configuration.GetSection("TestTeamsChannel"));
     serviceCollection.Configure<UsersOptions>(builder.Configuration);
 }
 

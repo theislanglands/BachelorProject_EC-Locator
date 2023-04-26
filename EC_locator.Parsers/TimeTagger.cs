@@ -35,18 +35,9 @@ public class TimeTagger : ITimeTagger
             }
         }
         
-        // SEE IF MESSAGE HAS A REPLY, IF ONLY CONTAINS A TIME TAG, UPDATE THE LATEST FOUND TIME TAG!
-        /*
-         * if (msg.Replies != null)
-         * {
-         *  string contentOfLastReply = msg.Replies.Last().Content;
-         *  
-         * }
-         */
-        
         return identifiedTimes;
     }
-
+    
     private SortedList<int, TimeOnly> IdentifyKeywordsTime(string message)
     {
         var identifiedTimeOnIndex = new SortedList<int, TimeOnly>();
@@ -157,6 +148,21 @@ public class TimeTagger : ITimeTagger
             minutes = "00";
         }
 
-        return new TimeOnly(int.Parse(hour), int.Parse(minutes));
+        int hrs = int.Parse(hour);
+        int mnt = int.Parse(minutes);
+
+        TimeOnly returnTime;
+
+        try
+        {
+            returnTime = new TimeOnly(hrs, mnt);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            Console.WriteLine("out of range");
+            returnTime = new TimeOnly();
+        }
+        
+        return returnTime;
     }
 }
