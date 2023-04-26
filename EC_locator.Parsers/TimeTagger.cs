@@ -84,10 +84,14 @@ public class TimeTagger : ITimeTagger
 
             if (!number.Equals(""))
             {
-                TimeOnly foundTime = ParseToTimeOnly(number);
-                foundTime = AddMinuteIndication(message, foundAtIndex, foundTime);
-                timeOnIndex.Add(foundAtIndex + 1, foundTime);
-                number = "";
+                var foundTime = ParseToTimeOnly(number);
+
+                if (foundTime != null)
+                {
+                    foundTime = AddMinuteIndication(message, foundAtIndex, (TimeOnly) foundTime);
+                    timeOnIndex.Add(foundAtIndex + 1, (TimeOnly) foundTime);
+                    number = "";
+                }
             }
         }
 
@@ -120,7 +124,7 @@ public class TimeTagger : ITimeTagger
     }
 
     // Parses from string to TimeOnly object
-    private static TimeOnly ParseToTimeOnly(string number)
+    private static TimeOnly? ParseToTimeOnly(string number) 
     {
         string hour;
         string minutes;
@@ -151,18 +155,18 @@ public class TimeTagger : ITimeTagger
         int hrs = int.Parse(hour);
         int mnt = int.Parse(minutes);
 
-        TimeOnly returnTime;
+        TimeOnly? returnTime = null;
 
         try
         {
             returnTime = new TimeOnly(hrs, mnt);
         }
-        catch (ArgumentOutOfRangeException)
+        catch (ArgumentOutOfRangeException ex)
         {
             Console.WriteLine("out of range");
-            returnTime = new TimeOnly();
+            //throw new ArgumentOutOfRangeException("not able to parse to time, input out of range", ex);
         }
-        
+
         return returnTime;
     }
 }
