@@ -18,7 +18,7 @@ public class LocatorRepository : ILocatorRepository
         _host = databaseSettings.Value.Host;
         _userId = databaseSettings.Value.UserId;
         _password = databaseSettings.Value.Password;
-        _connectionString = databaseSettings.Value.ConnectionStringRW;
+        _connectionString = databaseSettings.Value.ConnectionStringOW;
         _verbose = verboseSettings.Value.Verbose;
     }
     

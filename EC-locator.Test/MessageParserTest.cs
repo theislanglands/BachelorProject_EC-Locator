@@ -29,7 +29,7 @@ public class MessageParserTest
             Host = "localhost",
             UserId = "sa",
             Password = "Secretpassword1!",
-            ConnectionStringRW = "Server=tcp:ecreo01.database.windows.net,1433;" +
+            ConnectionStringOW = "Server=tcp:ecreo01.database.windows.net,1433;" +
                                  "Initial Catalog=sqldb-eclocator-dev-001;" +
                                  "Persist Security Info=False;" +
                                  "User ID=eclocator-dev-ow;" +
