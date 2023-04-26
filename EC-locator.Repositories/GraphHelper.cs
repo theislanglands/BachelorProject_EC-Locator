@@ -66,6 +66,7 @@ public class GraphHelper : IGraphHelper
         
         var fetchedUsers = _graphClient.Users
             .Request()
+            .Expand("userType")
             .Select(u => new
             {
                 u.DisplayName,
@@ -94,6 +95,7 @@ public class GraphHelper : IGraphHelper
             .Messages
             .Delta()
             .Request()
+            .Expand("replies")
             .Filter($"lastModifiedDateTime gt {dateString}")
             .GetAsync();
 

@@ -73,13 +73,6 @@ public class TeamsRepository : ITeamsRepository
                     {
                         continue;
                     }
-                    /*
-                    // Check if message match the date
-                    if (!date.Equals(DateOnly.FromDateTime(message.LastModifiedDateTime.Value.Date)))
-                    {
-                        continue;
-                    }
-                    */
                     
                     // check if content is html and convert to plain text             
                     if (message.Body.ContentType.Value.ToString().Equals("Html"))
@@ -87,6 +80,12 @@ public class TeamsRepository : ITeamsRepository
                         message.Body.Content = ParseHtmlToText(message.Body.Content);
                     }
                     
+                    // check if message contains replies
+                    if (message.Replies.Count != 0)
+                    {
+                        Console.WriteLine($"message: {message.Body.Content} has {message.Replies.Count} replies");
+                    }
+
                     // adding to found messages
                     foundMessages.Add(new Message()
                     {
@@ -143,11 +142,17 @@ public class TeamsRepository : ITeamsRepository
                     message.Body.Content = ParseHtmlToText(message.Body.Content);
                 }
                 Console.WriteLine($"Message content: {message.Body.Content}");
-                // Console.WriteLine($"Message replies: {message.Replies.Count}"); // Can be null! if no replies
+                
+                if (message.Replies.Count != 0)
+                {
+                    Console.WriteLine($"Message replies: {message.Replies.Count}");
+                    Console.WriteLine(message.Replies.CurrentPage[0].Body.Content);
+                }
+                
                 Console.WriteLine($"Message lastEditedDateTime: {message.LastModifiedDateTime}");
-                Console.WriteLine($"date only {DateOnly.FromDateTime(message.LastModifiedDateTime.Value.Date)}");
 
                 Console.WriteLine($"Message From.user.Id: {message.From.User.Id}");
+                Console.WriteLine();
             }
             
             // If NextPageRequest is not null, there are more user available on the server

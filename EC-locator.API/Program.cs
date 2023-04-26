@@ -26,8 +26,6 @@ ConfigureApiServices(builder.Services);
 
 var app = builder.Build();
 
-Environment.Exit(1);
-
 var messageParser = app.Services.GetService<IMessageParser>();
 var tr = app.Services.GetService<ITeamsRepository>();
 var cr = app.Services.GetService<ICalendarRepository>();
@@ -43,10 +41,9 @@ var TheisId = "6e5ee9cb-11cb-405d-aaa8-60c3768340c3";
 //TestRetrivingCalendarEvents();
 // TestMessageParser();
 
-await TestGettingUsersFromTeamsRepo();
-// TestMessageParser();
+// await TestGettingUsersFromTeamsRepo();
 // TestTomorrow();
-// await tr.ListMessagesAsync();
+await tr.ListMessagesAsync();
 
 /*
 var messages = await tr.GetMessagesAsync("3c2d2c7a-ae61-4019-b497-38f8d9ef3218", DateOnly.FromDateTime(DateTime.Now));
@@ -154,7 +151,6 @@ void TestTomorrow()
     }
 
     Environment.Exit(1);
-    
 }
 
 // TESTING MESSAGE PARSER
