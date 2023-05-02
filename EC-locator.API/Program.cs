@@ -29,7 +29,7 @@ ConfigureApiServices(builder.Services);
 
 var app = builder.Build();
 
-ManualPrecisionTestCLI mpt = new(app.Services.GetService<ITeamsRepository>());
+ManualPrecisionTestCLI mpt = new(app.Services.GetService<ITeamsRepository>(), app.Services.GetService<IMessageParser>());
 mpt.RunTest();
 Environment.Exit(1);
 

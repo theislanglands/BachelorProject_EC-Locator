@@ -9,40 +9,81 @@ public class ManualPrecisionTestCLI
     private DateOnly? _startDate;
     private DateOnly? _endDate;
     private ITeamsRepository tr;
+    private IMessageParser _mp;
 
-    public ManualPrecisionTestCLI(ITeamsRepository tr)
+    public ManualPrecisionTestCLI(ITeamsRepository tr, IMessageParser mp)
     {
         this.tr = tr;
+        _mp = mp;
+        result = new();
     }
 
     public void RunTest()
     {
         Console.WriteLine("-- Test precision of prediction tool -- \n");
-        
-        // setPeriod();
-        _startDate = new DateOnly(2023, 4, 5);
-        _endDate = new DateOnly(2023, 4, 15);
-        Console.WriteLine(_startDate);
-        Console.WriteLine(_endDate);
-        
+
+        int correctPrediction = 0;
+
+            // setPeriod();
+        _startDate = new DateOnly(2023, 4, 24);
+        _endDate = new DateOnly(2023, 5, 1);
+
         // Fetch messages
         var messages = tr.FetchAllMessagesAsync((DateOnly) _startDate, (DateOnly) _endDate).Result;
 
         // Iterate through each one,
         foreach (var message in messages)
         {
+            bool correct = false;
             Console.WriteLine(message);
-        }
-        
+            result.AppendLine(message.Content);
+            if (message.Replies != null)
+            {
+                foreach (var reply in message.Replies)
+                {
+                    result.AppendLine($"- {reply.Content}");
+                }
+            }
 
+            var locations = _mp.GetLocations(message);
+            
+            foreach (var location in locations)
+            {
+                Console.WriteLine(location);
+                result.AppendLine(location.ToString());
+            }
+
+            bool acceptedAnswer = false;
+            while (!acceptedAnswer)
+            {
+                Console.WriteLine("is locations identified correct? Y/N");
+                var answer = Console.ReadLine();
+                if (answer.ToLower().Equals("y"))
+                {
+                    correctPrediction++;
+                    correct = true;
+                    acceptedAnswer = true;
+                } else if (answer.ToLower().Equals("n"))
+                {
+                    correct = false;
+                    acceptedAnswer = true;
+                }
+                else
+                {
+                    Console.WriteLine("answer not accepted\n");
+                }
+            }
+            
+            result.AppendLine($"Correct prediction?: {correct}");
+            result.AppendLine();
+            Console.Clear();
+        }
+
+        result.AppendLine($"\n{correctPrediction} out of {messages.Count} predicted correct");
+        result.AppendLine($"prediction precision of {(correctPrediction * 100)/ messages.Count} %");
+        Console.WriteLine("result");
+        Console.WriteLine(result.ToString());
         
-        
-        
-        // -- use message parser,
-        // -- present result
-        // -- ask if correct
-        // -- store result
-        // present result
     }
 
     private void setPeriod()

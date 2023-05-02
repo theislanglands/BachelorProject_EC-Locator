@@ -3,7 +3,6 @@ using System.Text;
 using Microsoft.Graph;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
-
 using EC_locator.Core.SettingsOptions;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
@@ -17,14 +16,15 @@ public class TeamsRepository : ITeamsRepository
     private readonly IGraphHelper _graphHelper;
     private readonly bool _verbose;
     private readonly string[] _excludedUsers;
-    
-    public TeamsRepository(IGraphHelper graphHelper, IOptions<VerboseOptions> settingsOptions, IOptions<UsersOptions> usersOptions)
+
+    public TeamsRepository(IGraphHelper graphHelper, IOptions<VerboseOptions> settingsOptions,
+        IOptions<UsersOptions> usersOptions)
     {
         _graphHelper = graphHelper;
         _verbose = settingsOptions.Value.Verbose;
         _excludedUsers = usersOptions.Value.ExcludedUsers;
     }
-    
+
     public async Task<List<User>> GetUsersAsync()
     {
         List<User> users = new();
@@ -54,71 +54,63 @@ public class TeamsRepository : ITeamsRepository
 
         return users;
     }
-    
+
     public async Task<List<Message>> GetMessagesAsync(string employeeId)
     {
-        List<Message> foundMessages = new ();
+        List<Message> foundMessages = new();
         var date = DateOnly.FromDateTime(DateTime.Now).AddDays(-1);
-        
+
         if (_verbose)
         {
             Console.WriteLine("Fetching messages from MS Graph");
         }
+
         try
         {
             var messages = await _graphHelper.GetMessagesAsync(date);
-            
-                foreach (var message in messages.CurrentPage)
+
+            foreach (var message in messages.CurrentPage)
+            {
+                // Check if message sender match the employee ID 
+                if (!message.From.User.Id.Equals(employeeId))
                 {
-                    // Check if message sender match the employee ID 
-                    if (!message.From.User.Id.Equals(employeeId))
-                    {
-                        continue;
-                    }
-                    
-                    // check if content is html and convert to plain text             
-                    if (message.Body.ContentType.Value.ToString().Equals("Html"))
-                    {
-                        message.Body.Content = ParseHtmlToText(message.Body.Content);
-                    }
-
-                    List<Message>? replies = null;
-
-                    // check if message contains replies
-                    if (message.Replies.Count != 0)
-                    {
-                        replies = new();
-                        foreach (var reply in message.Replies.CurrentPage)
-                        {
-                            replies.Add(new Message()
-                            {
-                                Content = ParseHtmlToText(reply.Body.Content),
-                                TimeStamp = reply.LastModifiedDateTime.Value.DateTime,
-                                UserId = reply.From.User.Id
-                            });
-                        }
-                        replies.Sort();
-                    }
-                    
-                    // adding to found messages
-                    foundMessages.Add(new Message()
-                    {
-                        Content = message.Body.Content,
-                        TimeStamp = message.LastModifiedDateTime.Value.DateTime,
-                        UserId = employeeId,
-                        Replies = replies
-                    });
+                    continue;
                 }
 
-                /*
-                // If NextPageRequest is not null, there are more user available on the server
-            // Access the next page: messages.NextPageRequest.GetAsync();
-            var moreAvailable = messages.NextPageRequest != null;
-            if (_verbose)
-            {
-                Console.WriteLine($"\nMore messages available? {moreAvailable}");
+                // check if content is html and convert to plain text             
+                if (message.Body.ContentType.Value.ToString().Equals("Html"))
+                {
+                    message.Body.Content = ParseHtmlToText(message.Body.Content);
+                }
+
+                List<Message>? replies = null;
+
+                // check if message contains replies
+                if (message.Replies.Count != 0)
+                {
+                    replies = new();
+                    foreach (var reply in message.Replies.CurrentPage)
+                    {
+                        replies.Add(new Message()
+                        {
+                            Content = ParseHtmlToText(reply.Body.Content),
+                            TimeStamp = reply.LastModifiedDateTime.Value.DateTime,
+                            UserId = reply.From.User.Id
+                        });
+                    }
+
+                    replies.Sort();
+                }
+
+                // adding to found messages
+                foundMessages.Add(new Message()
+                {
+                    Content = message.Body.Content,
+                    TimeStamp = message.LastModifiedDateTime.Value.DateTime,
+                    UserId = employeeId,
+                    Replies = replies
+                });
             }
-            */
         }
         catch (Exception ex)
         {
@@ -132,13 +124,14 @@ public class TeamsRepository : ITeamsRepository
 
         return null;
     }
-    
+
     public async Task ListMessagesAsync()
     {
         if (_verbose)
         {
             Console.WriteLine("Fetching messages");
         }
+
         try
         {
             var messages = await _graphHelper.GetMessagesAsync(DateOnly.FromDateTime(DateTime.Now));
@@ -153,8 +146,9 @@ public class TeamsRepository : ITeamsRepository
                 {
                     message.Body.Content = ParseHtmlToText(message.Body.Content);
                 }
+
                 Console.WriteLine($"Message content: {message.Body.Content}");
-                
+
                 if (message.Replies.Count != 0)
                 {
                     Console.WriteLine($"Message replies: {message.Replies.Count}");
@@ -166,12 +160,12 @@ public class TeamsRepository : ITeamsRepository
                         Console.WriteLine($"Reply to self?: {reply.From.User.Id.Equals(message.From.User.Id)}");
                     }
                 }
-                
+
                 Console.WriteLine($"Message lastEditedDateTime: {message.LastModifiedDateTime}");
                 Console.WriteLine($"Message From.user.Id: {message.From.User.Id}");
                 Console.WriteLine();
             }
-            
+
             // If NextPageRequest is not null, there are more user available on the server
             // Access the next page: userPage.NextPageRequest.GetAsync();
             var moreAvailable = messages.NextPageRequest != null;
@@ -184,9 +178,10 @@ public class TeamsRepository : ITeamsRepository
         {
             Console.WriteLine($"Error getting messages: {ex.Message}");
         }
+
         Environment.Exit(1);
     }
-    
+
     public async Task<List<Message>> FetchAllMessagesAsync(DateOnly fromDate, DateOnly toDate)
     {
         List<Message> fetchedMessages = new();
@@ -194,7 +189,7 @@ public class TeamsRepository : ITeamsRepository
         {
             Console.WriteLine($"Fetching all messages from {fromDate} to {toDate}");
         }
-        
+
         try
         {
             bool moreMessages = true;
@@ -205,19 +200,12 @@ public class TeamsRepository : ITeamsRepository
                 // Output message details
                 foreach (var message in messages.CurrentPage)
                 {
-                    Console.WriteLine("\n-- Message in TR --");
                     Message fetchedMessage = new();
-                    /*
-                    if (message.Body.ContentType.Value.ToString().Equals("Html"))
-                    {
-                        message.Body.Content = ParseHtmlToText(message.Body.Content);
-                    }
-                    */
-                
+                    
                     fetchedMessage.Content = ParseHtmlToText(message.Body.Content);
                     fetchedMessage.TimeStamp = message.LastModifiedDateTime.Value.LocalDateTime;
                     fetchedMessage.UserId = message.From.User.Id;
-                    
+
                     if (message.Replies.Count != 0)
                     {
                         Message replyMessage = new();
@@ -239,32 +227,35 @@ public class TeamsRepository : ITeamsRepository
                                     fetchedMessage.Replies = new();
                                 }
 
-                                fetchedMessage.Replies.Add(replyMessage);
+                                if (!fetchedMessage.Replies.Contains(replyMessage))
+                                {
+                                    fetchedMessage.Replies.Add(replyMessage);
+                                }
+
                             }
                         }
 
+                        // stop fetching if desired date has been reached
                         if (DateOnly.FromDateTime(fetchedMessage.TimeStamp) > toDate)
                         {
                             moreMessages = false;
-                            Console.WriteLine("date exceeding, stop fetching");
                             break;
                         }
-                        
+
                         fetchedMessages.Add(fetchedMessage);
                     }
                 }
-            
-                if (messages.NextPageRequest != null)
+
+                // fetching next page
+                if (messages.NextPageRequest != null && moreMessages)
                 {
-                    Console.WriteLine("more messages available");
                     messages = await messages.NextPageRequest.GetAsync();
-                    
-                } else {
-                    Console.WriteLine("no more available");
+                }
+                else
+                {
                     moreMessages = false;
                 }
             }
-
         }
         catch (Exception ex)
         {
@@ -274,16 +265,13 @@ public class TeamsRepository : ITeamsRepository
 
         return fetchedMessages;
     }
-    
-    
-    
-    
+
 
     private string newParseHtmlToText(string html)
     {
         var doc = new HtmlDocument();
         doc.LoadHtml(html);
-        
+
         var plainText = doc.DocumentNode.InnerText;
         var cleanText = Regex.Replace(plainText, @"\s+", " ");
         return cleanText;
@@ -319,19 +307,17 @@ public class TeamsRepository : ITeamsRepository
 
         return sb.ToString();
     }
-    
-    
-    
+
+
     public List<Message>? GetMessageSamples(string employeeId)
     {
         string sampleCode = "wip";
-        
+
         List<Message> messages = new();
         var samples = GetSamples(sampleCode);
         int i = 1;
         foreach (var sample in samples)
         {
-            
             messages.Add(new Message(sample, employeeId, DateTime.Now.AddMinutes(i), new List<Message>()));
             i++;
         }
@@ -357,7 +343,7 @@ public class TeamsRepository : ITeamsRepository
             concatenatedMessages.AddRange(this.GetSamples("stopKeywords").ToList());
             concatenatedMessages.AddRange(this.GetSamples("negation").ToList());
             concatenatedMessages.AddRange(this.GetSamples("undefined").ToList());
-            
+
             if (_verbose)
             {
                 Console.WriteLine();
@@ -366,7 +352,7 @@ public class TeamsRepository : ITeamsRepository
                     Console.WriteLine(message);
                 }
             }
-            
+
             return concatenatedMessages.ToArray();
         }
 
@@ -381,7 +367,7 @@ public class TeamsRepository : ITeamsRepository
             };
             return messages;
         }
-        
+
         if (employeeId.Equals("sample2"))
         {
             // hjemmefra og kontor - tilføjet til test!
@@ -401,7 +387,6 @@ public class TeamsRepository : ITeamsRepository
                 "Jeg er på kontoret cirka 09.30",
                 "Er hjemmefra med Otto indtil backup kommer Jeg er inde inden frokost",
                 "0920", // home 9- office start 920 -> time with no location => insert office
-
             };
             return messages;
         }
@@ -421,11 +406,10 @@ public class TeamsRepository : ITeamsRepository
                 "Er til møde ved Alumeco indtil 11.30 i morgen og arbejder hjemme fra derefter.",
                 "Jeg tager hjem og arbejder efter zoo mødet  Hovedet driller lidt i dag. ",
                 "Jeg er i Nørresundby hele dagen i morgen hos Continia sammen med Martin, Simone og Jesper",
-
             };
             return messages;
         }
-        
+
         if (employeeId.Equals("ill"))
         {
             // syg & børn syge - Tilføjet til unit test
@@ -440,14 +424,14 @@ public class TeamsRepository : ITeamsRepository
                 "Jeg er slet ikke på toppen, så jeg bliver hjemme i dag",
                 "jeg er syg i dag",
                 "Det er som om min forkølelse er blusset op igen, så jeg er nok først på senere.",
-                
+
                 "Den lille er stadigvæk syg, arbejde det jeg kan ind i mellem",
                 "Felix er desværre syg med feber så tager den hjemmefra, så meget det er muligt 🤒",
                 "Otto er desværre blevet syg, så jeg holder hjemmefronten indtil backup ankommer. Er på kontoret inden 11", // Syg, men på kontoret
             };
             return messages;
         }
-        
+
         if (employeeId.Equals("is_first_location_office"))
         {
             // tilføjet til test
@@ -457,7 +441,7 @@ public class TeamsRepository : ITeamsRepository
             };
             return messages;
         }
-        
+
         if (employeeId.Equals("minute indicators"))
         {
             // tilføjet til test
@@ -467,7 +451,7 @@ public class TeamsRepository : ITeamsRepository
             };
             return messages;
         }
-        
+
         if (employeeId.Equals("startKeywords"))
         {
             // tilføjet til test
@@ -477,12 +461,12 @@ public class TeamsRepository : ITeamsRepository
                 // off - home - Office - 11_15
                 "Jeg starter ud hjemme 9.30 og er på kontoret til frokost",
                 // off - home - 9:30 - Office - 11_15
-                
+
                 // hvis off er efterfulgt af to locations uden en time => delete
             };
             return messages;
         }
-        
+
         if (employeeId.Equals("stopKeywords"))
         {
             // tilføjet til test
@@ -495,7 +479,7 @@ public class TeamsRepository : ITeamsRepository
             };
             return messages;
         }
-        
+
         if (employeeId.Equals("wip"))
         {
             string[] messages =
@@ -507,7 +491,7 @@ public class TeamsRepository : ITeamsRepository
             };
             return messages;
         }
-        
+
         if (employeeId.Equals("negation"))
         {
             // added to test
@@ -517,7 +501,7 @@ public class TeamsRepository : ITeamsRepository
             };
             return messages;
         }
-        
+
         if (employeeId.Equals("undefined"))
         {
             // added to test
@@ -527,7 +511,7 @@ public class TeamsRepository : ITeamsRepository
             };
             return messages;
         }
-        
+
         if (employeeId.Equals("tomorrow"))
         {
             // added to test
@@ -538,7 +522,7 @@ public class TeamsRepository : ITeamsRepository
             };
             return messages;
         }
-        
+
         // SE PÅ DEM HER!
         if (employeeId.Equals("outliers"))
         {
@@ -554,7 +538,7 @@ public class TeamsRepository : ITeamsRepository
             };
             return messages;
         }
-        
+
         if (employeeId.Equals("un-precise"))
         {
             string[] messages =

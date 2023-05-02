@@ -26,13 +26,13 @@ public class Message : IComparable
     public override string ToString()
     {
         StringBuilder presentation = new StringBuilder();
-        presentation.Append($"{Content}\n");
+        presentation.Append($"{Content}");
         presentation.Append($"UserId: {UserId}\n");
         presentation.Append($"TimeStamp: {TimeStamp}\n");
 
         if (Replies != null)
         {
-            presentation.Append("\n  -- Replies --\n");
+            presentation.Append("  -- Replies --\n");
             foreach (var reply in Replies)
             {
                 presentation.AppendLine(reply.ToString());
