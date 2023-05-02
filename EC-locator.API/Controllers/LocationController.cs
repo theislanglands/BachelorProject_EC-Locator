@@ -57,9 +57,26 @@ public class LocationController
                     Console.WriteLine($"Calendar Event: {calendarEvent}");
                 }
         }
-        
-        lr.TeamMessage = latestMessage == null ? "no messages found" : latestMessage.Content;
 
+        if (latestMessage == null)
+        {
+            lr.TeamMessage = "no messages found";
+        }
+        else
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(latestMessage.Content);
+            lr.TeamMessage = latestMessage.Content;
+            if (latestMessage.Replies != null)
+            {
+                foreach (var reply in latestMessage.Replies)
+                {
+                    sb.AppendLine($" -{reply.ToString()}");
+                }
+            }
+            lr.TeamMessage = sb.ToString();
+        }
+        
         if (currentLocation == null)
         {
             lr.Place = "no location found";
@@ -84,7 +101,7 @@ public class LocationController
 
         }
 
-        if (calendarEvents.Count != 0)
+        if (calendarEvents != null)
         {
             lr.CurrentCalendarEvents = calendarEvents;
             StringBuilder calendarInfo = new StringBuilder();

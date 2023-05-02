@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Text;
 using Microsoft.Graph;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
@@ -6,6 +7,7 @@ using EC_locator.Core.Models;
 using EC_locator.Core.SettingsOptions;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
+using HtmlAgilityPack;
 using Message = EC_locator.Core.Models.Message;
 
 namespace EC_locator.Repositories;
@@ -187,11 +189,42 @@ public class TeamsRepository : ITeamsRepository
         Environment.Exit(1);
     }
 
-    private string ParseHtmlToText(string html)
+    private string newParseHtmlToText(string html)
+    {
+        var doc = new HtmlDocument();
+        doc.LoadHtml(html);
+        
+        var plainText = doc.DocumentNode.InnerText;
+        var cleanText = Regex.Replace(plainText, @"\s+", " ");
+        return cleanText;
+    }
+
+    private string ParseHtmlToText2(string html)
     {
         return Regex.Replace(html, "<(.|\n)*?>", "");
     }
 
+    private string ParseHtmlToText(string html)
+    {
+        var doc = new HtmlDocument();
+        doc.LoadHtml(html);
+
+        var sb = new StringBuilder();
+        foreach (var node in doc.DocumentNode.DescendantsAndSelf())
+        {
+            if (!node.HasChildNodes)
+            {
+                string text = node.InnerText;
+                if (!string.IsNullOrEmpty(text))
+                    sb.AppendLine(text.Trim());
+            }
+        }
+
+        return sb.ToString();
+    }
+    
+    
+    
     public List<Message>? GetMessageSamples(string employeeId)
     {
         string sampleCode = "wip";
