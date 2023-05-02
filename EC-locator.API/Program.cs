@@ -20,9 +20,6 @@ using Microsoft.Extensions.Options;
 using Message = EC_locator.Core.Models.Message;
 
 
-ManualPrecisionTestCLI.runTest();
-Environment.Exit(1);
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -31,6 +28,10 @@ ConfigureLocatorServices(builder.Services);
 ConfigureApiServices(builder.Services);
 
 var app = builder.Build();
+
+ManualPrecisionTestCLI mpt = new(app.Services.GetService<ITeamsRepository>());
+mpt.RunTest();
+Environment.Exit(1);
 
 var messageParser = app.Services.GetService<IMessageParser>();
 var tr = app.Services.GetService<ITeamsRepository>();

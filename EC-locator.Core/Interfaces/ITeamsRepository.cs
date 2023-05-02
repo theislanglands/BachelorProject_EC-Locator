@@ -12,6 +12,8 @@ public interface ITeamsRepository
     Task<List<Message>> GetMessagesAsync(string employeeId);
 
     // TODO: FOR TESTING - to be deleted
+
+    Task<List<Message>> FetchAllMessagesAsync(DateOnly fromDate, DateOnly toDate);
     
     // testing connection to messages
     Task ListMessagesAsync();

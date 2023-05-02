@@ -146,7 +146,6 @@ public class TeamsRepository : ITeamsRepository
             // Output message details
             foreach (var message in messages.CurrentPage)
             {
-                //Console.WriteLine($"User: {message.Body.Content ?? "NO CONTENT"}");
                 Console.WriteLine("\n-- Message in TR --");
                 Console.WriteLine($"Message ID: {message.Id}");
                 Console.WriteLine($"Content type: {message.Body.ContentType.Value}");
@@ -169,7 +168,6 @@ public class TeamsRepository : ITeamsRepository
                 }
                 
                 Console.WriteLine($"Message lastEditedDateTime: {message.LastModifiedDateTime}");
-
                 Console.WriteLine($"Message From.user.Id: {message.From.User.Id}");
                 Console.WriteLine();
             }
@@ -188,6 +186,98 @@ public class TeamsRepository : ITeamsRepository
         }
         Environment.Exit(1);
     }
+    
+    public async Task<List<Message>> FetchAllMessagesAsync(DateOnly fromDate, DateOnly toDate)
+    {
+        List<Message> fetchedMessages = new();
+        if (_verbose)
+        {
+            Console.WriteLine($"Fetching all messages from {fromDate} to {toDate}");
+        }
+        
+        try
+        {
+            bool moreMessages = true;
+            var messages = await _graphHelper.GetMessagesAsync(fromDate);
+
+            while (moreMessages)
+            {
+                // Output message details
+                foreach (var message in messages.CurrentPage)
+                {
+                    Console.WriteLine("\n-- Message in TR --");
+                    Message fetchedMessage = new();
+                    /*
+                    if (message.Body.ContentType.Value.ToString().Equals("Html"))
+                    {
+                        message.Body.Content = ParseHtmlToText(message.Body.Content);
+                    }
+                    */
+                
+                    fetchedMessage.Content = ParseHtmlToText(message.Body.Content);
+                    fetchedMessage.TimeStamp = message.LastModifiedDateTime.Value.LocalDateTime;
+                    fetchedMessage.UserId = message.From.User.Id;
+                    
+                    if (message.Replies.Count != 0)
+                    {
+                        Message replyMessage = new();
+                        foreach (var reply in message.Replies.CurrentPage)
+                        {
+                            if (reply.Body.Content == null)
+                            {
+                                continue;
+                            }
+
+                            replyMessage.Content = ParseHtmlToText(reply.Body.Content);
+                            replyMessage.TimeStamp = reply.LastModifiedDateTime.Value.LocalDateTime;
+                            replyMessage.UserId = reply.From.User.Id;
+
+                            if (reply.From.User.Id.Equals(message.From.User.Id))
+                            {
+                                if (fetchedMessage.Replies == null)
+                                {
+                                    fetchedMessage.Replies = new();
+                                }
+
+                                fetchedMessage.Replies.Add(replyMessage);
+                            }
+                        }
+
+                        if (DateOnly.FromDateTime(fetchedMessage.TimeStamp) > toDate)
+                        {
+                            moreMessages = false;
+                            Console.WriteLine("date exceeding, stop fetching");
+                            break;
+                        }
+                        
+                        fetchedMessages.Add(fetchedMessage);
+                    }
+                }
+            
+                if (messages.NextPageRequest != null)
+                {
+                    Console.WriteLine("more messages available");
+                    messages = await messages.NextPageRequest.GetAsync();
+                    
+                } else {
+                    Console.WriteLine("no more available");
+                    moreMessages = false;
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.StackTrace);
+            Console.WriteLine($"Error getting messages: {ex.Message}");
+        }
+
+        return fetchedMessages;
+    }
+    
+    
+    
+    
 
     private string newParseHtmlToText(string html)
     {
@@ -206,6 +296,13 @@ public class TeamsRepository : ITeamsRepository
 
     private string ParseHtmlToText(string html)
     {
+        /*
+        if (html == null)
+        {
+            return "";
+        }
+        */
+
         var doc = new HtmlDocument();
         doc.LoadHtml(html);
 
