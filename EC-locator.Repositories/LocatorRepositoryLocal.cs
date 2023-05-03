@@ -76,7 +76,7 @@ public class LocatorRepositoryLocal : ILocatorRepository
             { "elendighed", "ill" },
             
             
-            // SKAL TILFØJES  TIL TEST
+            
             { "maveproblemer", "ill" },
             { "lægebesøg", "ill" },
             { "smerter", "ill" },
@@ -87,14 +87,28 @@ public class LocatorRepositoryLocal : ILocatorRepository
             { "tak for i dag", "off" },
             { "God weekend", "off" },
             { "søvn", "off" },
-            { "sove", "off" },
- 
+            
             
             { "kører på", "remote" },
             { "er ved", "remote" },
             
             {  "Viggo" ,"kidsIll" },
             {  "hende" ,"kidsIll" },
+            
+            
+            // SKAL TESTES
+            {  "1 årig" ,"kidsIll" },
+            { "kører ind til", "remote" },
+            { "smadret", "ill"},
+            { "ikke ovenpå", "ill"},
+            { "halsen", "ill"},
+            { "tandpine", "ill"},
+            { "lagt ned", "ill"},
+            { "fået det værre", "ill"},
+          
+            
+
+
 
 
 

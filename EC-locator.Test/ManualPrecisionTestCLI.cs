@@ -21,14 +21,15 @@ public class ManualPrecisionTestCLI
     public void RunTest()
     {
         Console.WriteLine("-- Test precision of prediction tool -- \n");
+        
 
         int correctPredictions = 0;
 
             // setPeriod();
-        _startDate = new DateOnly(2023, 1, 15);
-        _endDate = new DateOnly(2023, 2, 1);
+        _startDate = new DateOnly(2023, 3, 17);
+        _endDate = new DateOnly(2023, 4, 1);
 
-
+        Console.WriteLine($"-- Loading messages from {_startDate} to {_endDate}");
         result.AppendLine($"-- Result of message analysis from {_startDate} to {_endDate}  -- \n");
         // Fetch messages
         var messages = tr.FetchAllMessagesAsync((DateOnly) _startDate, (DateOnly) _endDate).Result;
@@ -36,6 +37,7 @@ public class ManualPrecisionTestCLI
         // Iterate through each one,
         foreach (var message in messages)
         {
+            Console.Clear();
             bool correct = false;
             result.AppendLine($"Message: {message.Content}");
             Console.WriteLine($"{message.Content}");
@@ -79,7 +81,7 @@ public class ManualPrecisionTestCLI
             
             result.AppendLine($"Correct prediction?: {correct}");
             result.AppendLine();
-            Console.Clear();
+            
         }
 
         result.AppendLine($"\n{correctPredictions} out of {messages.Count} predicted correct");
