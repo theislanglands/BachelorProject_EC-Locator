@@ -48,7 +48,7 @@ public class MessageParserTest
         });
 
         // Creating objects 
-        _locatorRepository = new LocatorRepository(locatorRepositoryOptions, verboseOptions);
+        _locatorRepository = new LocatorRepositoryLocal(verboseOptions);
         _locationTagger = new LocationTagger(_locatorRepository, verboseOptions);
         _timeTagger = new TimeTagger(_locatorRepository, verboseOptions);
         _timeAndLocationConnector = new TimeAndLocationConnector(verboseOptions, locationOptions);
@@ -62,6 +62,7 @@ public class MessageParserTest
         AddStartAndStopMessageSamples();
         AddMeetingAndRemoteMessageSamples();
         AddNegationMessageSamples();
+        AddUndefinedMessageSamples();
     }
     
     [Test]
@@ -152,6 +153,15 @@ public class MessageParserTest
             });
         _messageSamples.Add(
             "Jeg er i Nørresundby hele dagen i morgen hos Continia sammen med Martin, Simone og Jesper",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9,0),
+                    new TimeOnly(16, 0),
+                    "remote"),
+            });
+        _messageSamples.Add(
+            "Morn. Jeg er ved Popermo i dag",
             new []
             {
                 new Location(
@@ -446,6 +456,31 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "off")
             });
+        _messageSamples.Add(
+            "Godmorgen, jeg har ikke rigtig sovet pga maven, ser om jeg ka få indhentet lidt søvn her til formiddag. Er på hjemmefra senest ved middagstid",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9, 00),
+                    new TimeOnly(11, 15),
+                    "off"),
+                new Location(
+                    new TimeOnly(11, 15),
+                    new TimeOnly(16, 0),
+                    "home")
+            });
+        _messageSamples.Add(
+            "God weekend",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9, 00),
+                    new TimeOnly(16, 00),
+                    "off"),
+            });
+        
+        //                
+
     }
 
     private void AddKidsIllMessageSamples()
@@ -480,6 +515,33 @@ public class MessageParserTest
         _messageSamples.Add(
             "Otto er desværre blevet syg, så jeg holder hjemmefronten indtil backup ankommer. Er på kontoret inden 11",
             new []
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "KidsIll")
+            });
+        _messageSamples.Add(
+            "Jeg har to børn som var for syge til at komme i institution, så jeg er lige online til de møder jeg har, men ellers så er jeg nok beskæftiget med børnepasning.",
+            new[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "KidsIll")
+            });
+        _messageSamples.Add(
+            "Jeg tager en fridag i dag med Viggo på sygehuset, er på telefonen hvis der er noget",
+            new[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "KidsIll")
+            });
+        _messageSamples.Add(
+            "Frida er desværre syg idag, så jeg er hjemme ved hende",
+            new[]
             {
                 new Location(
                     new TimeOnly(9, 0),
@@ -564,6 +626,82 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "ill")
             });
+        _messageSamples.Add(
+            "Jeg har det skidt her til morgen og holder sengen",
+            new[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "ill")
+            });
+        _messageSamples.Add(
+            "Øv jeg er nødt til at krybe tilbage i seng. Har noget med mavsen, som også har holdt mig lidt oppe i nat.",
+            new[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "ill")
+            });
+        _messageSamples.Add(
+            "Det er desværre ikke blevet meget bedre. Jeg ser om jeg kan få indhentet lidt timer i løbet af dagen.",
+            new[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "ill")
+            });
+        _messageSamples.Add(
+            "Morn - jeg er fortsat syg og sengeliggende.",
+            new[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "ill")
+            });
+        _messageSamples.Add(
+            "Jeg har møde med Kohberg idag. Jeg tager det dog hjemmefra da jeg er blevet lidt småsløj med hovedpine og krads hals.",
+            new[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "ill")
+            });
+        _messageSamples.Add(
+            "Alt er elendighed her, men der er lys for enden af tunellen - jeg er prøver at være tilgængelig på Teams og være et produktivt medlem af virksomheden herhjemmefra",
+            new[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "ill")
+            });
+        _messageSamples.Add(
+            "Jeg gennemgår lige nogle øv ting her for tiden, med en masse lægebesøg og smerter. Så jeg er ikke lige så aktiv på kontoret de dage her.",
+            new[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "ill")
+            });
+        _messageSamples.Add(
+            "Jeg bliver nødt til at køre tilbage hjem. Har lige holdt ind til siden og kastet op",
+            new[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "ill")
+            });
+        
+        // 
+
+        
     }
 
     private void AddNegationMessageSamples()
@@ -578,5 +716,30 @@ public class MessageParserTest
                     "home")
             });
     }
+    
+    private void AddUndefinedMessageSamples()
+    {
+        _messageSamples.Add(
+            "Morn - jeg er startet tidligt på kontoret og kører på Popermo lidt senere",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "undefined")
+            });
+        _messageSamples.Add(
+            "Morn - jeg er startet hjemmefra og kører på Popermo efterfølgende. God weekend til alle jeg ikke når at hilse på",
+            new []
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 0),
+                    "undefined")
+            });
+    }
+    
+    
+    //
 
 }

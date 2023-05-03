@@ -25,9 +25,11 @@ public class ManualPrecisionTestCLI
         int correctPredictions = 0;
 
             // setPeriod();
-        _startDate = new DateOnly(2023, 4, 24);
-        _endDate = new DateOnly(2023, 5, 1);
+        _startDate = new DateOnly(2023, 1, 15);
+        _endDate = new DateOnly(2023, 2, 1);
 
+
+        result.AppendLine($"-- Result of message analysis from {_startDate} to {_endDate}  -- \n");
         // Fetch messages
         var messages = tr.FetchAllMessagesAsync((DateOnly) _startDate, (DateOnly) _endDate).Result;
 
@@ -82,7 +84,9 @@ public class ManualPrecisionTestCLI
 
         result.AppendLine($"\n{correctPredictions} out of {messages.Count} predicted correct");
         result.AppendLine($"prediction precision of {(correctPredictions * 100)/ messages.Count} %");
+        Console.Clear();
         Console.WriteLine("-- result -- ");
+        
         Console.WriteLine(result.ToString());
         
     }
@@ -119,10 +123,6 @@ public class ManualPrecisionTestCLI
                 periodSet = true;
             }
         }
-
-        
-        
-        
     }
 
     private static DateOnly? parseToDate(string? start)

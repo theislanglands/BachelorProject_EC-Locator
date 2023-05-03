@@ -65,6 +65,42 @@ public class LocatorRepositoryLocal : ILocatorRepository
             { "tager ud til", "remote" },
             { "tager ned til", "remote" },
             { "hos", "remote" },
+            
+            // NEW KEYWORDS
+            
+            // tilføjet til test
+            { "ikke blevet meget bedre", "ill" },
+            { "sløj", "ill" },
+            { "hovedpine", "ill" },
+            { "krads hals", "ill" },
+            { "elendighed", "ill" },
+            
+            
+            // SKAL TILFØJES  TIL TEST
+            { "maveproblemer", "ill" },
+            { "lægebesøg", "ill" },
+            { "smerter", "ill" },
+            { "kastet op", "ill" },
+            { "kaste op", "ill" },
+            { "opkast", "ill" },
+            
+            { "tak for i dag", "off" },
+            { "God weekend", "off" },
+            { "søvn", "off" },
+            { "sove", "off" },
+ 
+            
+            { "kører på", "remote" },
+            { "er ved", "remote" },
+            
+            {  "Viggo" ,"kidsIll" },
+            {  "hende" ,"kidsIll" },
+
+
+
+
+
+            
         };
         
         // replacing string[] with dictionary
@@ -81,7 +117,7 @@ public class LocatorRepositoryLocal : ILocatorRepository
     {
         var timeKeywords = new Dictionary<string, TimeOnly>();
         
-        timeKeywords.Add("formiddag", new TimeOnly(9,0));
+        timeKeywords.Add("formiddag", new TimeOnly(11,15));
         timeKeywords.Add("eftermiddag", new TimeOnly(12,0));
         timeKeywords.Add("frokost", new TimeOnly(11, 15));
         timeKeywords.Add("middag", new TimeOnly(12,00));

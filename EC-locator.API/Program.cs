@@ -28,10 +28,11 @@ ConfigureLocatorServices(builder.Services);
 ConfigureApiServices(builder.Services);
 
 var app = builder.Build();
-
+/*
 ManualPrecisionTestCLI mpt = new(app.Services.GetService<ITeamsRepository>(), app.Services.GetService<IMessageParser>());
 mpt.RunTest();
 Environment.Exit(1);
+*/
 
 var messageParser = app.Services.GetService<IMessageParser>();
 var tr = app.Services.GetService<ITeamsRepository>();
@@ -53,7 +54,7 @@ el.GetCurrentLocation(TheisId);
 */
 
 //TestRetrivingCalendarEvents();
-// TestMessageParser();
+TestMessageParser();
 
 // await TestGettingUsersFromTeamsRepo();
 // TestTomorrow();

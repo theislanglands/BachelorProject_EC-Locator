@@ -1,17 +1,11 @@
 ﻿using System.Collections;
-using System.Text;
-using System;
-using System.Web;
-using System.IO;
-
+using System.Text.RegularExpressions;
 
 using Microsoft.Graph;
-using EC_locator.Core.Interfaces;
-using EC_locator.Core.Models;
-using EC_locator.Core.SettingsOptions;
 using Microsoft.Extensions.Options;
-using System.Text.RegularExpressions;
-using HtmlAgilityPack;
+
+using EC_locator.Core.Interfaces;
+using EC_locator.Core.SettingsOptions;
 using Message = EC_locator.Core.Models.Message;
 
 namespace EC_locator.Repositories;
@@ -271,17 +265,6 @@ public class TeamsRepository : ITeamsRepository
         return fetchedMessages;
     }
 
-
-    private string newParseHtmlToText(string html)
-    {
-        var doc = new HtmlDocument();
-        doc.LoadHtml(html);
-
-        var plainText = doc.DocumentNode.InnerText;
-        var cleanText = Regex.Replace(plainText, @"\s+", " ");
-        return cleanText;
-    }
-
     private string ParseHtmlToText(string html)
     {
         string plainText;
@@ -289,35 +272,12 @@ public class TeamsRepository : ITeamsRepository
         // remove tags and entities
         plainText = Regex.Replace(html, "<.*?>|&.*?;", string.Empty);
         
-        // plainText = Regex.Replace(html, "<(.|\n)*?>", "");
-        // remove, tabs, newline and carraiage return
+        // remove, tabs, newline and carriage return
         plainText = Regex.Replace(plainText, "(\t|\r|\n)+", string.Empty);
         
-
         return plainText;
     }
-
-
-
-    private string ParseHtmlToText2(string html)
-    {
-        var doc = new HtmlDocument();
-        doc.LoadHtml(html);
-
-        var sb = new StringBuilder();
-        foreach (var node in doc.DocumentNode.DescendantsAndSelf())
-        {
-            if (!node.HasChildNodes)
-            {
-                string text = node.InnerText;
-                if (!string.IsNullOrEmpty(text))
-                    sb.AppendLine(text.Trim());
-            }
-        }
-
-        return sb.ToString();
-    }
-
+    
 
     public List<Message>? GetMessageSamples(string employeeId)
     {
@@ -374,6 +334,7 @@ public class TeamsRepository : ITeamsRepository
                 "Godmorgen. Jeg er på hjemmekontoret idag",
                 "Morn - det bliver endnu en dag på hjemmekontoret - dels pga. bentøjet og dels for at få ro til at forberede Popermo til næste uge",
                 "Jeg er på hjemmefra i dag.",
+                "Morn. Jeg er ved Popermo i dag",
             };
             return messages;
         }
@@ -438,6 +399,10 @@ public class TeamsRepository : ITeamsRepository
                 "Den lille er stadigvæk syg, arbejde det jeg kan ind i mellem",
                 "Felix er desværre syg med feber så tager den hjemmefra, så meget det er muligt 🤒",
                 "Otto er desværre blevet syg, så jeg holder hjemmefronten indtil backup ankommer. Er på kontoret inden 11", // Syg, men på kontoret
+                "Jeg tager en fridag i dag med Viggo på sygehuset, er på telefonen hvis der er noget",
+                "Jeg gennemgår lige nogle øv ting her for tiden, med en masse lægebesøg og smerter. Så jeg er ikke lige så aktiv på kontoret de dage her."
+
+                
             };
             return messages;
         }
@@ -458,6 +423,8 @@ public class TeamsRepository : ITeamsRepository
             string[] messages =
             {
                 "Vejret gjorde lige det helt lidt mere bøvlet her til morgen. Jeg er inde omkring kvart over 9...",
+                "Godmorgen, jeg har ikke rigtig sovet pga maven, ser om jeg ka få indhentet lidt søvn her til formiddag. Er på hjemmefra senest ved middagstid",
+
             };
             return messages;
         }
@@ -494,10 +461,6 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
-                "Jeg er på hjemmefra i dag",
-                "Godmorgen. Jeg er på hjemmekontoret idag",
-                "Morn - det bliver endnu en dag på hjemmekontoret - dels pga. bentøjet og dels for at få ro til at forberede Popermo til næste uge",
-                "Jeg er på hjemmefra i dag.",
             };
             return messages;
         }
@@ -518,6 +481,7 @@ public class TeamsRepository : ITeamsRepository
             string[] messages =
             {
                 "prut fis kanon",
+                "Morn - jeg er startet hjemmefra og kører på Popermo efterfølgende. God weekend til alle jeg ikke når at hilse på "
             };
             return messages;
         }
