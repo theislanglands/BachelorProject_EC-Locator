@@ -1,5 +1,10 @@
 ﻿using System.Collections;
 using System.Text;
+using System;
+using System.Web;
+using System.IO;
+
+
 using Microsoft.Graph;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
@@ -277,20 +282,25 @@ public class TeamsRepository : ITeamsRepository
         return cleanText;
     }
 
-    private string ParseHtmlToText2(string html)
-    {
-        return Regex.Replace(html, "<(.|\n)*?>", "");
-    }
-
     private string ParseHtmlToText(string html)
     {
-        /*
-        if (html == null)
-        {
-            return "";
-        }
-        */
+        string plainText;
+        
+        // remove tags and entities
+        plainText = Regex.Replace(html, "<.*?>|&.*?;", string.Empty);
+        
+        // plainText = Regex.Replace(html, "<(.|\n)*?>", "");
+        // remove, tabs, newline and carraiage return
+        plainText = Regex.Replace(plainText, "(\t|\r|\n)+", string.Empty);
+        
 
+        return plainText;
+    }
+
+
+
+    private string ParseHtmlToText2(string html)
+    {
         var doc = new HtmlDocument();
         doc.LoadHtml(html);
 

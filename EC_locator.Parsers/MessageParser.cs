@@ -64,18 +64,23 @@ public class MessageParser : IMessageParser
         // Check if there's replies
         if (message.Replies != null)
         {
-            Console.WriteLine("- found message replies");
             // Find replies that contains same user ID as message
             var selfReplies = message.Replies.Where(msg => msg.UserId.Equals(message.UserId)).ToList();
             
             if (selfReplies.Count == 0)
             {
-                Console.WriteLine("- no self replies found");
+                if (_verbose)
+                {
+                    Console.WriteLine($"- reply by other user found - ignored");
+                }
                 return;
             }
 
             Message lastReply = selfReplies.Last();
-            Console.WriteLine($"- reply on own message found: {lastReply.Content}");
+            if (_verbose)
+            {
+                Console.WriteLine($"- reply on own message found: {lastReply.Content}");
+            }
             
             // see if message contains a time tag and no location tag => update last found time tag.
             if (_timeTagger.GetTags(lastReply).Count == 1 && _locationTagger.GetTags(lastReply).Count == 0)

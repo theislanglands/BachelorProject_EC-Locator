@@ -22,7 +22,7 @@ public class ManualPrecisionTestCLI
     {
         Console.WriteLine("-- Test precision of prediction tool -- \n");
 
-        int correctPrediction = 0;
+        int correctPredictions = 0;
 
             // setPeriod();
         _startDate = new DateOnly(2023, 4, 24);
@@ -35,13 +35,14 @@ public class ManualPrecisionTestCLI
         foreach (var message in messages)
         {
             bool correct = false;
-            Console.WriteLine(message);
-            result.AppendLine(message.Content);
+            result.AppendLine($"Message: {message.Content}");
+            Console.WriteLine($"{message.Content}");
             if (message.Replies != null)
             {
                 foreach (var reply in message.Replies)
                 {
-                    result.AppendLine($"- {reply.Content}");
+                    Console.WriteLine($"- {reply.Content}");
+                    result.AppendLine($"Reply: - {reply.Content}");
                 }
             }
 
@@ -53,20 +54,20 @@ public class ManualPrecisionTestCLI
                 result.AppendLine(location.ToString());
             }
 
-            bool acceptedAnswer = false;
-            while (!acceptedAnswer)
+            
+            while (true)
             {
-                Console.WriteLine("is locations identified correct? Y/N");
+                Console.WriteLine("Are locations identified correct? Y/N");
                 var answer = Console.ReadLine();
                 if (answer.ToLower().Equals("y"))
                 {
-                    correctPrediction++;
+                    correctPredictions++;
                     correct = true;
-                    acceptedAnswer = true;
+                    break;
                 } else if (answer.ToLower().Equals("n"))
                 {
                     correct = false;
-                    acceptedAnswer = true;
+                    break;
                 }
                 else
                 {
@@ -79,9 +80,9 @@ public class ManualPrecisionTestCLI
             Console.Clear();
         }
 
-        result.AppendLine($"\n{correctPrediction} out of {messages.Count} predicted correct");
-        result.AppendLine($"prediction precision of {(correctPrediction * 100)/ messages.Count} %");
-        Console.WriteLine("result");
+        result.AppendLine($"\n{correctPredictions} out of {messages.Count} predicted correct");
+        result.AppendLine($"prediction precision of {(correctPredictions * 100)/ messages.Count} %");
+        Console.WriteLine("-- result -- ");
         Console.WriteLine(result.ToString());
         
     }
