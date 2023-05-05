@@ -25,8 +25,8 @@ public class ManualPrecisionTestCLI
         int correctPredictions = 0;
         
         // setPeriod();
-        _startDate = new DateOnly(2023, 1,1);
-        _endDate = new DateOnly(2023, 1, 15);
+        _startDate = new DateOnly(2022, 7,2);
+        _endDate = new DateOnly(2022, 10, 1);
 
         Console.WriteLine($"-- Loading messages from {_startDate} to {_endDate}");
         result.AppendLine($"-- Result of message analysis from {_startDate} to {_endDate}  -- \n");

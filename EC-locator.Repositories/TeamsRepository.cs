@@ -466,7 +466,7 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
-                "Jeg er til møde hos Popermo"
+                "Vi bringer en rettelse - jeg skal ikke til demo hos Popermo, så jeg tager den fra hjemmekontoret"
             };
             return messages;
         }

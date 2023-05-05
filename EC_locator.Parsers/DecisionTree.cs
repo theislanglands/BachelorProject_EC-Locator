@@ -128,6 +128,20 @@ public class DecisionTree
             GoTo = isLocationCountTwoHigherThanTime
         };
         
+        // Action 3a
+        var insertMeeting= new Action(_options)
+        {
+            Title = "Inserting meeting at location 0",
+            PerformAction = (locations, times) =>
+            {
+                locations.Clear();
+                locations.Add(0, new Location("meeting"));
+                return true;
+            },
+            
+            GoTo = new FinalNode(_options)
+        };
+        
         
         // Decision 6
         var isFirstLocationNotHome = new DecisionQuery(_options)
@@ -211,7 +225,7 @@ public class DecisionTree
         };
         
         
-        // Decision 3
+        // Decision 4
         var isFirstIndexTimeKeyword = new DecisionQuery(_options)
         {
             Title = "Is the first index found a time keyword",
@@ -228,6 +242,32 @@ public class DecisionTree
  
             Positive = isFirstLocationOffice,
             Negative = oneLocationOneTime
+        };
+        
+        // Decision 3a
+        var twoLocationsOneIsMeeting = new DecisionQuery(_options)
+        {
+            Title = "Does message contain two Locations and one of them is meeting",
+            Test = (locations, times) =>
+            {
+                if (locations.Count != 2)
+                {
+                    return false;
+                }
+
+                foreach (var location in locations)
+                {
+                    if (location.Value.Place.Equals("meeting"))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            },
+ 
+            Positive = insertMeeting,
+            Negative = insertUndefined
+            
         };
         
         // Decision 3
@@ -248,7 +288,8 @@ public class DecisionTree
                 return false;
             },
  
-            Positive = insertUndefined,
+            //Positive = insertUndefined,
+            Positive = twoLocationsOneIsMeeting,
             Negative = isFirstIndexTimeKeyword
         };
         
@@ -308,6 +349,8 @@ public class DecisionTree
             },
  
             Positive = deleteOffLocation,
+            //Negative = isOffFollowedByHome
+
             Negative = noTimesAndMultipleLocations
         };
         

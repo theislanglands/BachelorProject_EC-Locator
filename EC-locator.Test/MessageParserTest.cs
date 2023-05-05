@@ -95,6 +95,15 @@ public class MessageParserTest
     private void AddMeetingAndRemoteMessageSamples()
     {
         _messageSamples.Add(
+            "Jeg er til møde hos Popermo",
+            new[]
+            {
+                new Location(
+                    new TimeOnly(9, 0),
+                    new TimeOnly(16, 00),
+                    "meeting"),
+            });
+        _messageSamples.Add(
             "søren, simon, jesper og jeg drager til århus i morgen, så vi er ikke at finde på HQ",
             new[]
             {
@@ -152,15 +161,18 @@ public class MessageParserTest
                     new TimeOnly(16, 0),
                     "home"),
             });
+        
         _messageSamples.Add(
+            
             "Jeg tager hjem og arbejder efter zoo mødet  Hovedet driller lidt i dag. ",
             new []
             {
                 new Location(
                     new TimeOnly(9,0),
                     new TimeOnly(16, 0),
-                    "undefined"),
+                    "home"),
             });
+            
         _messageSamples.Add(
             "Jeg er i Nørresundby hele dagen i morgen hos Continia sammen med Martin, Simone og Jesper",
             new []
@@ -547,10 +559,10 @@ public class MessageParserTest
             {
                 new Location(
                     new TimeOnly(9, 00),
-                    new TimeOnly(11, 15),
+                    new TimeOnly(12, 00),
                     "off"),
                 new Location(
-                    new TimeOnly(11, 15),
+                    new TimeOnly(12, 00),
                     new TimeOnly(16, 0),
                     "home")
             });

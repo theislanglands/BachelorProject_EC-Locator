@@ -17,13 +17,13 @@ public class LocatorRepositoryLocal : ILocatorRepository
         string[,] keywords =
         {
             // ILL KEYWORDS
-            {  "sengeliggende", "ill" }, {  "sengen", "ill" }, {  "i seng", "ill" },
+            {  "sengeliggende", "ill" }, {  "sengen", "ill" }, {  "i seng", "ill" }, {  "sengedag", "ill" },
             {  "dynen" ,"ill" }, {  "på langs" ,"ill" }, {  "vandret" ,"ill" }, {  "lægger mig" ,"ill" },
 
             {  "syg" ,"ill" }, {  "ikke frisk" ,"ill" }, {  "ikke på toppen" ,"ill" }, {  "skidt" ,"ill" }, {  "helbred" ,"ill" },
             
             {  "influenza" ,"ill" }, {  "feber" ,"ill" }, {  "forkølelse" ,"ill" }, {  "svimmel" ,"ill" }, {  "kvalme" ,"ill" }, 
-            {  "migræne" ,"ill" }, {  "toilet" ,"ill" },
+            {  "migræne" ,"ill" }, {  "toilet" ,"ill" }, {  "skoldkop" ,"ill" },
             //{  "ondt i hovedet" ,"ill" }
             
             // KIDS ILL KEYWORDS
@@ -38,7 +38,7 @@ public class LocatorRepositoryLocal : ILocatorRepository
             
             // MEETING KEYWORDS
             { "møde ", "meeting" },
-            { "mødet", "meeting" },
+            { "møder", "meeting" },
             
             // HOME KEYWORDS
             { "hjem", "home" },
@@ -51,6 +51,7 @@ public class LocatorRepositoryLocal : ILocatorRepository
             { "retur", "office"},
             { "er tilbage", "office"},
             
+            { "at være der", "office"},
             { "på kontoret", "office" },
             { "på arbejdet", "office" },
             { "kommer i firmaet", "office" },
@@ -111,7 +112,7 @@ public class LocatorRepositoryLocal : ILocatorRepository
             { "fået det værre", "ill"},
             
             // 1/8 til 1/9
-            { "møder", "office"},
+            
             { "lukker øjnene", "ill"},
             { "hoved driller", "ill"},
             { "er mødt", "office"},
@@ -166,7 +167,7 @@ public class LocatorRepositoryLocal : ILocatorRepository
     {
         var timeKeywords = new Dictionary<string, TimeOnly>();
         
-        timeKeywords.Add("formiddag", new TimeOnly(11,15));
+        timeKeywords.Add("formiddag", new TimeOnly(12,00));
         timeKeywords.Add("eftermiddag", new TimeOnly(12,0));
         timeKeywords.Add("frokost", new TimeOnly(11, 15));
         timeKeywords.Add("middag", new TimeOnly(12,00));

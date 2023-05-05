@@ -11,6 +11,7 @@ public class TimeAndLocationConnector : ITimeAndLocationConnector
     private readonly TimeOnly _workStartDefault;
     private readonly TimeOnly _workEndDefault;
 
+    private List<Location> _locationsFound;
     private SortedList<int, Location> _locationTags;
     private SortedList<int, TimeOnly> _timeTags;
 
@@ -28,7 +29,7 @@ public class TimeAndLocationConnector : ITimeAndLocationConnector
     {
         _locationTags = locationTags;
         _timeTags = timeTags;
-        var locationsFound = new List<Location>();
+        _locationsFound = new List<Location>();
 
         if (_verbose)
         {
@@ -40,19 +41,44 @@ public class TimeAndLocationConnector : ITimeAndLocationConnector
         {
             SetStartTime(locationIndex);
             SetEndTime(locationIndex);
-            locationsFound.Add(_locationTags.Values[locationIndex]);
+            _locationsFound.Add(_locationTags.Values[locationIndex]);
         }
         
-        if (locationsFound.Count == 0)
+        RemoveNonConsecutiveLocations();
+        
+        if (_locationsFound.Count == 0)
         {
-            locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
+            _locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
+        }
+        
+        return _locationsFound;
+    }
+
+    private void RemoveNonConsecutiveLocations()
+    {
+        List<Location> locationToDelete = new();
+        foreach (var location in _locationsFound)
+        {
+            if (location.Start >= location.End)
+            {
+                locationToDelete.Add(location);
+            }
         }
 
-        return locationsFound;
+        if (_verbose && locationToDelete.Count != 0)
+        {
+            Console.WriteLine("- Deleting non-consecutive locations");
+        }
+
+        foreach (var location in locationToDelete)
+        {
+            _locationsFound.Remove(location);
+        }
     }
 
     private void SetStartTime(int locationIndex)
     {
+        
         // if first location use default work start otherwise end time of previous locations
         if (locationIndex == 0)
         {

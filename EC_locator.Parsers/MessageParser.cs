@@ -65,50 +65,55 @@ public class MessageParser : IMessageParser
     
     private void HandleReplies(Message message)
     {
-        // Check if there's replies
-        if (message.Replies != null)
+        // see if there's replies to the message
+        if (message.Replies == null) return;
+        
+        // Find replies that contains same user ID as message
+        var selfReplies = message.Replies.Where(msg => msg.UserId.Equals(message.UserId)).ToList();
+        
+        if (selfReplies.Count == 0)
         {
-            // Find replies that contains same user ID as message
-            var selfReplies = message.Replies.Where(msg => msg.UserId.Equals(message.UserId)).ToList();
-            
-            if (selfReplies.Count == 0)
-            {
-                if (_verbose)
-                {
-                    Console.WriteLine($"- reply by other user found - ignored");
-                }
-                return;
-            }
-
-            Message lastReply = selfReplies.Last();
             if (_verbose)
             {
-                Console.WriteLine($"- reply on own message found: {lastReply.Content}");
+                Console.WriteLine($"- replies only by other user found - ignored");
             }
-            
-            // see if orgininal message contains a time tag!
-           
-
-            // see if message contains a time tag and no location tag and original message has time tags
-            if (_timeTagger.GetTags(lastReply).Count == 1 && _locationTagger.GetTags(lastReply).Count == 0 && _timeTags.Count != 0)
-            {
-               // => update last found time tag.
-                int keyOfLastTag = _timeTags.Last().Key;
-                _timeTags[keyOfLastTag] = _timeTagger.GetTags(lastReply).Values[0];
-                if (_verbose)
-                {
-                    Console.WriteLine(
-                        $"A reply found with an updated time - changing last time tag to {_timeTagger.GetTags(lastReply).Values[0]}");
-                }
-            }
-            else
-            {
-                if (_verbose)
-                {
-                    Console.WriteLine("- reply ignored, no time tag identified");
-                }
-            }
+            return;
         }
+
+        // only look at the latest reply
+        Message lastReply = selfReplies.Last();
+        if (_verbose)
+        {
+            Console.WriteLine($"- reply on own message found: {lastReply.Content}");
+        }
+    
+        // see if reply message contains 1 time tag and no location tags AND original message has time tags = update last time in message
+        if (_timeTagger.GetTags(lastReply).Count == 1 && _locationTagger.GetTags(lastReply).Count == 0 && _timeTags.Count != 0)
+        {
+           // => update last found time tag.
+            int keyOfLastTag = _timeTags.Last().Key;
+            _timeTags[keyOfLastTag] = _timeTagger.GetTags(lastReply).Values[0];
+            if (_verbose)
+            {
+                Console.WriteLine(
+                    $"A reply found with an updated time - changing last time tag to {_timeTagger.GetTags(lastReply).Values[0]}");
+            }
+
+            return;
+        }
+
+        if (_locationTagger.GetTags(lastReply).Count == 0)
+        {
+            if (_verbose)
+            {
+                Console.WriteLine("No locations in self reply - reply ignored");
+            }
+            return;
+        }
+        
+        // Replace tags from orginial meessage with thelatestReply
+        _locationTags = _locationTagger.GetTags(lastReply);
+        _timeTags = _timeTagger.GetTags(lastReply);
     }
     
     private void ModifyFoundLocations()
