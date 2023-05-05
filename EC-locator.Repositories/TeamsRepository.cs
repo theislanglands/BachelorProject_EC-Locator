@@ -199,6 +199,11 @@ public class TeamsRepository : ITeamsRepository
                 // Output message details
                 foreach (var message in messages.CurrentPage)
                 {
+                    if (message.Body.Content == null)
+                    {
+                        continue;
+                    }
+
                     Message fetchedMessage = new();
                     
                     fetchedMessage.Content = ParseHtmlToText(message.Body.Content);
@@ -461,6 +466,7 @@ public class TeamsRepository : ITeamsRepository
         {
             string[] messages =
             {
+                "Jeg er til møde hos Popermo"
             };
             return messages;
         }

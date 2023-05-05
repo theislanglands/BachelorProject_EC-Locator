@@ -112,9 +112,6 @@ public class GraphHelper : IGraphHelper
         var start = DateTimeOffset.UtcNow.ToString("o"); // TIME RIGHT NOW
         var end = startDateTime.AddDays(1).ToString("o"); // TIME RIGHT NOW + 1 day
         
-        //var start = "2023-04-19T13:59:00.0000000"; //for debug only
-        //var end = "2026-04-20T23:00:00.0000000";
-        
         List<Option> options = new List<Option>
         {
             new QueryOption("startDateTime", start),

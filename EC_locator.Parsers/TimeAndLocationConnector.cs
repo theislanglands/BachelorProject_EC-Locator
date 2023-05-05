@@ -42,6 +42,11 @@ public class TimeAndLocationConnector : ITimeAndLocationConnector
             SetEndTime(locationIndex);
             locationsFound.Add(_locationTags.Values[locationIndex]);
         }
+        
+        if (locationsFound.Count == 0)
+        {
+            locationsFound.Add(new Location(_workStartDefault, _workEndDefault,"undefined"));
+        }
 
         return locationsFound;
     }

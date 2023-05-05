@@ -45,13 +45,17 @@ public class MessageParser : IMessageParser
         
         //Combining time and location tags into list of locations
         var locationsFound = _timeAndLocationConnector.AddTimeToLocations(_locationTags, _timeTags);
+
         
+
         return locationsFound;
     }
     
     public bool ContainsTomorrow(string message)
     {
-        if (message.ToLower().Contains("i morgen") || message.ToLower().Contains("imorgen"))
+        if (message.ToLower().Contains("i morgen") 
+            || message.ToLower().Contains("imorgen")
+            || message.ToLower().Contains("morrow"))
         {
             return true;
         }
@@ -82,9 +86,13 @@ public class MessageParser : IMessageParser
                 Console.WriteLine($"- reply on own message found: {lastReply.Content}");
             }
             
-            // see if message contains a time tag and no location tag => update last found time tag.
-            if (_timeTagger.GetTags(lastReply).Count == 1 && _locationTagger.GetTags(lastReply).Count == 0)
+            // see if orgininal message contains a time tag!
+           
+
+            // see if message contains a time tag and no location tag and original message has time tags
+            if (_timeTagger.GetTags(lastReply).Count == 1 && _locationTagger.GetTags(lastReply).Count == 0 && _timeTags.Count != 0)
             {
+               // => update last found time tag.
                 int keyOfLastTag = _timeTags.Last().Key;
                 _timeTags[keyOfLastTag] = _timeTagger.GetTags(lastReply).Values[0];
                 if (_verbose)

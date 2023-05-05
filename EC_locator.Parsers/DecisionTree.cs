@@ -377,7 +377,7 @@ public class DecisionTree
                         locations.Remove(location);
                     }
                 }
-
+                
                 return true;
             },
             
@@ -405,6 +405,19 @@ public class DecisionTree
             Negative = insertIll
         };
         
+        var isThereMoreThanOneLocation = new DecisionQuery(_options)
+        {
+            Title = "Are there more than one location",
+            Test = (locations, times) =>
+            {
+                return locations.Count > 1;
+            },
+            
+            Positive = deleteKids,
+            Negative = insertUndefined
+        };
+        
+        
         var isKidsPresent = new DecisionQuery(_options)
         {
             Title = "Is kids-keyword identified",
@@ -421,9 +434,11 @@ public class DecisionTree
                 return false;
             },
             
-            Positive = deleteKids,
+            Positive = isThereMoreThanOneLocation,
             Negative = isOffFollowedByTwoLocations
         };
+        
+        
         
         
         // Decision 2

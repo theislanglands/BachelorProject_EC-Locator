@@ -22,12 +22,11 @@ public class ManualPrecisionTestCLI
     {
         Console.WriteLine("-- Test precision of prediction tool -- \n");
         
-
         int correctPredictions = 0;
-
-            // setPeriod();
-        _startDate = new DateOnly(2023, 3, 17);
-        _endDate = new DateOnly(2023, 4, 1);
+        
+        // setPeriod();
+        _startDate = new DateOnly(2023, 1,1);
+        _endDate = new DateOnly(2023, 1, 15);
 
         Console.WriteLine($"-- Loading messages from {_startDate} to {_endDate}");
         result.AppendLine($"-- Result of message analysis from {_startDate} to {_endDate}  -- \n");
@@ -68,29 +67,25 @@ public class ManualPrecisionTestCLI
                     correctPredictions++;
                     correct = true;
                     break;
-                } else if (answer.ToLower().Equals("n"))
+                } 
+                if (answer.ToLower().Equals("n"))
                 {
                     correct = false;
                     break;
                 }
-                else
-                {
-                    Console.WriteLine("answer not accepted\n");
-                }
+                
+                Console.WriteLine("answer not accepted\n");
             }
             
             result.AppendLine($"Correct prediction?: {correct}");
             result.AppendLine();
-            
         }
 
         result.AppendLine($"\n{correctPredictions} out of {messages.Count} predicted correct");
         result.AppendLine($"prediction precision of {(correctPredictions * 100)/ messages.Count} %");
+        
         Console.Clear();
-        Console.WriteLine("-- result -- ");
-        
         Console.WriteLine(result.ToString());
-        
     }
 
     private void setPeriod()

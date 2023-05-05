@@ -10,6 +10,7 @@ public class TimeTagger : ITimeTagger
     private readonly bool _verbose;
     private readonly Dictionary<string, TimeOnly> _timeKeywords;
     private readonly Dictionary<string, double> _minuteIndicators;
+    private SortedList<int, TimeOnly> identifiedTimes;
 
     public TimeTagger(ILocatorRepository locatorRepository, IOptions<VerboseOptions> settingsOptions)
     {
@@ -20,12 +21,15 @@ public class TimeTagger : ITimeTagger
 
     public SortedList<int, TimeOnly> GetTags(Message message)
     {
-        var identifiedTimes = IdentifyNumericTime(message.Content);
+        identifiedTimes = IdentifyNumericTime(message.Content);
         
         foreach (var item in IdentifyKeywordsTime(message.Content))
         {
             identifiedTimes.Add(item.Key, item.Value);
         }
+        
+        ProneNonChronologicalTimeTags();
+
 
         if (_verbose)
         {
@@ -37,7 +41,37 @@ public class TimeTagger : ITimeTagger
         
         return identifiedTimes;
     }
-    
+
+    private void ProneNonChronologicalTimeTags()
+    {
+        // Prone time tags that are not chronological!
+        if (identifiedTimes.Count != 0)
+        {
+            TimeOnly previousTime = new TimeOnly(0, 0);
+            List<int> tagsToDelete = new List<int>();
+
+            foreach (var timeTag in identifiedTimes)
+            {
+                if (timeTag.Value <= previousTime)
+                {
+                    tagsToDelete.Add(timeTag.Key);
+                }
+
+                previousTime = timeTag.Value;
+            }
+
+            foreach (var timeTag in tagsToDelete)
+            {
+                if (_verbose)
+                {
+                    Console.WriteLine("proning time tags, for non chronological tags");
+                }
+
+                identifiedTimes.Remove(timeTag);
+            }
+        }
+    }
+
     private SortedList<int, TimeOnly> IdentifyKeywordsTime(string message)
     {
         var identifiedTimeOnIndex = new SortedList<int, TimeOnly>();
@@ -70,10 +104,11 @@ public class TimeTagger : ITimeTagger
                 foundAtIndex = i;
                 while (i < message.Length - 1 && (char.IsDigit(message[i + 1]) || 
                                                   message[i + 1].Equals('.') ||
+                                                  message[i + 1].Equals(' ') ||
                                                   message[i + 1].Equals(':')))
                 {
                     i++;
-                    if (message[i].Equals('.') || message[i].Equals(':'))
+                    if (message[i].Equals('.') || message[i].Equals(':')|| message[i].Equals(' '))
                     {
                         continue;
                     }

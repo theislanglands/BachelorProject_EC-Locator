@@ -18,12 +18,15 @@ public class LocationTagger : ILocationTagger
 
     public SortedList<int, Location> GetTags(Message message)                                    
     {
+        // Prooning message
+        string msg = message.Content.ToLower();
+        msg = msg.Replace(",", " ");
+        msg = msg.Replace(".", " ");
+
         // ("index", "found place located in the message")
-        
-        
-        message.Content = message.Content.ToLower();    
-        var foundLocations = FindLocations(message.Content);
-        HandleNegationKeywords(message.Content, foundLocations);
+
+        var foundLocations = FindLocations(msg);
+        HandleNegationKeywords(msg, foundLocations);
 
         var listOfLocations = LocationsAsList(foundLocations);
 
@@ -103,10 +106,10 @@ public class LocationTagger : ILocationTagger
                 if (foundLocations.GetKeyAtIndex(i) <= indexOfNegationWord &&
                     indexOfNegationWord < foundLocations.GetKeyAtIndex(i + 1))
                 {
-                    // remove location after negation word
+                    // remove location after negation word (if not ill)
                     for (int j = indexOfNegationWord + 1; j < foundLocations.Last().Key + 1; j++)
                     {
-                        if (foundLocations.ContainsKey(j))
+                        if (foundLocations.ContainsKey(j) && !foundLocations[j].Equals("ill"))
                         {
                             if (_verbose)
                             {

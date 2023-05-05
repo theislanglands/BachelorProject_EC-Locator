@@ -17,30 +17,35 @@ public class LocatorRepositoryLocal : ILocatorRepository
         string[,] keywords =
         {
             // ILL KEYWORDS
-            {  "seng", "ill" }, {  "dynen" ,"ill" }, {  "på langs" ,"ill" }, {  "vandret" ,"ill" }, {  "lægger mig" ,"ill" },
-            
+            {  "sengeliggende", "ill" }, {  "sengen", "ill" }, {  "i seng", "ill" },
+            {  "dynen" ,"ill" }, {  "på langs" ,"ill" }, {  "vandret" ,"ill" }, {  "lægger mig" ,"ill" },
+
             {  "syg" ,"ill" }, {  "ikke frisk" ,"ill" }, {  "ikke på toppen" ,"ill" }, {  "skidt" ,"ill" }, {  "helbred" ,"ill" },
             
             {  "influenza" ,"ill" }, {  "feber" ,"ill" }, {  "forkølelse" ,"ill" }, {  "svimmel" ,"ill" }, {  "kvalme" ,"ill" }, 
-            {  "ondt i hovedet" ,"ill" }, {  "migræne" ,"ill" }, {  "toilet" ,"ill" },
+            {  "migræne" ,"ill" }, {  "toilet" ,"ill" },
+            //{  "ondt i hovedet" ,"ill" }
             
             // KIDS ILL KEYWORDS
-            {  "den lille" ,"kidsIll" }, {  "de små" ,"kidsIll" }, {  "familie" ,"kidsIll" },
+            {  "den lille" ,"kidsIll" }, {  " de små" ,"kidsIll" }, {  "familie" ,"kidsIll" },
             {  "børn" ,"kidsIll" }, {  "barn" ,"kidsIll" },
             {  "pige" ,"kidsIll" }, {  "dreng" ,"kidsIll" },
-            {  "unger" ,"kidsIll" }, {  "søn" ,"kidsIll" }, {  "datter" ,"kidsIll" },
+            {  "unger" ,"kidsIll" }, {  "søn " ,"kidsIll" }, {  "datter" ,"kidsIll" },
             {  "Felix" ,"kidsIll" },
             {  "Otto" ,"kidsIll" },
+            {  "Noah" ,"kidsIll" },
+            {  "Isaac" ,"kidsIll" },
             
             // MEETING KEYWORDS
-            { "møde", "meeting" },
+            { "møde ", "meeting" },
+            { "mødet", "meeting" },
             
             // HOME KEYWORDS
             { "hjem", "home" },
             { "ikke på kontoret", "home" },
             
             // OFFICE KEYWORDS
-            { "kommer ind", "office" }, { "kommer jeg ind", "office" }, { "inde", "office" }, { "ind forbi", "office" },
+            { "kommer ind", "office" }, { "kommer jeg ind", "office" }, { " er inde ", "office" }, { "ind forbi", "office" },
             { "komme ind", "office" },
             
             { "retur", "office"},
@@ -60,11 +65,13 @@ public class LocatorRepositoryLocal : ILocatorRepository
             { "holder", "off" },
             { "lukker ned", "off" },
             { "starter", "off" },
+            { "for i dag", "off" },
+            // 
 
             // REMOTE KEYWORDS
             { "tager ud til", "remote" },
             { "tager ned til", "remote" },
-            { "hos", "remote" },
+            { "hos ", "remote" },
             
             // NEW KEYWORDS
             
@@ -74,9 +81,6 @@ public class LocatorRepositoryLocal : ILocatorRepository
             { "hovedpine", "ill" },
             { "krads hals", "ill" },
             { "elendighed", "ill" },
-            
-            
-            
             { "maveproblemer", "ill" },
             { "lægebesøg", "ill" },
             { "smerter", "ill" },
@@ -105,16 +109,47 @@ public class LocatorRepositoryLocal : ILocatorRepository
             { "tandpine", "ill"},
             { "lagt ned", "ill"},
             { "fået det værre", "ill"},
-          
             
-
-
-
-
-
-
-
+            // 1/8 til 1/9
+            { "møder", "office"},
+            { "lukker øjnene", "ill"},
+            { "hoved driller", "ill"},
+            { "er mødt", "office"},
             
+            { "på pinden", "office"},
+            { "afspadserer", "off"},
+            
+            // 1/9 - 1/10
+            { "ikke helt på toppen", "ill"},
+            { "hårdt ramt", "ill"},
+            { "ondt", "ill"}, // // rigtig ondt
+            { "på toppen", "ill"}, // ikke er på toppen
+            { "home", "home" },
+            { "sat til", "ill"},
+            { "snotter", "ill"},
+            { "hoster", "ill"},
+            { "ikke helt frisk", "ill"},
+            { "smittet", "ill"},
+            
+            // 1-11 - 1/12
+            { "drager", "remote"},
+            { "kaster stadig op", "ill"},
+            { "snøvsen", "ill"},
+            { "covid", "ill"},
+            { "trukket nitten", "ill"},
+            { "hals", "ill"},
+            { "\"5560\"", "home"},
+            { "gemakker", "home"},
+            { "nedlagt med Corona", "ill"},
+            { "fået det noget værre", "ill"},
+            { "positiv corona", "ill"},
+            { "hænger med mulen", "ill"},
+            { "langt nede", "ill"},
+            
+            // 1-1 - 15/1
+            { "ikke rask", "ill"},
+            { "Saga", "kidsIll"},
+   
         };
         
         // replacing string[] with dictionary
@@ -135,7 +170,7 @@ public class LocatorRepositoryLocal : ILocatorRepository
         timeKeywords.Add("eftermiddag", new TimeOnly(12,0));
         timeKeywords.Add("frokost", new TimeOnly(11, 15));
         timeKeywords.Add("middag", new TimeOnly(12,00));
-        timeKeywords.Add("aften", new TimeOnly(16,00));
+        //timeKeywords.Add("aften", new TimeOnly(16,00));
 
         return timeKeywords;
     }
