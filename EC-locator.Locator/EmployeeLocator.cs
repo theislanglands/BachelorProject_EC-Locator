@@ -214,7 +214,7 @@ public class EmployeeLocator : IEmployeeLocator
 
     private bool IsWeekend()
     {
-        return false; // TODO: DELETE IT'S FOR TESTING
+        //return false; // TODO: DELETE IT'S FOR TESTING
         if (_verbose)
         {
             Console.WriteLine($"It's weekend?: {DateTimeProvider.Now.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday}");

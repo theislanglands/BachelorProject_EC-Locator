@@ -165,9 +165,46 @@ public class EmployeeLocatorTest
     public void GetCurrentLocation_LocationMatchingCurrentTime_ReturnsCorrectLocation()
     {
         // ARRANGE
+        // Workday within default workinghours
+        var dateTimeProvider = new DateTimeProvider(new DateTime(2023,1,5, 12,0,0));
+
+        Message latestMessage = new()
+        {
+            Content = "test",
+            UserId = "test",
+            TimeStamp = dateTimeProvider.Now
+        };
+        
+        var teamsRepositoryMock = new Mock<ITeamsRepository>();
+        teamsRepositoryMock.Setup(
+            x => x.GetRecentMessagesAsync("test")).ReturnsAsync(new List<Message>{latestMessage});
+        
+        var locationList = new List<Location>
+        {
+            new()
+            {
+                Start = new TimeOnly(10,0,0),
+                End = new TimeOnly(12,0,0),
+                Place = "home"
+            },
+            new()
+            {
+                Start = new TimeOnly(12,0,0),
+                End = new TimeOnly(14,0,0),
+                Place = "remote"
+            }
+        };
+
+        var messageParserMock = new Mock<IMessageParser>();
+        messageParserMock.Setup(x => x.GetLocations(latestMessage)).Returns(locationList);
+        
+        _employeeLocator = new EmployeeLocator(messageParserMock.Object, teamsRepositoryMock.Object, _calendarRepository, dateTimeProvider, verboseOptions,
+            locationOptions);
         
         // ACT 
+        var location = _employeeLocator.GetCurrentLocation("test");
         
         // ASSERT
+        Assert.That(location.Place, Is.EqualTo("remote"), "Location remote - should match current time");
     }
 }
