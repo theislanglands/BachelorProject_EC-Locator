@@ -1,4 +1,5 @@
 using EC_locator.Core.Interfaces;
+using EC_locator.Core.Models;
 using EC_locator.Core.SettingsOptions;
 using EC_locator.Core.Utilities;
 using EC_locator.Locator;
@@ -91,10 +92,26 @@ public class EmployeeLocatorTest
     public void GetCurrentLocation_NoTeamsMessagesFound_ReturnsDefault()
     {
         // ARRANGE
+        // Workday within default workinghours
+        var dateTimeProvider = new DateTimeProvider(new DateTime(2023,1,5, 14,0,0));
+        
+        //_teamsRepository = 
+        var teamsRepositoryMock = new Mock<ITeamsRepository>();
+        teamsRepositoryMock.Setup(
+            x => x.GetRecentMessagesAsync("test")).Returns(Task.FromResult<List<Message>?>(null));
+        
+        _employeeLocator = new EmployeeLocator(_messageParser, teamsRepositoryMock.Object, _calendarRepository, dateTimeProvider, verboseOptions,
+            locationOptions);
         
         // ACT 
+        var location = _employeeLocator.GetCurrentLocation("test");
         
         // ASSERT
+        Assert.That(location.Place, Is.EqualTo(locationOptions.Value.DefaultLocation), "When no messages found, default location is expected");
+        var startTime = location.Start.GetValueOrDefault().ToString("H\\:mm");
+        Assert.That(startTime, Is.EqualTo(locationOptions.Value.DefaultWorkStart), "Default Work start time not correct");
+        var endTime = location.End.GetValueOrDefault().ToString("H\\:mm");
+        Assert.That(endTime, Is.EqualTo(locationOptions.Value.DefaultWorkEnd), "Default Work end time not correct");
     }
     
     [Test]

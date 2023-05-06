@@ -46,7 +46,7 @@ public class EmployeeLocator : IEmployeeLocator
         // _currentTime = new TimeOnly(09, 27); // FOR TESTING
         
         // SEE IF OUTSIDE DEFAULT WORKING HOURS => return OFF work
-        if (!IsInsideDefault(_currentTime) || IsWeekend())
+        if (!IsInsideDefault() || IsWeekend())
         {
             if (_verbose)
             {
@@ -70,15 +70,6 @@ public class EmployeeLocator : IEmployeeLocator
         
         // PARSE MESSAGE TO LOCATIONS       
         List<Location>? locations = _messageParser.GetLocations(latestMessage);
-
-        if (locations == null)
-        {
-            if (_verbose)
-            {
-                Console.WriteLine("no locations found in message");
-            }
-            return new Location("undefined");
-        }
         
         // MATCHING A LOCATION WITH CURRENT TIME
         Location? foundLocation = FindLocation(locations, _currentTime);
@@ -99,47 +90,48 @@ public class EmployeeLocator : IEmployeeLocator
     {
         var messages = _teamsRepository.GetRecentMessagesAsync(employeeId).Result;
         //var messages = _teamsRepository.GetMessageSamples(employeeId); // FOR TESTING
-        
-        if (messages != null)
+
+        if (messages == null)
         {
-            // SORT MESSAGES AFTER DATE AND RETRIEVE THE MOST RECENT
-            messages.Sort();
-            Message latestMessage = messages.Last();
             if (_verbose)
             {
-                Console.WriteLine($"Message(s) found: {latestMessage.Content}");
+                Console.WriteLine("No messages found from today or yesterday");
             }
-
-            // HANDLING TOMORROW TAGS
-            bool containsTomorrow = _messageParser.ContainsTomorrow(latestMessage.Content);
             
-            if (latestMessage.TimeStamp.Date.Equals(DateTime.Now.Date) && !containsTomorrow)
-            {
-                if (_verbose)
-                {
-                    Console.WriteLine("- message is from today and doesn't contain tomorrow keyword");
-                }
-                return latestMessage;
-            } 
-            if (latestMessage.TimeStamp.Date.Equals(DateTime.Now.Date.AddDays(-1)) && containsTomorrow)
-            {
-                if (_verbose)
-                {
-                    Console.WriteLine("- message is from yesterday and contains tomorrow keyword");
-                }
-                return latestMessage;
-            }
+            return null;
+        }
+        
+        // SORT MESSAGES AFTER DATE AND RETRIEVE THE MOST RECENT
+        messages.Sort();
+        Message latestMessage = messages.Last();
+        if (_verbose)
+        {
+            Console.WriteLine($"Message(s) found: {latestMessage.Content}");
+        }
 
+        // HANDLING TOMORROW TAGS
+        bool containsTomorrow = _messageParser.ContainsTomorrow(latestMessage.Content);
+        
+        if (latestMessage.TimeStamp.Date.Equals(DateTime.Now.Date) && !containsTomorrow)
+        {
             if (_verbose)
             {
-                Console.WriteLine($"- message not relevant");
+                Console.WriteLine("- message is from today and doesn't contain tomorrow keyword");
             }
-            return null;
+            return latestMessage;
+        } 
+        if (latestMessage.TimeStamp.Date.Equals(DateTime.Now.Date.AddDays(-1)) && containsTomorrow)
+        {
+            if (_verbose)
+            {
+                Console.WriteLine("- message is from yesterday and contains tomorrow keyword");
+            }
+            return latestMessage;
         }
 
         if (_verbose)
         {
-            Console.WriteLine("No messages found from today or yesterday");
+            Console.WriteLine($"- message not relevant");
         }
         return null;
     }
@@ -210,7 +202,7 @@ public class EmployeeLocator : IEmployeeLocator
         return foundLocation;
     }
     
-    private bool IsInsideDefault(TimeOnly time)
+    private bool IsInsideDefault()
     {
         if (_verbose)
         {
@@ -222,7 +214,7 @@ public class EmployeeLocator : IEmployeeLocator
 
     private bool IsWeekend()
     {
-        //return false; // TODO: DELETE IT'S FOR TESTING
+        return false; // TODO: DELETE IT'S FOR TESTING
         if (_verbose)
         {
             Console.WriteLine($"It's weekend?: {DateTimeProvider.Now.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday}");
