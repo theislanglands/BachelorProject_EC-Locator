@@ -16,7 +16,7 @@ public class MessageParserTest
     private ITimeTagger _timeTagger;
     private ITimeAndLocationConnector _timeAndLocationConnector;
     private ILocatorRepository _locatorRepository;
-    MessageParser _messageParser;
+    private MessageParser _messageParser;
 
     private Dictionary<string, Location[]> _messageSamples;
 
@@ -40,6 +40,7 @@ public class MessageParserTest
                                  "TrustServerCertificate=False;" +
                                  "Connection Timeout=30;"
         });
+        
         var locationOptions = Options.Create(new DefaultLocationOptions
         {
             DefaultWorkStart = "9:00",
@@ -47,6 +48,8 @@ public class MessageParserTest
             DefaultLocation = "office"
         });
 
+        // ARRANGE
+        
         // Creating objects 
         _locatorRepository = new LocatorRepositoryLocal(verboseOptions);
         _locationTagger = new LocationTagger(_locatorRepository, verboseOptions);
@@ -66,7 +69,7 @@ public class MessageParserTest
     }
     
     [Test]
-    public void MessageSample_ReturnsCorrectLocationObjects()
+    public void GetLocations_MessageSamples_ReturnsCorrectLocationObjects()
     {
         foreach (var message in _messageSamples)
         {
@@ -76,8 +79,10 @@ public class MessageParserTest
 
     private void TestLocation(KeyValuePair<string, Location[]> message)
     {
+        // ACT
         var locations = _messageParser.GetLocations(new Message(message.Key, "", DateTime.Now, null));
 
+        // ASSERT
         Assert.That(locations.Count, Is.EqualTo(message.Value.Length), 
             $"number of locations found not correct in message: \n{message.Key}");
         

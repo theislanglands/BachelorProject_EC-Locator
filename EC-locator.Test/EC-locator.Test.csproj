@@ -19,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\EC-locator.Locator\EC-locator.Locator.csproj" />
       <ProjectReference Include="..\EC_locator.Parsers\EC_locator.Parsers.csproj" />
     </ItemGroup>
 

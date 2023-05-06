@@ -1,11 +1,12 @@
 ﻿using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
+// using Location = EC_locator.Core.Models.Location;
+// using Message = EC_locator.Core.Models.Message;
 using EC_locator.Core.SettingsOptions;
+using EC_locator.Core.Utilities;
 using Microsoft.Extensions.Options;
-using Microsoft.Graph;
 using DayOfWeek = System.DayOfWeek;
-using Location = EC_locator.Core.Models.Location;
-using Message = EC_locator.Core.Models.Message;
+
 
 namespace EC_locator.Locator;
 
@@ -14,18 +15,21 @@ public class EmployeeLocator : IEmployeeLocator
     private readonly ITeamsRepository _teamsRepository;
     private readonly IMessageParser _messageParser;
     private readonly ICalendarRepository _calendarRepository;
-    
+    public DateTimeProvider DateTimeProvider { get; set; }
+
     private TimeOnly _currentTime;
     private readonly bool _verbose;
     
     private readonly TimeOnly _workStartDefault, _workEndDefault;
     private readonly string _defaultLocation;
 
-    public EmployeeLocator(IMessageParser messageParser, ITeamsRepository teamsRepository,ICalendarRepository calendarRepository, IOptions<VerboseOptions> settingsOptions, IOptions<DefaultLocationOptions> locationOptions)
+    public EmployeeLocator(IMessageParser messageParser, ITeamsRepository teamsRepository,ICalendarRepository calendarRepository, DateTimeProvider dateTimeProvider, IOptions<VerboseOptions> settingsOptions, IOptions<DefaultLocationOptions> locationOptions)
     {
         _messageParser = messageParser;
         _teamsRepository = teamsRepository;
         _calendarRepository = calendarRepository;
+        DateTimeProvider = dateTimeProvider;
+        
         string[] workStart = locationOptions.Value.DefaultWorkStart.Split(':');
         string[] workEnd = locationOptions.Value.DefaultWorkEnd.Split(':');
         _workStartDefault = new TimeOnly(int.Parse(workStart[0]),int.Parse(workStart[1]));
@@ -37,7 +41,8 @@ public class EmployeeLocator : IEmployeeLocator
     public Location GetCurrentLocation(string employeeId)
     {
         // FIND CURRENT TIME
-        _currentTime = TimeOnly.FromDateTime(DateTime.Now);
+        _currentTime = TimeOnly.FromDateTime(DateTimeProvider.Now);
+        
         // _currentTime = new TimeOnly(09, 27); // FOR TESTING
         
         // SEE IF OUTSIDE DEFAULT WORKING HOURS => return OFF work
@@ -92,7 +97,7 @@ public class EmployeeLocator : IEmployeeLocator
     
     public Message? GetLatestMessage(string employeeId)
     {
-        var messages = _teamsRepository.GetMessagesAsync(employeeId).Result;
+        var messages = _teamsRepository.GetRecentMessagesAsync(employeeId).Result;
         //var messages = _teamsRepository.GetMessageSamples(employeeId); // FOR TESTING
         
         if (messages != null)
@@ -217,14 +222,13 @@ public class EmployeeLocator : IEmployeeLocator
 
     private bool IsWeekend()
     {
-        return false; // TODO: DELETE IT'S FOR TESTING
-
+        //return false; // TODO: DELETE IT'S FOR TESTING
         if (_verbose)
         {
-            Console.WriteLine($"It's weekend?: {DateTime.Now.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday}");
+            Console.WriteLine($"It's weekend?: {DateTimeProvider.Now.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday}");
         }
         
-        return DateTime.Now.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday;
+        return DateTimeProvider.Now.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday;
     }
     
     // FOR TESTING

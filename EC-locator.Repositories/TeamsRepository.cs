@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 using Microsoft.Graph;
 using Microsoft.Extensions.Options;
@@ -54,9 +53,9 @@ public class TeamsRepository : ITeamsRepository
         return users;
     }
 
-    public async Task<List<Message>> GetMessagesAsync(string employeeId)
+    public async Task<List<Message>?> GetRecentMessagesAsync(string employeeId)
     {
-        List<Message> foundMessages = new();
+        List<Message>? foundMessages = new();
         var date = DateOnly.FromDateTime(DateTime.Now).AddDays(-1);
 
         if (_verbose)
@@ -123,64 +122,7 @@ public class TeamsRepository : ITeamsRepository
 
         return null;
     }
-
-    public async Task ListMessagesAsync()
-    {
-        if (_verbose)
-        {
-            Console.WriteLine("Fetching messages");
-        }
-
-        try
-        {
-            var messages = await _graphHelper.GetMessagesAsync(DateOnly.FromDateTime(DateTime.Now));
-
-            // Output message details
-            foreach (var message in messages.CurrentPage)
-            {
-                Console.WriteLine("\n-- Message in TR --");
-                Console.WriteLine($"Message ID: {message.Id}");
-                Console.WriteLine($"Content type: {message.Body.ContentType.Value}");
-                if (message.Body.ContentType.Value.ToString().Equals("Html"))
-                {
-                    message.Body.Content = ParseHtmlToText(message.Body.Content);
-                }
-
-                Console.WriteLine($"Message content: {message.Body.Content}");
-
-                if (message.Replies.Count != 0)
-                {
-                    Console.WriteLine($"Message replies: {message.Replies.Count}");
-                    foreach (var reply in message.Replies.CurrentPage)
-                    {
-                        Console.WriteLine(ParseHtmlToText(reply.Body.Content));
-                        Console.WriteLine(reply.LastModifiedDateTime);
-                        Console.WriteLine(reply.From.User.Id);
-                        Console.WriteLine($"Reply to self?: {reply.From.User.Id.Equals(message.From.User.Id)}");
-                    }
-                }
-
-                Console.WriteLine($"Message lastEditedDateTime: {message.LastModifiedDateTime}");
-                Console.WriteLine($"Message From.user.Id: {message.From.User.Id}");
-                Console.WriteLine();
-            }
-
-            // If NextPageRequest is not null, there are more user available on the server
-            // Access the next page: userPage.NextPageRequest.GetAsync();
-            var moreAvailable = messages.NextPageRequest != null;
-            if (_verbose)
-            {
-                Console.WriteLine($"\nMore messages available? {moreAvailable}");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error getting messages: {ex.Message}");
-        }
-
-        Environment.Exit(1);
-    }
-
+    
     public async Task<List<Message>> FetchAllMessagesAsync(DateOnly fromDate, DateOnly toDate)
     {
         List<Message> fetchedMessages = new();

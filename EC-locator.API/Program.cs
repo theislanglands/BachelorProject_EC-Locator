@@ -6,6 +6,7 @@ using EC_locator.Core.Models;
 using EC_locator.Parsers;
 using Location = EC_locator.Core.Models.Location;
 using EC_locator.Core.SettingsOptions;
+using EC_locator.Core.Utilities;
 using EC_locator.Locator;
 using EC_locator.Test;
 using Microsoft.AspNetCore.Authentication;
@@ -29,11 +30,11 @@ ConfigureApiServices(builder.Services);
 
 var app = builder.Build();
 
-
+/*
 ManualPrecisionTestCLI mpt = new(app.Services.GetService<ITeamsRepository>(), app.Services.GetService<IMessageParser>());
 mpt.RunTest();
 Environment.Exit(1);
-
+*/
 
 var messageParser = app.Services.GetService<IMessageParser>();
 var tr = app.Services.GetService<ITeamsRepository>();
@@ -51,7 +52,6 @@ var RuneId = "5907407f-ca28-4ff6-92d7-4b05d64a017c";
 
 /*
 el.GetCurrentLocation(TheisId);
-
 */
 
 //TestRetrivingCalendarEvents();
@@ -59,7 +59,6 @@ TestMessageParser();
 
 // await TestGettingUsersFromTeamsRepo();
 // TestTomorrow();
-// await tr.ListMessagesAsync();
 
 /*
 var messages = await tr.GetMessagesAsync(RuneId);
@@ -71,9 +70,6 @@ foreach (var message in messages)
 
 */
 // await cr.GetCalendarEvents();
-
-
-
 
 // Configure the HTTP request pipeline.
 app.UseCors("CorsPolicy");
@@ -125,6 +121,9 @@ void ConfigureLocatorServices(IServiceCollection services)
     
     // repository services
     services.AddSingleton<IGraphHelper, GraphHelper>();
+    
+    // utility services
+    services.AddScoped<DateTimeProvider>();
 }
 
 // Api configuration
