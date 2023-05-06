@@ -95,7 +95,6 @@ public class EmployeeLocatorTest
         // Workday within default workinghours
         var dateTimeProvider = new DateTimeProvider(new DateTime(2023,1,5, 14,0,0));
         
-        //_teamsRepository = 
         var teamsRepositoryMock = new Mock<ITeamsRepository>();
         teamsRepositoryMock.Setup(
             x => x.GetRecentMessagesAsync("test")).Returns(Task.FromResult<List<Message>?>(null));
@@ -114,25 +113,52 @@ public class EmployeeLocatorTest
         Assert.That(endTime, Is.EqualTo(locationOptions.Value.DefaultWorkEnd), "Default Work end time not correct");
     }
     
-    [Test]
-    public void GetCurrentLocation_NoLocationsInMessage_ReturnsUndefined()
-    {
-        // ARRANGE
-        
-        // ACT 
-        
-        // ASSERT
-    }
-    
     
     [Test]
     public void GetCurrentLocation_NoLocationsInMessageMatchCurrentTime_ReturnsUndefined()
     {
         // ARRANGE
+        // Workday within default workinghours
+        var dateTimeProvider = new DateTimeProvider(new DateTime(2023,1,5, 15,0,0));
+
+        Message latestMessage = new()
+        {
+            Content = "test",
+            UserId = "test",
+            TimeStamp = dateTimeProvider.Now
+        };
+        
+        var teamsRepositoryMock = new Mock<ITeamsRepository>();
+        teamsRepositoryMock.Setup(
+            x => x.GetRecentMessagesAsync("test")).ReturnsAsync(new List<Message>{latestMessage});
+        
+        var locationList = new List<Location>
+        {
+            new()
+            {
+                Start = new TimeOnly(10,0,0),
+                End = new TimeOnly(12,0,0),
+                Place = "office"
+            },
+            new()
+            {
+                Start = new TimeOnly(12,0,0),
+                End = new TimeOnly(14,0,0),
+                Place = "home"
+            }
+        };
+
+        var messageParserMock = new Mock<IMessageParser>();
+        messageParserMock.Setup(x => x.GetLocations(latestMessage)).Returns(locationList);
+        
+        _employeeLocator = new EmployeeLocator(messageParserMock.Object, teamsRepositoryMock.Object, _calendarRepository, dateTimeProvider, verboseOptions,
+            locationOptions);
         
         // ACT 
+        var location = _employeeLocator.GetCurrentLocation("test");
         
         // ASSERT
+        Assert.That(location.Place, Is.EqualTo("undefined"), "No location matching current time should return undefined");
     }
     
     [Test]

@@ -112,7 +112,7 @@ public class EmployeeLocator : IEmployeeLocator
         // HANDLING TOMORROW TAGS
         bool containsTomorrow = _messageParser.ContainsTomorrow(latestMessage.Content);
         
-        if (latestMessage.TimeStamp.Date.Equals(DateTime.Now.Date) && !containsTomorrow)
+        if (latestMessage.TimeStamp.Date.Equals(DateTimeProvider.Now.Date) && !containsTomorrow)
         {
             if (_verbose)
             {
@@ -120,7 +120,7 @@ public class EmployeeLocator : IEmployeeLocator
             }
             return latestMessage;
         } 
-        if (latestMessage.TimeStamp.Date.Equals(DateTime.Now.Date.AddDays(-1)) && containsTomorrow)
+        if (latestMessage.TimeStamp.Date.Equals(DateTimeProvider.Now.Date.AddDays(-1)) && containsTomorrow)
         {
             if (_verbose)
             {
