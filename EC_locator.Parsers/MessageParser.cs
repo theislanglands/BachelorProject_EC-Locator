@@ -63,7 +63,6 @@ public class MessageParser : IMessageParser
     
     private void HandleReplies(Message message)
     {
-        // see if there's replies to the message
         if (message.Replies == null) return;
         
         // Find replies that contains same user ID as message
@@ -73,22 +72,21 @@ public class MessageParser : IMessageParser
         {
             if (_verbose)
             {
-                Console.WriteLine($"- replies only by other user found - ignored");
+                Console.WriteLine($"- replies only by other users found - ignored");
             }
             return;
         }
 
-        // only look at the latest reply
+        // Analyse latest reply
         Message lastReply = selfReplies.Last();
         if (_verbose)
         {
             Console.WriteLine($"- reply on own message found: {lastReply.Content}");
         }
     
-        // see if reply message contains 1 time tag and no location tags AND original message has time tags = update last time in message
+        // if reply message contains 1 time tag and no location tags AND original message has time tags = update last time in message
         if (_timeTagger.GetTags(lastReply).Count == 1 && _locationTagger.GetTags(lastReply).Count == 0 && _timeTags.Count != 0)
         {
-           // => update last found time tag.
             int keyOfLastTag = _timeTags.Last().Key;
             _timeTags[keyOfLastTag] = _timeTagger.GetTags(lastReply).Values[0];
             if (_verbose)
@@ -109,14 +107,13 @@ public class MessageParser : IMessageParser
             return;
         }
         
-        // Replace tags from orginial meessage with thelatestReply
+        // Replace tags from original message with the latest Reply
         _locationTags = _locationTagger.GetTags(lastReply);
         _timeTags = _timeTagger.GetTags(lastReply);
     }
     
     private void ModifyFoundLocations()
     {
-        // TODO inject dependency!
         DecisionTree dt = new DecisionTree(_options);
         dt.Perform(_locationTags, _timeTags);
     }

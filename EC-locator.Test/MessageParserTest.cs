@@ -27,9 +27,6 @@ public class MessageParserTest
         var verboseOptions = Options.Create(new VerboseOptions { Verbose = false, UseDatabase = false});
         var locatorRepositoryOptions = Options.Create(new LocatorRepositoryOptions
         {
-            Host = "localhost",
-            UserId = "sa",
-            Password = "Secretpassword1!",
             ConnectionStringOW = "Server=tcp:ecreo01.database.windows.net,1433;" +
                                  "Initial Catalog=sqldb-eclocator-dev-001;" +
                                  "Persist Security Info=False;" +
