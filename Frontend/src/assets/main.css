@@ -1,30 +1,62 @@
-@import './base.css';
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-
-  font-weight: normal;
+body {
+  font-family: paralucent, Arial;
+  background-color: rgb(249,247,244)
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
+header {
+  text-align: center;
+  padding: 2.5rem;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
+.form-control:focus {
+  border-color: grey;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(66, 63, 33, 0.6);
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
+.border {
+  background-color: white;
 }
+
+.center-vertical{
+  padding: 15px 10px 0px;
+}
+
+.user-table {
+  margin-left: 2px;
+  padding-left: 0px;
+  padding-top: 5px;
+  background-color: white;
+  border-radius: 5px;
+  width: calc(99% - 4em);
+  cursor: pointer;
+  
+}
+
+.user:hover {
+  font-weight: bold;
+}
+
+.top-box{
+  margin-top: 1rem;
+}
+
+.indent-text{
+  padding-left: 1rem;
+}
+
+.present-location {
+  margin-top: 1rem;
+  padding-left: 0.5rem;
+}
+input {
+  width: 40%;
+}
+
+
+.table-fixed {
+  height: 380px;
+  overflow-y: auto;
+  display: block;
+}
+
+

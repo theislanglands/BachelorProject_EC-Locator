@@ -161,9 +161,9 @@ export default {
 
         <table v-if="selectedUser == null" class="row user-table">
           <tbody>
-            <tr v-for="(user, index) in filteredUsers()" :key="user.name" @click="updateSelected(user)">
-              <td v-if="index === highlightedIndex" style="font-weight: bold;">{{ user.name }}</td>
-              <td v-else>{{ user.name }}</td>
+            <tr v-for="(user, index) in filteredUsers()" :key="user.name" @click="updateSelected(user)" @mouseover="">
+              <td class="user" v-if="index === highlightedIndex" style="font-weight: bold;">{{ user.name }}</td>
+              <td class="user" v-else>{{ user.name }}</td>
             </tr>
           </tbody>
         </table>
@@ -190,73 +190,8 @@ export default {
         </div>
 
         </div>
-    
 
       </div>
     </div>
   </main>
 </template>
-
-
-<style>
-.form-control:focus {
-  border-color: grey;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(66, 63, 33, 0.6);
-}
-
-body {
-  font-family: paralucent, Arial;
-  background-color: rgb(249,247,244)
-}
-
-.border {
-  background-color: white;
-
-}
-
-.input-form {
-  margin-top: 130px;
-}
-
-.center-vertical{
-  padding: 15px 10px 0px;
-}
-
-.user-table {
-  margin-left: 2px;
-  padding-left: 0px;
-  padding-top: 5px;
-  background-color: white;
-  border-radius: 5px;
-  width: calc(99% - 4em);
-}
-
-.top-box{
-  margin-top: 30px;
-}
-
-.indent-text{
-  padding-left: 10px;
-}
-.present-location {
-  margin-top: 30px;
-  padding-left: 10px;
-}
-input {
-  width: 40%;
-}
-
-header {
-  text-align: center;
-  padding: 50px;
-  font-family: paralucent, Arial;
-}
-
-.table-fixed {
-  height: 380px;
-  overflow-y: auto;
-  display: block;
-}
-
-</style>
-
