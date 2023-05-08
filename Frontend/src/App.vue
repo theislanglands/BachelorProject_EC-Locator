@@ -26,7 +26,7 @@ export default {
         place: "remote",
         locationEndTime: "14:30",
         teamMessage: "Jeg er til møde indtil 14:30",
-        calenderInfo: "møde med meget vigtig kunde 9-14:30"
+        calendarInfo: "møde med meget vigtig kunde 9-14:30"
       }
     }
   },
@@ -190,7 +190,7 @@ export default {
 
         <div class="border rounded border-2 present-location">
           <p>Calendar</p>
-          <p class="indent-text">{{ location.calenderInfo }}</p>
+          <p class="indent-text">{{ location.calendarInfo }}</p>
         </div>
 
         </div>

@@ -103,20 +103,17 @@ public class LocationController
         {
             lr.CurrentCalendarEvents = calendarEvents;
             StringBuilder calendarInfo = new StringBuilder();
+            
             foreach (var calendarEvent in calendarEvents)
             {
-                calendarInfo.Append(calendarEvent);
-                if (!calendarEvent.Equals(calendarEvents.Last()))
-                {
-                    calendarInfo.Append(", ");
-                }
+                calendarInfo.AppendLine(calendarEvent.ToString());
             }
 
-            lr.CalenderInfo = calendarInfo.ToString();
+            lr.CalendarInfo = calendarInfo.ToString();
         }
         else
         {
-            lr.CalenderInfo = "no calendar events found";
+            lr.CalendarInfo = "no calendar events found";
         }
 
 
@@ -131,7 +128,7 @@ public class LocationController
         public string? LocationEndTime { get; set; }
 
         public string? TeamMessage { get; set; }
-        public string? CalenderInfo { get; set; }
+        public string? CalendarInfo { get; set; }
         public List<CalendarEvent>? CurrentCalendarEvents { get; set; }
     }
 }

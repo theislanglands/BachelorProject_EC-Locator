@@ -154,7 +154,11 @@ public class EmployeeLocator : IEmployeeLocator
                     ce.Add(calendarEvent);
                 }
             }
-            return ce;
+
+            if (ce.Count != 0)
+            {
+                return ce;
+            }
         }
         
         return null;

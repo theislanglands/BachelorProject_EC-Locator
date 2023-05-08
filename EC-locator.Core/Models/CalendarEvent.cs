@@ -21,8 +21,8 @@ public class CalendarEvent
     {
         if (!IsAllDay)
         {
-            return $"{Subject} ({StartTime:H:mm} - {EndTime:H:mm})";
+            return $"{StartTime:H:mm} - {EndTime:H:mm} {Subject}";
         }
-        return $"{Subject} (All Day)";
+        return $"(All Day) {Subject}";
     }
 }

@@ -110,9 +110,7 @@ public class TeamsRepository : ITeamsRepository
                     timeStamp = message.CreatedDateTime.Value.DateTime;
 
                 }
-
-                Console.WriteLine(timeStamp);
-    
+                
                 // adding to found messages
                 foundMessages.Add(new Message()
                 {
