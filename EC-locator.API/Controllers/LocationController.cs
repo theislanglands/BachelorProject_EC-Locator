@@ -71,7 +71,7 @@ public class LocationController
             {
                 foreach (var reply in latestMessage.Replies)
                 {
-                    sb.AppendLine($" -{reply.ToString()}");
+                    sb.AppendLine($" - {reply.Content}");
                 }
             }
             lr.TeamMessage = sb.ToString();
@@ -82,8 +82,6 @@ public class LocationController
             lr.Place = "no location found";
             lr.TeamMessage = "no locations identified";
         }
-        
-        // TODO: use default if nothing found doen't come through - neither do OFF!
         
         else
         {

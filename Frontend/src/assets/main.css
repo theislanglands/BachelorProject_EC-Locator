@@ -42,6 +42,7 @@ header {
 
 .indent-text{
   padding-left: 1rem;
+  white-space: pre-line;
 }
 
 .present-location {

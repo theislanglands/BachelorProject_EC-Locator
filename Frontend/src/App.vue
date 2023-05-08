@@ -32,8 +32,8 @@ export default {
   },
   methods: {
     async getLocation() {
-      this.location = this.locationTest
-      return
+      //this.location = this.locationTest
+      //return
       await axios.get('https://localhost:7208/Location/' + this.selectedUser.id).then((res) => {
         console.log(res.data)
         this.location = res.data
@@ -95,13 +95,17 @@ export default {
         this.showUntil = true;
         return "arbejder hjemmefra"
       }
-      if (place === "kidsIll") {
+      if (place === "KidsIll") {
         this.showUntil = false;
         return "har syge børn"
       }
       if (place === "remote") {
         this.showUntil = true;
         return "er hos en kunde"
+      }
+      if (place === "undefined") {
+        this.showUntil = false;
+        return "kan ikke lokaliseres ud fra besked"
       }
     },
     clearInputAndFocus() {
@@ -113,13 +117,13 @@ export default {
 
 
   mounted() {
-    /*
+    
         axios.get('https://localhost:7208/Users').then((res) => {
           this.users = res.data
         })
-        */
+        
 
-    this.users = this.usersTest
+    //this.users = this.usersTest
 
   }
   
@@ -163,7 +167,7 @@ export default {
           <tbody>
             <tr v-for="(user, index) in filteredUsers()" :key="user.name" @click="updateSelected(user)" @mouseover="">
               <td class="user" v-if="index === highlightedIndex" style="font-weight: bold;">{{ user.name }}</td>
-              <td class="user" v-else>{{ user.name }}</td>
+              <td v-else class="user">{{ user.name }} </td>
             </tr>
           </tbody>
         </table>
@@ -174,8 +178,8 @@ export default {
 
         <div v-if="selectedUser != null" class="present-location">
           <div class="border rounded border-3 top-box">
-          <p v-if="showUntil=true" class="center-vertical">{{ selectedUser.name }} {{ renderPlace(location.place) }} indtil kl. {{ location.locationEndTime }}</p>
-          <p v-else class="center-vertical">{{ selectedUser.name }} {{ renderPlace(location.place) }} resten af dagen</p>
+          <p v-if="showUntil==true" class="center-vertical">{{ selectedUser.name }} {{ renderPlace(location.place) }} indtil kl. {{ location.locationEndTime }}</p>
+          <p v-if="showUntil==false" class="center-vertical">{{ selectedUser.name }} {{ renderPlace(location.place) }} </p>
 
         </div>
 

@@ -100,11 +100,24 @@ public class TeamsRepository : ITeamsRepository
                     replies.Sort();
                 }
 
+                DateTime timeStamp;
+                if (message.LastEditedDateTime != null)
+                {
+                    timeStamp = message.LastEditedDateTime.Value.DateTime;
+                }
+                else
+                {
+                    timeStamp = message.CreatedDateTime.Value.DateTime;
+
+                }
+
+                Console.WriteLine(timeStamp);
+    
                 // adding to found messages
                 foundMessages.Add(new Message()
                 {
                     Content = message.Body.Content,
-                    TimeStamp = message.LastModifiedDateTime.Value.DateTime,
+                    TimeStamp = timeStamp,
                     UserId = employeeId,
                     Replies = replies
                 });

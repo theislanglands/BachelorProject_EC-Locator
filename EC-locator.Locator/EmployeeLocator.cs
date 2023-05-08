@@ -119,7 +119,9 @@ public class EmployeeLocator : IEmployeeLocator
                 Console.WriteLine("- message is from today and doesn't contain tomorrow keyword");
             }
             return latestMessage;
-        } 
+        }
+
+        Console.WriteLine(latestMessage.TimeStamp.Date);
         if (latestMessage.TimeStamp.Date.Equals(DateTimeProvider.Now.Date.AddDays(-1)) && containsTomorrow)
         {
             if (_verbose)
