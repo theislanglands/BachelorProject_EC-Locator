@@ -127,33 +127,4 @@ void ConfigureApiServices(IServiceCollection services)
 }
 
 
-// TESTING MESSAGE PARSER
-void TestMessageParser()
-{
-    string[] messages = tr.GetSamples("wip");
-
-    foreach (string message in messages)
-    {
-        Console.WriteLine($"\n{message}");
-        Message msg = new Message()
-        {
-            Content = message,
-            TimeStamp = DateTime.Now,
-            UserId = "a user",
-            Replies = null
-        };
-        
-        var locations = messageParser.GetLocations(msg);
-        if (messageParser.ContainsTomorrow(message))
-        {
-            Console.WriteLine("Location(s) for tomorrow");
-        }
-        foreach (var location in locations)
-        {
-            Console.WriteLine(location);
-        }
-    }
-
-    Environment.Exit(1);
-}
 

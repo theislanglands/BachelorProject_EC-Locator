@@ -113,6 +113,13 @@ export default {
       this.selectedUser = null;
       this.$refs.textInput.focus();
     },
+    onKeyDown(event) {
+      if (event.keyCode === 8 && document.activeElement !== this.$refs.textInput){
+        {
+          this.clearInputAndFocus()
+        }
+      }
+    }
   },
 
 
@@ -121,10 +128,12 @@ export default {
         axios.get('https://localhost:7208/Users').then((res) => {
           this.users = res.data
         })
+
         
+        document.addEventListener('keydown', this.onKeyDown);
+
 
     //this.users = this.usersTest
-
   }
   
 }
@@ -174,24 +183,25 @@ export default {
       </div>
 
         <div class="col-2"></div>
-
-
         <div v-if="selectedUser != null" class="present-location">
           <div class="border rounded border-3 top-box">
           <p v-if="showUntil==true" class="center-vertical">{{ selectedUser.name }} {{ renderPlace(location.place) }} indtil kl. {{ location.locationEndTime }}</p>
           <p v-if="showUntil==false" class="center-vertical">{{ selectedUser.name }} {{ renderPlace(location.place) }} </p>
-
         </div>
 
         <div class="border rounded border-2 present-location">
           <p>Messages</p>
-          <p class="indent-text">{{ location.teamMessage }}</p>
+          <p class="indent-text" >{{ location.teamMessage }}</p>
         </div>
 
         <div class="border rounded border-2 present-location">
           <p>Calendar</p>
           <p class="indent-text">{{ location.calendarInfo }}</p>
         </div>
+
+        
+        
+
 
         </div>
 

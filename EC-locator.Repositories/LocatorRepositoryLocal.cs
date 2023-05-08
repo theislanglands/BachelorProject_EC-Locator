@@ -43,6 +43,7 @@ public class LocatorRepositoryLocal : ILocatorRepository
             // HOME KEYWORDS
             { "hjem", "home" },
             { "ikke på kontoret", "home" },
+            { "aarup", "home" },
             
             // OFFICE KEYWORDS
             { "kommer ind", "office" }, { "kommer jeg ind", "office" }, { " er inde ", "office" }, { "ind forbi", "office" },

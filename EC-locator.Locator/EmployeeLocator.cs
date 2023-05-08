@@ -120,14 +120,15 @@ public class EmployeeLocator : IEmployeeLocator
             }
             return latestMessage;
         }
-
-        Console.WriteLine(latestMessage.TimeStamp.Date);
+        
         if (latestMessage.TimeStamp.Date.Equals(DateTimeProvider.Now.Date.AddDays(-1)) && containsTomorrow)
         {
             if (_verbose)
             {
                 Console.WriteLine("- message is from yesterday and contains tomorrow keyword");
             }
+
+            latestMessage.Content = $"(besked fra i går) {latestMessage.Content}";
             return latestMessage;
         }
 
