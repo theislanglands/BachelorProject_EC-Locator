@@ -33,11 +33,11 @@ el.GetCurrentLocation("");
 
 // TestMessageParser();
 
-/*
+
 ManualPrecisionTestCLI mpt = new(app.Services.GetService<ITeamsRepository>(), app.Services.GetService<IMessageParser>());
 mpt.RunTest();
 Environment.Exit(1);
-*/
+
 
 // Configure the HTTP request pipeline.
 app.UseCors("CorsPolicy");

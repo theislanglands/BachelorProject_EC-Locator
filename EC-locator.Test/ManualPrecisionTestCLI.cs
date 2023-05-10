@@ -23,10 +23,11 @@ public class ManualPrecisionTestCLI
         Console.WriteLine("-- Test precision of prediction tool -- \n");
         
         int correctPredictions = 0;
+        int partlyCorrectPrediction = 0;
         
         // setPeriod();
-        _startDate = new DateOnly(2022, 7,2);
-        _endDate = new DateOnly(2022, 10, 1);
+        _startDate = new DateOnly(2023, 5,1);
+        _endDate = new DateOnly(2023, 5, 8);
 
         Console.WriteLine($"-- Loading messages from {_startDate} to {_endDate}");
         result.AppendLine($"-- Result of message analysis from {_startDate} to {_endDate}  -- \n");
@@ -37,7 +38,7 @@ public class ManualPrecisionTestCLI
         foreach (var message in messages)
         {
             Console.Clear();
-            bool correct = false;
+            string correct = "";
             result.AppendLine($"Message: {message.Content}");
             Console.WriteLine($"{message.Content}");
             if (message.Replies != null)
@@ -60,20 +61,25 @@ public class ManualPrecisionTestCLI
             
             while (true)
             {
-                Console.WriteLine("Are locations identified correct? Y/N");
+                Console.WriteLine("Are locations identified correct? Y/N or partly P");
                 var answer = Console.ReadLine();
                 if (answer.ToLower().Equals("y"))
                 {
                     correctPredictions++;
-                    correct = true;
+                    correct = "true";
                     break;
                 } 
                 if (answer.ToLower().Equals("n"))
                 {
-                    correct = false;
+                    correct = "false";
                     break;
                 }
-                
+                if (answer.ToLower().Equals("p"))
+                {   
+                    correct = "partly";
+                    partlyCorrectPrediction++;
+                    break;
+                }
                 Console.WriteLine("answer not accepted\n");
             }
             
@@ -82,6 +88,7 @@ public class ManualPrecisionTestCLI
         }
 
         result.AppendLine($"\n{correctPredictions} out of {messages.Count} predicted correct");
+        result.AppendLine($"\n{partlyCorrectPrediction} predicted partly correct");
         result.AppendLine($"prediction precision of {(correctPredictions * 100)/ messages.Count} %");
         
         Console.Clear();

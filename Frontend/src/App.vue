@@ -35,12 +35,10 @@ export default {
       //this.location = this.locationTest
       //return
       await axios.get('https://localhost:7208/Location/' + this.selectedUser.id).then((res) => {
-        console.log(res.data)
         this.location = res.data
       })
     },
     updateSelected(selected) {
-      console.log(selected.id)
       this.selectedUser = selected
       this.input = this.selectedUser.name
       this.$refs.textInput.blur();

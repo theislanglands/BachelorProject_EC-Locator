@@ -19,139 +19,62 @@ public class LocatorRepositoryLocal : ILocatorRepository
             // ILL KEYWORDS
             {  "sengeliggende", "ill" }, {  "sengen", "ill" }, {  "i seng", "ill" }, {  "sengedag", "ill" },
             {  "dynen" ,"ill" }, {  "på langs" ,"ill" }, {  "vandret" ,"ill" }, {  "lægger mig" ,"ill" },
+            { "lukker øjnene", "ill"},
 
             {  "syg" ,"ill" }, {  "ikke frisk" ,"ill" }, {  "ikke på toppen" ,"ill" }, {  "skidt" ,"ill" }, {  "helbred" ,"ill" },
+            { "sløj", "ill" }, { "ikke blevet meget bedre", "ill" },{ "elendighed", "ill" }, { "smadret", "ill"}, { "ikke ovenpå", "ill"},
+            { "lagt ned", "ill"},  { "fået det værre", "ill"},{ "ikke helt frisk", "ill"}, { "smittet", "ill"},{ "ikke helt på toppen", "ill"},
+            { "hårdt ramt", "ill"}, { "på toppen", "ill"},{ "hænger med mulen", "ill"}, { "langt nede", "ill"}, { "ikke rask", "ill"},
+            { "snøvsen", "ill"}, { "trukket nitten", "ill"}, { "fået det noget værre", "ill"},
             
             {  "influenza" ,"ill" }, {  "feber" ,"ill" }, {  "forkølelse" ,"ill" }, {  "svimmel" ,"ill" }, {  "kvalme" ,"ill" }, 
-            {  "migræne" ,"ill" }, {  "toilet" ,"ill" }, {  "skoldkop" ,"ill" },
-            //{  "ondt i hovedet" ,"ill" }
+            {  "migræne" ,"ill" }, {  "toilet" ,"ill" }, {  "skoldkop" ,"ill" },{ "hovedpine", "ill" }, { "krads hals", "ill" },
+            { "maveproblemer", "ill" }, { "smerter", "ill" }, { "kastet op", "ill" }, { "kaste op", "ill" }, { "opkast", "ill" },
+            { "kaster stadig op", "ill"}, { "halsen", "ill"}, { "tandpine", "ill"}, { "hoved driller", "ill"},{ "snotter", "ill"}, 
+            { "hoster", "ill"},{ "ondt", "ill"}, { "sat til", "ill"},{ "covid", "ill"},{ "nedlagt med Corona", "ill"},{ "positiv corona", "ill"},
+            { "hals", "ill"},
+            
+            { "lægebesøg", "ill" },
             
             // KIDS ILL KEYWORDS
             {  "den lille" ,"kidsIll" }, {  " de små" ,"kidsIll" }, {  "familie" ,"kidsIll" },
-            {  "børn" ,"kidsIll" }, {  "barn" ,"kidsIll" },
-            {  "pige" ,"kidsIll" }, {  "dreng" ,"kidsIll" },
+            {  "børn" ,"kidsIll" }, {  "barn" ,"kidsIll" }, {  "1 årig" ,"kidsIll" },
+            {  "pige" ,"kidsIll" }, {  "dreng" ,"kidsIll" }, {  "hende" ,"kidsIll" },
             {  "unger" ,"kidsIll" }, {  "søn " ,"kidsIll" }, {  "datter" ,"kidsIll" },
-            {  "Felix" ,"kidsIll" },
-            {  "Otto" ,"kidsIll" },
-            {  "Noah" ,"kidsIll" },
-            {  "Isaac" ,"kidsIll" },
+            {  "Felix" ,"kidsIll" }, {  "Otto" ,"kidsIll" }, {  "Noah" ,"kidsIll" }, {  "Isaac" ,"kidsIll" }, {  "Viggo" ,"kidsIll" }, { "Saga", "kidsIll"},
             
             // MEETING KEYWORDS
             { "møde ", "meeting" },
             { "møder", "meeting" },
             
             // HOME KEYWORDS
-            { "hjem", "home" },
+            { "hjem", "home" },{ "home", "home" },
             { "ikke på kontoret", "home" },
-            { "aarup", "home" },
+            { "aarup", "home" }, { "\"5560\"", "home"},
+            { "gemakker", "home"},
             
             // OFFICE KEYWORDS
             { "kommer ind", "office" }, { "kommer jeg ind", "office" }, { " er inde ", "office" }, { "ind forbi", "office" },
             { "komme ind", "office" },
-            
-            { "retur", "office"},
-            { "er tilbage", "office"},
-            
-            { "at være der", "office"},
-            { "på kontoret", "office" },
-            { "på arbejdet", "office" },
-            { "kommer i firmaet", "office" },
-            { "konnes", "office" }, 
+            { "retur", "office"}, { "er tilbage", "office"}, 
+            { "at være der", "office"}, { "på kontoret", "office" }, { "på arbejdet", "office" },
+            { "kommer i firmaet", "office" }, { "konnes", "office" }, { "er mødt", "office"}, { "på pinden", "office"},
 
             // OFF KEYWORDS
-            { "fri", "off" },
-            { "off", "off" },
-            { "går fra", "off" },
-            { "stopper", "off" },
-            { "smutter", "off" },
-            { "holder", "off" },
-            { "lukker ned", "off" },
+            { "fri", "off" }, { "off", "off" }, { "afspadserer", "off"},
+            { "holder", "off" }, { "lukker ned", "off" },{ "for i dag", "off" }, { "går fra", "off" }, { "stopper", "off" }, { "smutter", "off" },
+            { "tak for i dag", "off" }, { "God weekend", "off" },
             { "starter", "off" },
-            { "for i dag", "off" },
-            // 
-
+            { "søvn", "off" },
+            
             // REMOTE KEYWORDS
             { "tager ud til", "remote" },
             { "tager ned til", "remote" },
             { "hos ", "remote" },
-            
-            // NEW KEYWORDS
-            
-            // tilføjet til test
-            { "ikke blevet meget bedre", "ill" },
-            { "sløj", "ill" },
-            { "hovedpine", "ill" },
-            { "krads hals", "ill" },
-            { "elendighed", "ill" },
-            { "maveproblemer", "ill" },
-            { "lægebesøg", "ill" },
-            { "smerter", "ill" },
-            { "kastet op", "ill" },
-            { "kaste op", "ill" },
-            { "opkast", "ill" },
-            
-            { "tak for i dag", "off" },
-            { "God weekend", "off" },
-            { "søvn", "off" },
-            
-            
             { "kører på", "remote" },
             { "er ved", "remote" },
-            
-            {  "Viggo" ,"kidsIll" },
-            {  "hende" ,"kidsIll" },
-            
-            
-            // SKAL TESTES
-            {  "1 årig" ,"kidsIll" },
             { "kører ind til", "remote" },
-            { "smadret", "ill"},
-            { "ikke ovenpå", "ill"},
-            { "halsen", "ill"},
-            { "tandpine", "ill"},
-            { "lagt ned", "ill"},
-            { "fået det værre", "ill"},
-            
-            // 1/8 til 1/9
-            
-            { "lukker øjnene", "ill"},
-            { "hoved driller", "ill"},
-            { "er mødt", "office"},
-            
-            { "på pinden", "office"},
-            { "afspadserer", "off"},
-            
-            // 1/9 - 1/10
-            { "ikke helt på toppen", "ill"},
-            { "hårdt ramt", "ill"},
-            { "ondt", "ill"}, // // rigtig ondt
-            { "på toppen", "ill"}, // ikke er på toppen
-            { "home", "home" },
-            { "sat til", "ill"},
-            { "snotter", "ill"},
-            { "hoster", "ill"},
-            { "ikke helt frisk", "ill"},
-            { "smittet", "ill"},
-            
-            // 1-11 - 1/12
-            { "drager", "remote"},
-            { "kaster stadig op", "ill"},
-            { "snøvsen", "ill"},
-            { "covid", "ill"},
-            { "trukket nitten", "ill"},
-            { "hals", "ill"},
-            { "\"5560\"", "home"},
-            { "gemakker", "home"},
-            { "nedlagt med Corona", "ill"},
-            { "fået det noget værre", "ill"},
-            { "positiv corona", "ill"},
-            { "hænger med mulen", "ill"},
-            { "langt nede", "ill"},
-            
-            // 1-1 - 15/1
-            { "ikke rask", "ill"},
-            { "Saga", "kidsIll"},
-   
+            { "drager", "remote"}
         };
         
         // replacing string[] with dictionary
