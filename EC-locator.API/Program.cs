@@ -13,8 +13,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 var apiUrl = builder.Configuration.GetSection("HeartBeat").GetValue<string>("URI");
@@ -29,23 +27,19 @@ ConfigureApiServices(builder.Services);
 
 var app = builder.Build();
 
-
+/* TEST STUFF!!
 var messageParser = app.Services.GetService<IMessageParser>();
 var tr = app.Services.GetService<ITeamsRepository>();
-
-
 /*
 var el = app.Services.GetService<IEmployeeLocator>();
 el.GetCurrentLocation("");
-*/
 
 // TestMessageParser();
-
 
 ManualPrecisionTestCLI mpt = new(app.Services.GetService<ITeamsRepository>(), app.Services.GetService<IMessageParser>());
 mpt.RunTest();
 Environment.Exit(1);
-
+*/
 
 // Configure the HTTP request pipeline.
 app.UseCors("CorsPolicy");
@@ -60,6 +54,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+
 
 // configurations for app settings
 void ConfigureSettingsOptions(IServiceCollection serviceCollection)
