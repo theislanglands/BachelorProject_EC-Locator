@@ -1,3 +1,4 @@
+using API;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
 using EC_locator.Core.SettingsOptions;
@@ -11,6 +12,15 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
 
+HeartBeatManager hbm = new HeartBeatManager();
+hbm.StartHeartBeat();
+Console.ReadKey();
+
+hbm.StopHeartBeat();
+Console.ReadKey();
+
+Console.WriteLine("exit");
+Environment.Exit(1);
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -4,11 +4,12 @@ GO;
 
 USE Keywords;
 GO;
-   
 */
 
 /* Creating tables */
+DROP TABLE IF EXISTS LocationKeywords;
 DROP TABLE IF EXISTS Location;
+
 CREATE TABLE Location
 (
     LocationID INT NOT NULL,
@@ -16,7 +17,6 @@ CREATE TABLE Location
     PRIMARY KEY (LocationID)
 );
 
-DROP TABLE IF EXISTS LocationKeywords;
 CREATE TABLE LocationKeywords
 (
     Keyword  VARCHAR(24) NOT NULL,

@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
 using EC_locator.Core.SettingsOptions;
@@ -48,7 +49,8 @@ public class MessageParserTest
         // ARRANGE
         
         // Creating objects 
-        _locatorRepository = new LocatorRepositoryLocal(verboseOptions);
+        _locatorRepository = new LocatorRepository(locatorRepositoryOptions, verboseOptions);
+        //_locatorRepository = new LocatorRepositoryLocal(verboseOptions);
         _locationTagger = new LocationTagger(_locatorRepository, verboseOptions);
         _timeTagger = new TimeTagger(_locatorRepository, verboseOptions);
         _timeAndLocationConnector = new TimeAndLocationConnector(verboseOptions, locationOptions);
