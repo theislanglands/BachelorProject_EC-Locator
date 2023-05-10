@@ -12,15 +12,16 @@ public class HeartBeatManager
 {
     private readonly HttpClient? _httpClient;
     private readonly string _apiUrl;
-    private TimeSpan _heartBeatRate;
+    private readonly TimeSpan _heartBeatRate;
     
     
     private bool _heartBeatRunning;
     
-    public HeartBeatManager(string apiUrl)
+    public HeartBeatManager(string apiUrl, string rate)
     {
         _apiUrl = apiUrl;
-        _heartBeatRate = new TimeSpan(0, 0, 1);
+        var times = rate.Split(":");
+        _heartBeatRate = new TimeSpan(int.Parse(times[0]), int.Parse(times[1]), int.Parse(times[2]), int.Parse(times[3]));
         
         if (_httpClient == null)
         {
@@ -54,24 +55,26 @@ public class HeartBeatManager
 
         while (_heartBeatRunning)
         {
-            /*
-            // Send the request and handle the response
-            HttpResponseMessage response = _httpClient.GetAsync(_apiUrl).Result;
+            try
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(_apiUrl).Result;
 
-            if (response.IsSuccessStatusCode)
-            {
-                Console.WriteLine("Heartbeat sent successfully.");
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Heartbeat sent successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("Error sending heartbeat: " + response.StatusCode);
+                }
             }
-    
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("Error sending heartbeat: " + response.StatusCode);
+                Console.WriteLine("error sending Heartbeat"+ ex.Message);
             }
-            */
             
-            Console.WriteLine("test of HeartBeatthreat");
+            // Console.WriteLine("test of HeartBeatthreat");
             Thread.Sleep(_heartBeatRate);
         }
-    
     }
 }

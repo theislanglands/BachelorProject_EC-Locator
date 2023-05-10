@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using API;
 using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
@@ -12,19 +13,14 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
 
-const string apiUrl = "https://push.statuscake.com/?PK=e663b671583f50e&TestID=6770491&time=0";
-HeartBeatManager hbm = new HeartBeatManager(apiUrl);
 
-hbm.StartHeartBeat();
-Console.ReadKey();
-
-hbm.StopHeartBeat();
-Console.ReadKey();
-
-Console.WriteLine("exit");
-Environment.Exit(1);
 
 var builder = WebApplication.CreateBuilder(args);
+
+var apiUrl = builder.Configuration.GetSection("HeartBeat").GetValue<string>("URI");
+var rate = builder.Configuration.GetSection("HeartBeat").GetValue<string>("TIMESPAN(D:H:M:S)");
+HeartBeatManager heartBeatManager = new HeartBeatManager(apiUrl, rate);
+//heartBeatManager.StartHeartBeat();
 
 // Add services to the container.
 ConfigureSettingsOptions(builder.Services);
