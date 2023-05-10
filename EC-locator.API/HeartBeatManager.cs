@@ -11,14 +11,16 @@ namespace API;
 public class HeartBeatManager
 {
     private readonly HttpClient? _httpClient;
-    private string _apiUrl;
-
-    private bool _runHeartBeat;
+    private readonly string _apiUrl;
+    private TimeSpan _heartBeatRate;
     
-    public HeartBeatManager()
+    
+    private bool _heartBeatRunning;
+    
+    public HeartBeatManager(string apiUrl)
     {
-        // URL with authentication and test ID
-        _apiUrl = "https://push.statuscake.com/?PK=e663b671583f50e&TestID=6770491&time=0";
+        _apiUrl = apiUrl;
+        _heartBeatRate = new TimeSpan(0, 0, 1);
         
         if (_httpClient == null)
         {
@@ -31,14 +33,13 @@ public class HeartBeatManager
 
     public void StartHeartBeat()
     {
-        if (_runHeartBeat)
+        if (_heartBeatRunning)
         {
-            Console.WriteLine("heartBeat Allready running!");
             return;
         }
 
         Thread heartBeat = new Thread(HeartBeat);
-        _runHeartBeat = true;
+        _heartBeatRunning = true;
         Console.WriteLine("start hb");
         heartBeat.Start();
     }
@@ -46,12 +47,12 @@ public class HeartBeatManager
     public void StopHeartBeat()
     {
         Console.WriteLine("stop hb");
-        _runHeartBeat = false;
+        _heartBeatRunning = false;
     }
 
     private void HeartBeat(){
 
-        while (_runHeartBeat)
+        while (_heartBeatRunning)
         {
             /*
             // Send the request and handle the response
@@ -67,10 +68,9 @@ public class HeartBeatManager
                 Console.WriteLine("Error sending heartbeat: " + response.StatusCode);
             }
             */
-    
-    
+            
             Console.WriteLine("test of HeartBeatthreat");
-            Thread.Sleep(1000);
+            Thread.Sleep(_heartBeatRate);
         }
     
     }

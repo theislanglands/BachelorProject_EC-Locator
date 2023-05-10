@@ -12,7 +12,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
 
-HeartBeatManager hbm = new HeartBeatManager();
+const string apiUrl = "https://push.statuscake.com/?PK=e663b671583f50e&TestID=6770491&time=0";
+HeartBeatManager hbm = new HeartBeatManager(apiUrl);
+
 hbm.StartHeartBeat();
 Console.ReadKey();
 
