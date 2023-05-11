@@ -229,11 +229,4 @@ public class EmployeeLocator : IEmployeeLocator
         
         return DateTimeProvider.Now.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday;
     }
-    
-    // FOR TESTING
-    private string SelectRandomMessage(string[] messages)
-    {
-        int randomIndex = new Random().Next(0, messages.Length);
-        return messages[randomIndex];
-    }
 }

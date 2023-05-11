@@ -24,6 +24,14 @@ public class TeamsRepositoryLocal : ITeamsRepository
     {
         var samples = GetSamples("wip");
 
+        if (samples.Length == 0)
+        {
+            // Select random messaage
+            var msg = await FetchAllMessagesAsync(DateOnly.FromDateTime(DateTime.Now), new DateOnly());
+            int randomIndex = new Random().Next(0, msg.Count);
+            return new List<Message> { msg[randomIndex] };
+        }
+        
         List<Message> messages = new();
         
         int i = 1;
@@ -39,10 +47,6 @@ public class TeamsRepositoryLocal : ITeamsRepository
         }
 
         return messages;
-
-
-        // Message
-        throw new NotImplementedException();
     }
 
     public async Task<List<Message>> FetchAllMessagesAsync(DateOnly fromDate, DateOnly toDate)
@@ -72,7 +76,6 @@ public class TeamsRepositoryLocal : ITeamsRepository
         {
             string[] messages =
             {
-                "Vi bringer en rettelse - jeg skal ikke til demo hos Popermo, så jeg tager den fra hjemmekontoret"
             };
             return messages;
         }

@@ -55,17 +55,17 @@ public class TeamsRepository : ITeamsRepository
 
     public async Task<List<Message>?> GetRecentMessagesAsync(string employeeId)
     {
-        List<Message>? foundMessages = new();
-        var date = DateOnly.FromDateTime(DateTime.Now).AddDays(-1);
-
         if (_verbose)
         {
             Console.WriteLine("Fetching messages from MS Graph");
         }
         
+        List<Message>? foundMessages = new();
+        var date = DateOnly.FromDateTime(DateTime.Now).AddDays(-1);
+        
         try
         {
-            var msg = FetchAllMessagesAsync(date, DateOnly.FromDateTime(DateTime.Now));
+            //var msg = FetchAllMessagesAsync(date, DateOnly.FromDateTime(DateTime.Now));
             var messages = await _graphHelper.GetMessagesAsync(date);
 
             foreach (var message in messages.CurrentPage)

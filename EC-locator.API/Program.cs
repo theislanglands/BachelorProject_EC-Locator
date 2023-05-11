@@ -64,7 +64,7 @@ void ConfigureSettingsOptions(IServiceCollection serviceCollection)
 void ConfigureLocatorServices(IServiceCollection services)
 {
     services.AddSingleton<IMessageParser, MessageParser>();
-    services.AddSingleton<ITeamsRepository, TeamsRepository>();
+    services.AddSingleton<ITeamsRepository, TeamsRepositoryLocal>();
     services.AddSingleton<ICalendarRepository, CalendarRepository>();
     services.AddSingleton<IEmployeeLocator, EmployeeLocator>();
     
