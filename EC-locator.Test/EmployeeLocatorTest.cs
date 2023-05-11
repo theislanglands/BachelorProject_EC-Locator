@@ -35,7 +35,6 @@ public class EmployeeLocatorTest
     public void GetCurrentLocation_CurrentTimeWeekdayBeforeDefaultWorkingHours_ReturnsOff()
     {
         var defaultStartHour = int.Parse(locationOptions.Value.DefaultWorkStart.Split(":")[0]);
-        var defaultEndHour = int.Parse(locationOptions.Value.DefaultWorkEnd.Split(":")[0]);
         
         // Datetime with fixed time - 1 hour before default start time
         var dateTimeProvider = new DateTimeProvider(new DateTime(2023,1,5, defaultStartHour,0,0).AddHours(-1));

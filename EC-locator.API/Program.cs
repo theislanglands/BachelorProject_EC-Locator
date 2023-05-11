@@ -27,15 +27,7 @@ ConfigureApiServices(builder.Services);
 
 var app = builder.Build();
 
-/* TEST STUFF!!
-var messageParser = app.Services.GetService<IMessageParser>();
-var tr = app.Services.GetService<ITeamsRepository>();
 /*
-var el = app.Services.GetService<IEmployeeLocator>();
-el.GetCurrentLocation("");
-
-// TestMessageParser();
-
 ManualPrecisionTestCLI mpt = new(app.Services.GetService<ITeamsRepository>(), app.Services.GetService<IMessageParser>());
 mpt.RunTest();
 Environment.Exit(1);

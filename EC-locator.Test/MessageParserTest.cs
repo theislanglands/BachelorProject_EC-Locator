@@ -12,7 +12,6 @@ namespace EC_locator.Test;
 [TestFixture]
 public class MessageParserTest
 {
-    // TODO: create mock - only possible to mock interfaces!
     private ILocationTagger _locationTagger;
     private ITimeTagger _timeTagger;
     private ITimeAndLocationConnector _timeAndLocationConnector;
