@@ -97,7 +97,7 @@ public class MessageParser : IMessageParser
 
             return;
         }
-
+        // if no locations is present - ignore reply
         if (_locationTagger.GetTags(lastReply).Count == 0)
         {
             if (_verbose)

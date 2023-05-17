@@ -35,7 +35,6 @@ public class LocationController
         };
     }
     
-    // TODO check async and await if works!
     [HttpGet("{employeeId}")]
     public async Task<string> GetCurrentLocationAsync(string employeeId)
     {

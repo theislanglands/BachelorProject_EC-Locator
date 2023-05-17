@@ -1,12 +1,9 @@
 ﻿using EC_locator.Core.Interfaces;
 using EC_locator.Core.Models;
-// using Location = EC_locator.Core.Models.Location;
-// using Message = EC_locator.Core.Models.Message;
 using EC_locator.Core.SettingsOptions;
 using EC_locator.Core.Utilities;
 using Microsoft.Extensions.Options;
 using DayOfWeek = System.DayOfWeek;
-
 
 namespace EC_locator.Locator;
 
@@ -15,7 +12,7 @@ public class EmployeeLocator : IEmployeeLocator
     private readonly ITeamsRepository _teamsRepository;
     private readonly IMessageParser _messageParser;
     private readonly ICalendarRepository _calendarRepository;
-    public DateTimeProvider DateTimeProvider { get; set; }
+    private DateTimeProvider DateTimeProvider { get; set; }
 
     private TimeOnly _currentTime;
     private readonly bool _verbose;
@@ -30,8 +27,8 @@ public class EmployeeLocator : IEmployeeLocator
         _calendarRepository = calendarRepository;
         DateTimeProvider = dateTimeProvider;
         
-        string[] workStart = locationOptions.Value.DefaultWorkStart.Split(':');
-        string[] workEnd = locationOptions.Value.DefaultWorkEnd.Split(':');
+        var workStart = locationOptions.Value.DefaultWorkStart.Split(':');
+        var workEnd = locationOptions.Value.DefaultWorkEnd.Split(':');
         _workStartDefault = new TimeOnly(int.Parse(workStart[0]),int.Parse(workStart[1]));
         _workEndDefault = new TimeOnly(int.Parse(workEnd[0]), int.Parse(workEnd[1]));
         _defaultLocation = locationOptions.Value.DefaultLocation;
@@ -43,10 +40,8 @@ public class EmployeeLocator : IEmployeeLocator
         // FIND CURRENT TIME
         _currentTime = TimeOnly.FromDateTime(DateTimeProvider.Now);
         
-        // _currentTime = new TimeOnly(09, 27); // FOR TESTING
-        
         // SEE IF OUTSIDE DEFAULT WORKING HOURS => return OFF work
-        if (!IsInsideDefault() || IsWeekend())
+        if (!IsInsideDefaultWorkHours())
         {
             if (_verbose)
             {
@@ -62,17 +57,17 @@ public class EmployeeLocator : IEmployeeLocator
         {
             if (_verbose)
             {
-                Console.WriteLine("no message found - using default location");
+                Console.WriteLine("no relevant message found - using default location");
             }
             
             return new Location(_workStartDefault, _workEndDefault, _defaultLocation);
         }
         
         // PARSE MESSAGE TO LOCATIONS       
-        List<Location>? locations = _messageParser.GetLocations(latestMessage);
+        var locations = _messageParser.GetLocations(latestMessage);
         
         // MATCHING A LOCATION WITH CURRENT TIME
-        Location? foundLocation = FindLocation(locations, _currentTime);
+        Location? foundLocation = FindLocationMatchingTime(locations, _currentTime);
 
         if (foundLocation == null)
         {
@@ -89,7 +84,6 @@ public class EmployeeLocator : IEmployeeLocator
     public Message? GetLatestMessage(string employeeId)
     {
         var messages = _teamsRepository.GetRecentMessagesAsync(employeeId).Result;
-        //var messages = _teamsRepository.GetMessageSamples(employeeId); // FOR TESTING
 
         if (messages == null)
         {
@@ -109,6 +103,7 @@ public class EmployeeLocator : IEmployeeLocator
             Console.WriteLine($"Message(s) found: {latestMessage.Content}");
         }
 
+        
         // HANDLING TOMORROW TAGS
         bool containsTomorrow = _messageParser.ContainsTomorrow(latestMessage.Content);
         
@@ -166,7 +161,7 @@ public class EmployeeLocator : IEmployeeLocator
     }
 
     // FIND LOCATION THAT MATCHES TIME!
-    private Location? FindLocation(List<Location> locations, TimeOnly time)
+    private Location? FindLocationMatchingTime(List<Location> locations, TimeOnly time)
     {
         Location foundLocation = null;
         // find the location matching time
@@ -209,8 +204,13 @@ public class EmployeeLocator : IEmployeeLocator
         return foundLocation;
     }
     
-    private bool IsInsideDefault()
+    private bool IsInsideDefaultWorkHours()
     {
+        if (IsWeekend())
+        {
+            return false;
+        }
+
         if (_verbose)
         {
             Console.WriteLine($"Inside default working hours?: {_workStartDefault <= _currentTime && _currentTime <= _workEndDefault}");
@@ -221,7 +221,6 @@ public class EmployeeLocator : IEmployeeLocator
 
     private bool IsWeekend()
     {
-        //return false; // TODO: DELETE IT'S FOR TESTING
         if (_verbose)
         {
             Console.WriteLine($"It's weekend?: {DateTimeProvider.Now.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday}");

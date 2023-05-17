@@ -1,5 +1,4 @@
 using EC_locator.Core.Interfaces;
-using EC_locator.Core.Models;
 using EC_locator.Core.SettingsOptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -39,7 +38,6 @@ public class LocatorRepository : ILocatorRepository
                     reader.GetInt16(1));
             }
             reader.Close();
-            
         }
         catch (Exception ex)
         {

@@ -1,7 +1,6 @@
 using System.Reflection.Metadata;
 using API;
 using EC_locator.Core.Interfaces;
-using EC_locator.Core.Models;
 using EC_locator.Core.SettingsOptions;
 using EC_locator.Core.Utilities;
 using EC_locator.Locator;
@@ -11,14 +10,12 @@ using EC_locator.Repositories;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
 using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
 
+HeartBeatManager heartBeatManager;
 var builder = WebApplication.CreateBuilder(args);
-
-var apiUrl = builder.Configuration.GetSection("HeartBeat").GetValue<string>("URI");
-var rate = builder.Configuration.GetSection("HeartBeat").GetValue<string>("TIMESPAN(D:H:M:S)");
-HeartBeatManager heartBeatManager = new HeartBeatManager(apiUrl, rate);
-//heartBeatManager.StartHeartBeat();
+InitializeHeartBeatManager();
 
 // Add services to the container.
 ConfigureSettingsOptions(builder.Services);
@@ -45,9 +42,16 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+// heartBeatManager.StartHeartBeat();
 app.Run();
 
-
+void InitializeHeartBeatManager()
+{
+    var apiUrl = builder.Configuration.GetSection("HeartBeat").GetValue<string>("URI");
+    var rate = builder.Configuration.GetSection("HeartBeat").GetValue<string>("TIMESPAN(D:H:M:S)");
+    heartBeatManager = new HeartBeatManager(apiUrl, rate);
+}
 
 // configurations for app settings
 void ConfigureSettingsOptions(IServiceCollection serviceCollection)
@@ -64,16 +68,29 @@ void ConfigureSettingsOptions(IServiceCollection serviceCollection)
 void ConfigureLocatorServices(IServiceCollection services)
 {
     services.AddSingleton<IMessageParser, MessageParser>();
-    services.AddSingleton<ITeamsRepository, TeamsRepositoryLocal>();
-    services.AddSingleton<ICalendarRepository, CalendarRepository>();
     services.AddSingleton<IEmployeeLocator, EmployeeLocator>();
     
+    // ADDING REPOSITORIES
+    services.AddSingleton<ICalendarRepository, CalendarRepository>();
+
+    
+    if (builder.Configuration.GetValue<bool>("UseLocalTeamsRepo"))
+    {
+        // FOR TESTING ONLY
+        services.AddSingleton<ITeamsRepository, TeamsRepositoryLocal>();
+    } 
+    else 
+    {
+        services.AddSingleton<ITeamsRepository, TeamsRepository>();
+    }
+
     if (builder.Configuration.GetValue<bool>("UseDatabase"))
     {
         services.AddSingleton<ILocatorRepository, LocatorRepository>();
     } 
     else 
     {
+        // USE HARDCODED KEYWORDS - bypassing database
         services.AddSingleton<ILocatorRepository, LocatorRepositoryLocal>();
     }
     
@@ -82,7 +99,7 @@ void ConfigureLocatorServices(IServiceCollection services)
     services.AddSingleton<ITimeTagger, TimeTagger>();
     services.AddSingleton<ITimeAndLocationConnector, TimeAndLocationConnector>();
     
-    // repository services
+    // Teams repository services
     services.AddSingleton<IGraphHelper, GraphHelper>();
     
     // utility services
@@ -120,6 +137,37 @@ void ConfigureApiServices(IServiceCollection services)
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
+    
+    
+    // TODO generate example responses
+    // https://mattfrear.com/2016/01/25/generating-swagger-example-requests-with-swashbuckle/
+    // https://code-maze.com/swagger-ui-asp-net-core-web-api/
+    
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Version = "v1",
+            Title = "EC-locator API",
+            Description = "USE the EC-locator API calls for retrieving the employees of Ecreo and their current location",
+            /*
+            TermsOfService = new Uri("https://example.com/terms"),
+            Contact = new OpenApiContact
+            {
+                Name = "Example Contact",
+                Url = new Uri("https://example.com/contact")
+            },
+            License = new OpenApiLicense
+            {
+                Name = "Example License",
+                Url = new Uri("https://example.com/license")
+            }
+            */
+        });
+    });
+    
+    
+    
 }
 
 

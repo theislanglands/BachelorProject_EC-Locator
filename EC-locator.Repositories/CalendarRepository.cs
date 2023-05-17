@@ -30,7 +30,7 @@ public class CalendarRepository : ICalendarRepository
         {
             calendarEvents = _graphHelper.getCalendarEventsAsync(employeeId).Result.CurrentPage;
         }
-        catch (System.AggregateException ex)
+        catch (AggregateException ex)
         {
             Console.WriteLine("ex: user not found");
             return null;

@@ -57,12 +57,6 @@ public class GraphHelper : IGraphHelper
         EnsureGraphForAppOnlyAuth();
         _ = _graphClient ??
             throw new NullReferenceException("Graph has not been initialized ");
-
-        // Define the filter criteria to exclude room resources
-        List<Option> options = new List<Option>
-        {
-            new QueryOption("$filter", "userType ne 'Room'")
-        };
         
         var fetchedUsers = _graphClient.Users
             .Request()
@@ -70,8 +64,7 @@ public class GraphHelper : IGraphHelper
             {
                 u.DisplayName,
                 u.Id,
-                u.Mail,
-                u.UserType
+                u.Mail
             })
             .OrderBy("DisplayName")
             .GetAsync();

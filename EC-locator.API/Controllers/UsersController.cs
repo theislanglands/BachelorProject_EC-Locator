@@ -23,8 +23,7 @@ public class UsersController : ControllerBase
     {
         _teamsRepository = teamsRepository;
     }
-
-
+    
     [HttpGet]
     public async Task<string> GetUsers()
     {
