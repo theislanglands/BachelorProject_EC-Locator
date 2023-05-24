@@ -200,7 +200,7 @@ public class TimeTagger : ITimeTagger
         {
             if (_verbose)
             {
-                Console.WriteLine($"not able to pares identified number {number} into a time");
+                Console.WriteLine($"not able to parse identified number {number} into a time");
             }
         }
 

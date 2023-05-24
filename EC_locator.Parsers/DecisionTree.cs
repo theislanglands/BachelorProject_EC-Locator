@@ -15,7 +15,7 @@ public class DecisionTree
     }
     public void Perform(SortedList<int, Location> locations, SortedList<int, TimeOnly> times)
     {
-        //BUILDING TREE AND CALLS RECURSIVELY
+        //BUILDING TREE AND CALLS RECURSIVELY - STARTS AT BOTTOM OF METHOD
         
         // Action 1
         var insertUndefined = new Action(_options)
@@ -31,6 +31,7 @@ public class DecisionTree
             GoTo = new FinalNode(_options),
         };
         
+        // Action 13
         var deleteLocationNotMeeting = new Action(_options)
         {
             Title = "Deleting location not a meeting",
@@ -62,7 +63,7 @@ public class DecisionTree
         };
         
         
-        // Decision 8
+        // Decision 12
         var isMeetingPresent = new DecisionQuery(_options)
         {
             Title = "Is meeting present as one of the additional locations",
@@ -97,8 +98,8 @@ public class DecisionTree
             Negative = insertUndefined
         };
         
-        // Decision 7
-        var isLocationCountTwoHigherThanTime = new DecisionQuery(_options)
+        // Decision 11
+        var twoLocationsHigherThanTime = new DecisionQuery(_options)
         {
             Title = "Is location count two higher than time count",
             Test = (locations, times) =>
@@ -115,8 +116,8 @@ public class DecisionTree
             Negative = new FinalNode(_options)
         };
         
-        // Action 5
-        var insertHomeA5= new Action(_options)
+        // Action 10
+        var insertHomeA10= new Action(_options)
         {
             Title = "Inserting home at location 0",
             PerformAction = (locations, times) =>
@@ -125,26 +126,11 @@ public class DecisionTree
                 return true;
             },
             
-            GoTo = isLocationCountTwoHigherThanTime
+            GoTo = twoLocationsHigherThanTime
         };
         
-        // Action 3a
-        var insertMeeting= new Action(_options)
-        {
-            Title = "Inserting meeting at location 0",
-            PerformAction = (locations, times) =>
-            {
-                locations.Clear();
-                locations.Add(0, new Location("meeting"));
-                return true;
-            },
-            
-            GoTo = new FinalNode(_options)
-        };
-        
-        
-        // Decision 6
-        var isFirstLocationNotHome = new DecisionQuery(_options)
+        // Decision 10
+        var firstLocationNotHome = new DecisionQuery(_options)
         {
             Title = "Is first location different from home",
             Test = (locations, times) =>
@@ -157,11 +143,11 @@ public class DecisionTree
                 return false;
             },
  
-            Positive = insertHomeA5,
-            Negative = isLocationCountTwoHigherThanTime
+            Positive = insertHomeA10,
+            Negative = twoLocationsHigherThanTime
         };
         
-        // Decision 5
+        // Decision 9
         var oneLocationOneTime = new DecisionQuery(_options)
         {
             Title = "Is there one location and one time",
@@ -175,11 +161,11 @@ public class DecisionTree
                 return false;
             },
  
-            Positive = isFirstLocationNotHome,
-            Negative = isLocationCountTwoHigherThanTime
+            Positive = firstLocationNotHome,
+            Negative = twoLocationsHigherThanTime
         };
         
-        // Action 4
+        // Action 9
         var insertHome = new Action(_options)
         {
             Title = "Inserting home at location 0",
@@ -205,10 +191,10 @@ public class DecisionTree
             GoTo = oneLocationOneTime,
         };
         
-        // Decision 4
+        // Decision 8
         var isFirstLocationOffice = new DecisionQuery(_options)
         {
-            Title = "Is the first location=office",
+            Title = "Is the first location office",
             Test = (locations, times) =>
             {
                 // is no time indication present and more than 1 location
@@ -224,27 +210,21 @@ public class DecisionTree
             Negative = insertOffice
         };
         
-        
-        // Decision 4
-        var isFirstIndexTimeKeyword = new DecisionQuery(_options)
+        // Action 8
+        var insertMeeting= new Action(_options)
         {
-            Title = "Is the first index found a time keyword",
-            Test = (locations, times) =>
+            Title = "Inserting meeting at location 0",
+            PerformAction = (locations, times) =>
             {
-                // is no time indication present and more than 1 location
-                if (times.Count > 0 && locations.Keys[0] > times.Keys[0])
-                {
-                    return true;
-                }
-
-                return false;
+                locations.Clear();
+                locations.Add(0, new Location("meeting"));
+                return true;
             },
- 
-            Positive = isFirstLocationOffice,
-            Negative = oneLocationOneTime
+            
+            GoTo = new FinalNode(_options)
         };
         
-        // Decision 3a
+        // Decision 7b
         var twoLocationsOneIsMeeting = new DecisionQuery(_options)
         {
             Title = "Does message contain two Locations and one of them is meeting",
@@ -267,10 +247,28 @@ public class DecisionTree
  
             Positive = insertMeeting,
             Negative = insertUndefined
-            
         };
         
-        // Decision 3
+        // Decision 7a
+        var isFirstIndexTimeKeyword = new DecisionQuery(_options)
+        {
+            Title = "Is the first index found a time keyword",
+            Test = (locations, times) =>
+            {
+                // is no time indication present and more than 1 location
+                if (times.Count > 0 && locations.Keys[0] > times.Keys[0])
+                {
+                    return true;
+                }
+
+                return false;
+            },
+ 
+            Positive = isFirstLocationOffice,
+            Negative = oneLocationOneTime
+        };
+        
+        // Decision 6
         var noTimesAndMultipleLocations = new DecisionQuery(_options)
         {
             Title = "Does message contain multiple Locations and no Times",
@@ -288,12 +286,11 @@ public class DecisionTree
                 return false;
             },
  
-            //Positive = insertUndefined,
             Positive = twoLocationsOneIsMeeting,
             Negative = isFirstIndexTimeKeyword
         };
         
-        // Action 1a
+        // Action 7
         var deleteOffLocation = new Action(_options)
         {
             Title = "Deleting off-location",
@@ -320,10 +317,40 @@ public class DecisionTree
             GoTo = noTimesAndMultipleLocations
         };
         
-        // Decision 2a
+        // Action 4
+        var insertKidsIll = new Action(_options)
+        {
+            Title = "Inserting Kids Ill at location 0 and deleting other locations",
+            PerformAction = (locations, times) =>
+            {
+                locations.Clear();
+                locations.Add(0, new Location("KidsIll"));
+                return true;
+            },
+            
+            GoTo = new FinalNode(_options)
+        };
+        
+        // Action 3
+        var insertIll = new Action(_options)
+        {
+            Title = "Inserting Ill at location 0 and deleting other locations",
+            PerformAction = (locations, times) =>
+            {
+                locations.Clear();
+                locations.Add(0, new Location("ill"));
+                return true;
+            },
+            
+            GoTo = new FinalNode(_options)
+        };
+        
+        
+        
+        // Decision 5
         var isOffFollowedByTwoLocations = new DecisionQuery(_options)
         {
-            Title = "Is an off-location followed by two locations before times-tag",
+            Title = "Is an off-location followed by two locations before a time tag",
             Test = (locations, times) =>
             {
                 // Is a location place "off"?
@@ -349,56 +376,10 @@ public class DecisionTree
             },
  
             Positive = deleteOffLocation,
-            //Negative = isOffFollowedByHome
-
             Negative = noTimesAndMultipleLocations
         };
         
-        
-        
-        // Action 2
-        var insertIll = new Action(_options)
-        {
-            Title = "Inserting Ill at location 0 and deleting other locations",
-            PerformAction = (locations, times) =>
-            {
-                locations.Clear();
-                locations.Add(0, new Location("ill"));
-                return true;
-            },
-            
-            GoTo = new FinalNode(_options)
-        };
-        
-        // Action 2b
-        var insertKidsIll = new Action(_options)
-        {
-            Title = "Inserting Kids Ill at location 0 and deleting other locations",
-            PerformAction = (locations, times) =>
-            {
-                locations.Clear();
-                locations.Add(0, new Location("KidsIll"));
-                return true;
-            },
-            
-            GoTo = new FinalNode(_options)
-        };
-        
-        // Action 2a
-        var insertOfficeAtEnd = new Action(_options)
-        {
-            Title = "Inserting Office at last location",
-            PerformAction = (locations, times) =>
-            {
-                var key = times.Keys.Last() + 1;
-                locations.Add(key, new Location("office"));
-                return true;
-            },
-            
-            GoTo = insertHomeA5
-        };
-        
-        // Action 2c
+        // Action 6
         var deleteKids= new Action(_options)
         {
             Title = "Deleting kids-tag",
@@ -427,8 +408,21 @@ public class DecisionTree
             GoTo = isOffFollowedByTwoLocations
         };
         
-        // Decision 2a2
-        var isKidsIll = new DecisionQuery(_options)
+        // Decision 4
+        var moreThanOneLocation = new DecisionQuery(_options)
+        {
+            Title = "Are there more than one location",
+            Test = (locations, times) =>
+            {
+                return locations.Count > 1;
+            },
+            
+            Positive = deleteKids,
+            Negative = insertUndefined
+        };
+        
+        // Decision 3b
+        var areKidsIll = new DecisionQuery(_options)
         {
             Title = "Is kids- and Ill keyword identified",
             Test = (locations, times) =>
@@ -447,23 +441,11 @@ public class DecisionTree
             Positive = insertKidsIll,
             Negative = insertIll
         };
-        
-        var isThereMoreThanOneLocation = new DecisionQuery(_options)
-        {
-            Title = "Are there more than one location",
-            Test = (locations, times) =>
-            {
-                return locations.Count > 1;
-            },
-            
-            Positive = deleteKids,
-            Negative = insertUndefined
-        };
-        
-        
+
+        // Decision 3a
         var isKidsPresent = new DecisionQuery(_options)
         {
-            Title = "Is kids-keyword identified",
+            Title = "Is location kidsIll identified",
             Test = (locations, times) =>
             {
                 foreach (var location in locations)
@@ -476,15 +458,12 @@ public class DecisionTree
 
                 return false;
             },
-            
-            Positive = isThereMoreThanOneLocation,
+
+            Positive = moreThanOneLocation,
             Negative = isOffFollowedByTwoLocations
         };
-        
-        
-        
-        
-        // Decision 2
+            
+        // Decision 2b
         var isIll = new DecisionQuery(_options)
         {
             Title = "Is location Ill identified",
@@ -501,14 +480,28 @@ public class DecisionTree
                 return false;
             },
             
-            Positive = isKidsIll,
+            Positive = areKidsIll,
             Negative = isKidsPresent
         };
         
-        // Decision 1a
+        // Action 2
+        var insertOfficeAtEnd = new Action(_options)
+        {
+            Title = "Inserting Office at last location",
+            PerformAction = (locations, times) =>
+            {
+                var key = times.Keys.Last() + 1;
+                locations.Add(key, new Location("office"));
+                return true;
+            },
+            
+            GoTo = insertHomeA10
+        };
+        
+        // Decision 2a
         var oneTimeNoLocations = new DecisionQuery(_options)
         {
-            Title = "is there one time and no locations",
+            Title = "Is there one time and no locations",
             Test = (locations, times) =>
             {
                 if (times.Count == 1 && locations.Count == 0) 
@@ -528,7 +521,7 @@ public class DecisionTree
         // Decision 1
         var root = new DecisionQuery(_options)
         {
-            Title = "Is Location Found",
+            Title = "Are locations found",
             Test = (locations, times) =>
             {
                 if (locations.Count == 0)

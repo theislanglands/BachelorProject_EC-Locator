@@ -24,7 +24,7 @@ public class MessageParserTest
     public void Setup()
     {
         // settings Options used in objects
-        var verboseOptions = Options.Create(new VerboseOptions { Verbose = false, UseDatabase = false});
+        var verboseOptions = Options.Create(new VerboseOptions { Verbose = true, UseDatabase = false});
         var locatorRepositoryOptions = Options.Create(new LocatorRepositoryOptions
         {
             ConnectionStringOW = "Server=tcp:ecreo01.database.windows.net,1433;" +

@@ -92,7 +92,7 @@ public class TimeAndLocationConnector : ITimeAndLocationConnector
 
     private void SetEndTime(int locationIndex)
     {
-        // set to endtime to start of next locations, if last the default
+        // set end time to start of next locations, if last location then default end time
         if (locationIndex == _locationTags.Count - 1)
         {
             _locationTags.Values[locationIndex].End = _workEndDefault;
