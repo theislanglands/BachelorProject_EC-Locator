@@ -164,7 +164,6 @@ public class EmployeeLocator : IEmployeeLocator
     private Location? FindLocationMatchingTime(List<Location> locations, TimeOnly time)
     {
         Location foundLocation = null;
-        // find the location matching time
 
         if (_verbose)
         {

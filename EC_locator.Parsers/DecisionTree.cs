@@ -31,7 +31,7 @@ public class DecisionTree
             GoTo = new FinalNode(_options),
         };
         
-        // Action 11
+        // Action 10
         var deleteLocationNotMeeting = new Action(_options)
         {
             Title = "Deleting location not a meeting",
@@ -115,7 +115,7 @@ public class DecisionTree
             Negative = new FinalNode(_options)
         };
         
-        // Action 9
+        // Action 8
         var insertHome = new Action(_options)
         {
             Title = "Inserting home at location 0",
@@ -145,7 +145,7 @@ public class DecisionTree
             Negative = twoLocationsHigherThanTime
         };
         
-        // Action 10
+        // Action 9
         var insertOffice = new Action(_options)
         {
             Title = "Inserting office at location 0",
@@ -209,7 +209,7 @@ public class DecisionTree
             Negative = oneLocationOneTime
         };
         
-        // Action 8
+        // Action 7
         var insertMeeting= new Action(_options)
         {
             Title = "Inserting meeting at location 0",
@@ -270,7 +270,7 @@ public class DecisionTree
             Negative = isFirstIndexTimeKeyword
         };
         
-        // Action 7
+        // Action 6
         var deleteOffLocation = new Action(_options)
         {
             Title = "Deleting off-location",
@@ -329,7 +329,7 @@ public class DecisionTree
             Negative = noTimesAndMultipleLocations
         };
         
-        // Action 6
+        // Action 5
         var deleteKids= new Action(_options)
         {
             Title = "Deleting kids-tag",

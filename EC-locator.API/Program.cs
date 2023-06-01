@@ -16,6 +16,7 @@ using WebApplication = Microsoft.AspNetCore.Builder.WebApplication;
 HeartBeatManager heartBeatManager;
 var builder = WebApplication.CreateBuilder(args);
 InitializeHeartBeatManager();
+// heartBeatManager.StartHeartBeat();
 
 // Add services to the container.
 ConfigureSettingsOptions(builder.Services);
@@ -60,7 +61,7 @@ void ConfigureSettingsOptions(IServiceCollection serviceCollection)
     serviceCollection.Configure<GraphHelperOptions>(builder.Configuration.GetSection("AzureAd"));
     serviceCollection.Configure<LocatorRepositoryOptions>(builder.Configuration.GetSection("MSSQL"));
     serviceCollection.Configure<DefaultLocationOptions>(builder.Configuration.GetSection("DefaultLocation"));
-    serviceCollection.Configure<TeamsOptions>(builder.Configuration.GetSection("TeamsChannel"));
+    serviceCollection.Configure<TeamsOptions>(builder.Configuration.GetSection("TestTeamsChannel"));
     serviceCollection.Configure<UsersOptions>(builder.Configuration);
 }
 

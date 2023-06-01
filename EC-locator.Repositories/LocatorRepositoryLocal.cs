@@ -59,6 +59,9 @@ public class LocatorRepositoryLocal : ILocatorRepository
             { "retur", "office"}, { "er tilbage", "office"}, 
             { "at være der", "office"}, { "på kontoret", "office" }, { "på arbejdet", "office" },
             { "kommer i firmaet", "office" }, { "konnes", "office" }, { "er mødt", "office"}, { "på pinden", "office"},
+            
+            //NYE
+            { "kontu", "office" },
 
             // OFF KEYWORDS
             { "fri", "off" }, { "off", "off" }, { "afspadserer", "off"},
@@ -74,7 +77,10 @@ public class LocatorRepositoryLocal : ILocatorRepository
             { "kører på", "remote" },
             { "er ved", "remote" },
             { "kører ind til", "remote" },
-            { "drager", "remote"}
+            { "drager", "remote"},
+            
+            // nye
+            { "kører til", "remote" }
         };
         
         // replacing string[] with dictionary
