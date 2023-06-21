@@ -6,3 +6,4 @@ riderModule.iml
 /_ReSharper.Caches/
 /API/appsettings.json
 docker-compose.yml
+/.DS_Store
